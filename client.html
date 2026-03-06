@@ -1151,7 +1151,8 @@ const OPTIONS_MAP = {
     ],
     livre: [
         { id: 'format', label: 'Format', type: 'chips', values: ['A5 (14.8×21cm)','A4 (21×29.7cm)','13.5×21cm'], default: 'A5 (14.8×21cm)' },
-        { id: 'pages', label: 'Nombre de pages', type: 'number', placeholder: 'Ex : 120', min: 1, note: 'Reliure : dos carré-collé' }
+        { id: 'pages', label: 'Nombre de pages intérieures', type: 'number', placeholder: 'Ex : 120', min: 1, note: 'Reliure : dos carré-collé' },
+        { id: 'papier_interieur', label: 'Papier intérieur (N&B)', type: 'chips', values: ['Offset 80g','Offset 100g'], default: 'Offset 80g' }
     ],
     enveloppe: [
         { id: 'format', label: 'Format', type: 'chips', values: ['DL (11×22cm)','C5 (16×22cm)','C4 (22×31cm)'], default: 'DL (11×22cm)' },
@@ -1523,42 +1524,156 @@ function calcPrice() {
     const tarifs = prixConfig.tarifs;
     let baseHT = null;
     const qty = cfg.qty;
+    const MIN_PRICE = 28;
 
-    function lookupTable(table) {
+    // ─── Helpers (reproduit exactement le fichier référence) ──────────────────
+
+    // Interpolation linéaire entre les paliers (plus précis que le palier simple)
+    function smoothTable(table, q) {
         if (!table || !table.length) return null;
-        const sorted = [...table].sort((a,b) => a.qty - b.qty);
-        let found = sorted[0].price;
-        for (const t of sorted) { if (qty >= t.qty) found = t.price; }
-        return found;
+        const s = [...table].sort((a,b) => a.qty - b.qty);
+        if (q <= s[0].qty) return s[0].price;
+        if (q >= s[s.length-1].qty) return s[s.length-1].price;
+        let lo = s[0], hi = s[s.length-1];
+        for (let i = 0; i < s.length; i++) {
+            if (s[i].qty <= q) lo = s[i];
+            if (s[i].qty >= q) { hi = s[i]; break; }
+        }
+        if (lo.qty === hi.qty) return lo.price;
+        const ratio = (q - lo.qty) / (hi.qty - lo.qty);
+        return lo.price + (hi.price - lo.price) * ratio;
     }
 
+    // Prix par feuille couleur R/V — barème exact fichier référence
+    function ppsColor(sh) {
+        if (sh <= 24) return 3; if (sh <= 49) return 2.5; if (sh <= 99) return 2;
+        if (sh <= 199) return 1.9; if (sh <= 299) return 1.8; if (sh <= 399) return 1.7;
+        if (sh <= 499) return 1.6; return 1.5;
+    }
+
+    // Supplément papier — formule exacte fichier référence
+    function paperSurcharge(code, n) {
+        if (!code || n === 0) return 0;
+        if (code === 'offset-100') return n * 0.014;
+        if (code.startsWith('couche-')) {
+            const g = parseInt(code.split('-')[1]);
+            return g > 90 ? n * (g - 90) * 0.0007 : 0;
+        }
+        return 0;
+    }
+
+    // Mapping label chip → code papier (format utilisé par paperSurcharge)
+    function chipToCode(chip) {
+        const M = {
+            // Flyer
+            '90g':'couche-90-mat','115g':'couche-115-mat','135g':'couche-135-mat',
+            '170g':'couche-170-mat','200g':'couche-200-mat',
+            // Dépliant
+            '90g mat':'couche-90-mat','115g mat':'couche-115-mat',
+            '135g mat':'couche-135-mat','170g mat':'couche-170-mat',
+            // Entête
+            'Standard 80g':'offset-80','Premium 90g':'couche-90-mat','Premium 100g':'offset-100',
+            // Carte / couvertures
+            '250g mat':'couche-250-mat','250g brillant':'couche-250-brillant',
+            '300g mat':'couche-300-mat','300g brillant':'couche-300-brillant',
+            '350g mat':'couche-350-mat','350g brillant':'couche-350-brillant',
+            // Brochure intérieur
+            '90g blanc':'couche-90-mat','115g couché':'couche-115-mat','135g couché':'couche-135-mat',
+            // Livre intérieur
+            'Offset 80g':'offset-80','Offset 100g':'offset-100',
+            // Affiche
+            'Couché 135g brillant':'couche-135-brillant','Couché 170g brillant':'couche-170-brillant'
+        };
+        return M[chip] || null;
+    }
+
+    // ─── Flyer ────────────────────────────────────────────────────────────────
     if (cfg.product === 'flyer') {
         const isRV = (cfg.options.impression || 'Recto').includes('Verso');
-        const table = isRV ? tarifs.flyer.rectoVerso : tarifs.flyer.recto;
-        baseHT = lookupTable(table);
+        baseHT = smoothTable(isRV ? tarifs.flyer.rectoVerso : tarifs.flyer.recto, qty);
+        baseHT += paperSurcharge(chipToCode(cfg.options.papier || '135g'), qty);
+        baseHT = Math.max(baseHT, MIN_PRICE);
+
+    // ─── Carte de visite ──────────────────────────────────────────────────────
     } else if (cfg.product === 'carte') {
         const hasPell = (cfg.options.finition || '').includes('Pellicul');
-        const table = hasPell ? tarifs.carte.pellicule : tarifs.carte.recto;
-        baseHT = lookupTable(table);
+        baseHT = smoothTable(hasPell ? tarifs.carte.pellicule : tarifs.carte.recto, qty);
+        baseHT += paperSurcharge(chipToCode(cfg.options.papier || '300g mat'), Math.ceil(qty / 10));
+        baseHT = Math.max(baseHT, MIN_PRICE);
+
+    // ─── Dépliant ─────────────────────────────────────────────────────────────
     } else if (cfg.product === 'depliant') {
-        baseHT = lookupTable(tarifs.depliant);
+        baseHT = smoothTable(tarifs.depliant, qty);
+        baseHT += paperSurcharge(chipToCode(cfg.options.papier || '115g'), qty);
+        baseHT = Math.max(baseHT, MIN_PRICE);
+
+    // ─── Papier entête ────────────────────────────────────────────────────────
     } else if (cfg.product === 'entete') {
-        baseHT = lookupTable(tarifs.entete);
+        baseHT = smoothTable(tarifs.entete, qty);
+        baseHT += paperSurcharge(chipToCode(cfg.options.papier || 'Standard 80g'), qty);
+        baseHT = Math.max(baseHT, MIN_PRICE);
+
+    // ─── Affiche ──────────────────────────────────────────────────────────────
     } else if (cfg.product === 'affiche') {
-        const up = lookupTable(tarifs.affiche);
-        if (up) baseHT = up * qty;
+        const isA3plus = (cfg.options.format || '29×42cm') === '32×48cm';
+        // Base: palier affiche (prix/unité × qty)
+        const sorted = [...(tarifs.affiche||[])].sort((a,b)=>a.qty-b.qty);
+        let up = sorted[0]?.price || 2.8;
+        for (const t of sorted) { if (qty >= t.qty) up = t.price; }
+        baseHT = up * qty;
+        if (isA3plus) baseHT *= 1.2;
+        baseHT += paperSurcharge(chipToCode(cfg.options.papier || 'Couché 135g brillant'), qty);
+        baseHT = Math.max(baseHT, MIN_PRICE);
+
+    // ─── Brochure — formule EXACTE fichier référence ──────────────────────────
     } else if (cfg.product === 'brochure') {
-        // paliers_brochure
-        const pc = prixConfig.paliers_brochure?.couleur_recto_verso || [];
-        let unitP = 1.5;
-        for (const p of pc) { if (qty >= p.min && qty <= p.max) unitP = p.price; }
-        // pages: either '16p' (chips) or a plain number (free input)
         const pagesRaw = cfg.options.pages || '16p';
-        const pages = parseInt(String(pagesRaw).replace('p','')) || 16;
-        baseHT = unitP * qty * (pages / 4);
-    } else if (['livre','enveloppe','autre'].includes(cfg.product)) {
-        // livre/enveloppe : sur devis, pas de calcul automatique
-        baseHT = null;
+        const pages = parseInt(String(pagesRaw).replace('p', '')) || 16;
+        const isA4 = (cfg.options.format || 'A5 (14.8×21cm)').startsWith('A4');
+
+        // Feuilles intérieures couleur R/V
+        const sheetsPerBooklet = isA4 ? pages / 4 : pages / 8;
+        const intSh = Math.ceil(sheetsPerBooklet * qty);
+        // Feuilles couverture (1 feuille A3/A4 par brochure A4, 0.5 par A5)
+        const covSh = Math.ceil((isA4 ? 1 : 0.5) * qty);
+        // Palier déterminé sur le TOTAL des feuilles imprimées
+        const totalSh = intSh + covSh;
+        const ppi = ppsColor(totalSh);
+        const ppc = Math.max(ppi - 0.2, 1.3); // couverture recto
+
+        // Surcharges papier intérieur et couverture
+        const intCode = chipToCode(cfg.options.papier_interieur || '90g blanc');
+        const covCode = chipToCode(cfg.options.couverture || '250g brillant');
+
+        baseHT = (intSh * ppi)
+               + (covSh * ppc)
+               + (intCode ? paperSurcharge(intCode, intSh) : 0)
+               + (covCode ? paperSurcharge(covCode, covSh) : 0);
+        baseHT = Math.max(baseHT, MIN_PRICE);
+
+    // ─── Livres édition — N&B intérieur + couverture couleur ─────────────────
+    } else if (cfg.product === 'livre') {
+        const pages = parseInt(cfg.options.pages) || 0;
+        if (!pages) return null;
+        const isA4 = (cfg.options.format || 'A5 (14.8×21cm)').startsWith('A4');
+        const fmtKey = isA4 ? 'a4' : 'a5';
+
+        // Intérieur N&B : 0.20 DT/feuille (même tarif que fichier référence)
+        const sheetsPerBook = isA4 ? pages / 4 : pages / 8;
+        const intSh = Math.ceil(sheetsPerBook * qty);
+        const intPrice = intSh * 0.2;
+        const intCode = chipToCode(cfg.options.papier_interieur || 'Offset 80g');
+        const intSurcharge = intCode ? paperSurcharge(intCode, intSh) : 0;
+
+        // Couverture couleur : tarif fixe par exemplaire (fichier référence exact)
+        const PRIX_COUV = { a4: { recto: 1.3, rv: 1.5 }, a5: { recto: 0.65, rv: 0.75 } };
+        const covPrice = PRIX_COUV[fmtKey].recto * qty;
+
+        baseHT = intPrice + intSurcharge + covPrice;
+        baseHT = Math.max(baseHT, MIN_PRICE);
+
+    } else if (['enveloppe', 'autre'].includes(cfg.product)) {
+        return null;
     }
 
     if (!baseHT) return null;
