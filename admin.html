@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simpact - Admin Prix</title>
-    <script src="users.js"></script>
+    <script src="users.js?v=3"></script>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         :root { --bg: #0f172a; --card-bg: #1e293b; --text: #f1f5f9; --accent: #f59e0b; --success: #10b981; --danger: #ef4444; --input-bg: #334155; }
@@ -408,7 +408,7 @@
         }
 
         function loadUsersTable() {
-            const users = getAllUsers();
+            const users = getUsers();
             const tbody = document.getElementById('users-table-body');
             tbody.innerHTML = '';
 
@@ -466,6 +466,18 @@
             document.querySelector('.user-form').scrollIntoView({ behavior: 'smooth' });
         }
 
+        // Sauvegarde un utilisateur (ajout ou modification)
+        function saveUser(userData) {
+            const users = getUsers();
+            const idx = users.findIndex(u => u.id === userData.id);
+            if (idx >= 0) {
+                users[idx] = { ...users[idx], ...userData };
+            } else {
+                users.push(userData);
+            }
+            saveUsers(users);
+        }
+
         function deleteUserConfirm(userId, userName) {
             if(confirm(`⚠️ Êtes-vous sûr de vouloir supprimer l'utilisateur "${userName}" (${userId}) ?\n\nCette action est irréversible.`)) {
                 if(deleteUser(userId)) {
@@ -498,7 +510,7 @@
             }
 
             // Vérifier si l'ID existe déjà (sauf si modification du même utilisateur)
-            const users = getAllUsers();
+            const users = getUsers();
             const existingUser = users.find(u => u.id === userId);
             if(existingUser && originalId !== userId) {
                 alert(`⚠️ L'identifiant "${userId}" existe déjà. Veuillez en choisir un autre.`);
@@ -523,7 +535,7 @@
             if(userPassInput) {
                 userData.pass = userPassInput;
             } else if(originalId) {
-                const allUsers = getAllUsers();
+                const allUsers = getUsers();
                 const existing = allUsers.find(u => u.id === originalId);
                 if(existing) userData.pass = existing.pass; // conserver l'ancien mot de passe
             }
