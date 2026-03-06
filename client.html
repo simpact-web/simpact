@@ -1143,16 +1143,42 @@ const OPTIONS_MAP = {
     brochure: [
         { id: 'format', label: 'Format', type: 'chips', values: ['A5 (14.8×21cm)','A4 (21×29.7cm)','13.5×21cm'], default: 'A5 (14.8×21cm)' },
         { id: 'reliure', label: 'Reliure', type: 'chips', values: ['Agrafé','Collée (dos carré-collé)','Spirale'], default: 'Agrafé', required: true },
-        { id: 'pages', label: 'Nombre de pages', type: 'pages_brochure',
+        { id: 'pages', label: 'Nombre de pages intérieures', type: 'pages_brochure',
           chips_values: ['8p','12p','16p','20p','24p','28p','32p','36p','40p','44p','48p'], default_chips: '16p',
-          note_number: 'Saisissez le nombre de pages (multiple de 4 recommandé)' },
-        { id: 'papier_interieur', label: 'Papier intérieur', type: 'chips', values: ['90g blanc','115g couché','135g couché'], default: '90g blanc' },
-        { id: 'couverture', label: 'Couverture', type: 'chips', values: ['250g brillant','250g mat','300g brillant','300g mat','350g brillant','350g mat'], default: '250g brillant' }
+          note_number: 'Saisissez le nombre de pages intérieures (multiple de 4)' },
+        { id: 'papier_interieur', label: 'Papier intérieur', type: 'select',
+          values: [
+            { label: 'Offset 80g',           code: 'offset-80' },
+            { label: 'Offset 100g',          code: 'offset-100' },
+            { label: 'Couché 90g Mat',        code: 'couche-90-mat' },
+            { label: 'Couché 90g Brillant',   code: 'couche-90-brillant' },
+            { label: 'Couché 115g Mat',       code: 'couche-115-mat' },
+            { label: 'Couché 115g Brillant',  code: 'couche-115-brillant' },
+            { label: 'Couché 135g Mat',       code: 'couche-135-mat' },
+            { label: 'Couché 135g Brillant',  code: 'couche-135-brillant' },
+            { label: 'Couché 170g Mat',       code: 'couche-170-mat' },
+            { label: 'Couché 170g Brillant',  code: 'couche-170-brillant' }
+          ], default: 'offset-80' },
+        { id: 'couverture', label: 'Papier couverture', type: 'select',
+          values: [
+            { label: 'Couché 250g Mat',       code: 'couche-250-mat' },
+            { label: 'Couché 250g Brillant',  code: 'couche-250-brillant' },
+            { label: 'Couché 300g Mat',       code: 'couche-300-mat' },
+            { label: 'Couché 300g Brillant',  code: 'couche-300-brillant' },
+            { label: 'Couché 350g Mat',       code: 'couche-350-mat' },
+            { label: 'Couché 350g Brillant',  code: 'couche-350-brillant' }
+          ], default: 'couche-250-mat' },
+        { id: 'couverture_impression', label: 'Impression couverture', type: 'chips',
+          values: ['Recto','Recto-Verso'], default: 'Recto' }
     ],
     livre: [
         { id: 'format', label: 'Format', type: 'chips', values: ['A5 (14.8×21cm)','A4 (21×29.7cm)','13.5×21cm'], default: 'A5 (14.8×21cm)' },
         { id: 'pages', label: 'Nombre de pages intérieures', type: 'number', placeholder: 'Ex : 120', min: 1, note: 'Reliure : dos carré-collé' },
-        { id: 'papier_interieur', label: 'Papier intérieur (N&B)', type: 'chips', values: ['Offset 80g','Offset 100g'], default: 'Offset 80g' }
+        { id: 'papier_interieur', label: 'Papier intérieur (N&B)', type: 'select',
+          values: [
+            { label: 'Offset 80g',  code: 'offset-80' },
+            { label: 'Offset 100g', code: 'offset-100' }
+          ], default: 'offset-80' }
     ],
     enveloppe: [
         { id: 'format', label: 'Format', type: 'chips', values: ['DL (11×22cm)','C5 (16×22cm)','C4 (22×31cm)'], default: 'DL (11×22cm)' },
@@ -1385,6 +1411,8 @@ function buildOptionsStep() {
         if (!cfg.options[opt.id]) {
             if (opt.type === 'chips') cfg.options[opt.id] = opt.default;
             else if (opt.type === 'pages_brochure') cfg.options[opt.id] = opt.default_chips;
+            else if (opt.type === 'select') cfg.options[opt.id] = opt.default;
+            else if (opt.type === 'number') cfg.options[opt.id] = '';
         }
     });
 
@@ -1429,6 +1457,17 @@ function buildOptionsStep() {
                        placeholder="${opt.placeholder || ''}" min="${opt.min || 1}"
                        value="${cfg.options[opt.id] || ''}"
                        oninput="cfg.options['${opt.id}']=this.value;updateLivePrice();">
+            </div>`;
+        }
+        if (opt.type === 'select') {
+            const selVal = cfg.options[opt.id] || opt.default;
+            return `
+            <div class="form-group" id="opt-group-${opt.id}">
+                <label class="input-label">${opt.label}</label>
+                <select class="input-field" style="background:var(--bg2);color:var(--text1);border:1px solid var(--border);border-radius:8px;padding:0.6rem 1rem;width:100%;cursor:pointer;"
+                        onchange="cfg.options['${opt.id}']=this.value;updateLivePrice();">
+                    ${opt.values.map(v => `<option value="${v.code}" ${selVal === v.code ? 'selected' : ''}>${v.label}</option>`).join('')}
+                </select>
             </div>`;
         }
         return '';
@@ -1639,11 +1678,12 @@ function calcPrice() {
         // Palier déterminé sur le TOTAL des feuilles imprimées
         const totalSh = intSh + covSh;
         const ppi = ppsColor(totalSh);
-        const ppc = Math.max(ppi - 0.2, 1.3); // couverture recto
+        const covIsRV = (cfg.options.couverture_impression || 'Recto') === 'Recto-Verso';
+        const ppc = covIsRV ? ppi : Math.max(ppi - 0.2, 1.3); // R/V=ppi, Recto=ppi-0.2
 
-        // Surcharges papier intérieur et couverture
-        const intCode = chipToCode(cfg.options.papier_interieur || '90g blanc');
-        const covCode = chipToCode(cfg.options.couverture || '250g brillant');
+        // Surcharges papier — select stores code directly (ex: 'couche-90-mat')
+        const intCode = cfg.options.papier_interieur || 'offset-80';
+        const covCode = cfg.options.couverture || 'couche-250-mat';
 
         baseHT = (intSh * ppi)
                + (covSh * ppc)
@@ -1662,7 +1702,7 @@ function calcPrice() {
         const sheetsPerBook = isA4 ? pages / 4 : pages / 8;
         const intSh = Math.ceil(sheetsPerBook * qty);
         const intPrice = intSh * 0.2;
-        const intCode = chipToCode(cfg.options.papier_interieur || 'Offset 80g');
+        const intCode = cfg.options.papier_interieur || 'offset-80';
         const intSurcharge = intCode ? paperSurcharge(intCode, intSh) : 0;
 
         // Couverture couleur : tarif fixe par exemplaire (fichier référence exact)
