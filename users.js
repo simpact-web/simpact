@@ -129,20 +129,31 @@ function checkAuth(allowedRoles) {
         const session = localStorage.getItem('SIMPACT_USER');
         if (!session) { window.location.href = 'index.html'; return null; }
         const user = JSON.parse(session);
-        if (!user || !user.id) { window.location.href = 'index.html'; return null; }
-        // superadmin a accès à tout
+        if (!user || !user.id || !user.role) {
+            localStorage.removeItem('SIMPACT_USER');
+            window.location.href = 'index.html'; return null;
+        }
+
+        // ── Le superadmin bypass TOUT sans exception ──────────
         if (user.role === 'superadmin') return user;
-        // Page réservée superadmin uniquement
-        const roles = Array.isArray(allowedRoles) ? allowedRoles : [allowedRoles];
+
+        // ── Page réservée uniquement au superadmin ────────────
+        const roles = Array.isArray(allowedRoles) ? allowedRoles : (allowedRoles ? [allowedRoles] : []);
         if (roles.length === 1 && roles[0] === 'superadmin') {
             window.location.href = 'index.html'; return null;
         }
-        // Vérification du rôle
-        if (!roles.includes(user.role)) {
+
+        // ── Vérification du rôle (on ignore 'superadmin' dans la liste) ──
+        const filteredRoles = roles.filter(r => r !== 'superadmin');
+        if (filteredRoles.length > 0 && !filteredRoles.includes(user.role)) {
             window.location.href = 'index.html'; return null;
         }
+
         return user;
-    } catch(e) { logout(); return null; }
+    } catch(e) {
+        localStorage.removeItem('SIMPACT_USER');
+        window.location.href = 'index.html'; return null;
+    }
 }
 
 function logout() {
