@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simpact - Admin Prix</title>
+    <script src="users.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg: #0f172a; --card-bg: #1e293b; --text: #f1f5f9; --accent: #f59e0b; --success: #10b981; --danger: #ef4444; --input-bg: #334155; }
+        body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); padding: 2rem; margin: 0; }
+        .container { max-width: 1400px; margin: 0 auto; }
+        
+        /* HEADER */
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 1px solid #334155; padding-bottom: 1rem; }
+        .btn-group { display: flex; gap: 10px; }
+        .btn { padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-family: inherit; transition: 0.2s; color: white; }
+        .btn:hover { transform: translateY(-2px); opacity: 0.9; }
+        .btn-save { background: var(--success); }
+        .btn-reset { background: var(--danger); }
+        .btn-logout { background: #334155; }
+
+        /* TABS */
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px; }
+        .tab-btn { background: var(--card-bg); color: #94a3b8; padding: 10px 20px; border: 1px solid #334155; border-radius: 8px; cursor: pointer; white-space: nowrap; transition: 0.3s; }
+        .tab-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+        
+        .tab-content { display: none; animation: fadeIn 0.3s ease; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* CARDS & TABLES */
+        .card { background: var(--card-bg); border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; border: 1px solid #334155; }
+        h2 { margin-top: 0; color: var(--accent); font-size: 1.2rem; margin-bottom: 1rem; }
+        
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; color: #94a3b8; padding: 10px; border-bottom: 1px solid #334155; font-size: 0.9rem; }
+        td { padding: 10px; border-bottom: 1px solid #334155; }
+        
+        input { background: var(--input-bg); border: 1px solid #475569; color: white; padding: 8px; border-radius: 4px; width: 100%; box-sizing: border-box; font-family: monospace; }
+        input:focus { outline: none; border-color: var(--accent); }
+        
+        .delete-btn { background: rgba(239, 68, 68, 0.2); color: var(--danger); border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
+        .delete-btn:hover { background: var(--danger); color: white; }
+        
+        .add-row-btn { background: #334155; color: white; width: 100%; padding: 10px; margin-top: 10px; border: 1px dashed #475569; border-radius: 6px; cursor: pointer; }
+        .add-row-btn:hover { background: #475569; }
+
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        label { display: block; margin-bottom: 5px; font-size: 0.9rem; color: #94a3b8; }
+        
+        /* MODAL GESTION UTILISATEURS */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center; padding: 20px; }
+        .modal-content { background: var(--card-bg); padding: 2rem; border-radius: 16px; max-width: 900px; width: 100%; max-height: 90vh; overflow-y: auto; border: 2px solid #475569; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 2px solid #475569; }
+        .modal-title { font-size: 1.5rem; color: var(--accent); margin: 0; }
+        .close-btn { background: none; border: none; color: #94a3b8; font-size: 2rem; cursor: pointer; line-height: 1; }
+        .close-btn:hover { color: white; }
+        .users-table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
+        .users-table th { background: #0f172a; padding: 12px; text-align: left; color: #94a3b8; border-bottom: 2px solid #475569; }
+        .users-table td { padding: 12px; border-bottom: 1px solid #475569; }
+        .role-badge { padding: 4px 10px; border-radius: 12px; font-size: 0.8rem; font-weight: 600; }
+        .role-superadmin { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+        .role-admin { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+        .role-production { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
+        .role-commercial { background: rgba(139, 92, 246, 0.2); color: #8b5cf6; }
+        .role-compta { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+        .role-client { background: rgba(148, 163, 184, 0.2); color: #94a3b8; }
+        .action-btns { display: flex; gap: 5px; }
+        .btn-edit-user { background: #3b82f6; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; }
+        .btn-delete-user { background: rgba(239, 68, 68, 0.2); color: #ef4444; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; }
+        .btn-delete-user:hover { background: #ef4444; color: white; }
+        .user-form { background: #0f172a; padding: 1.5rem; border-radius: 8px; margin-top: 1rem; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .form-group-full { grid-column: 1/-1; }
+        .form-group label { color: #cbd5e1; font-weight: 600; }
+        .form-group input, .form-group select { width: 100%; padding: 10px; background: var(--input-bg); border: 1px solid #475569; color: white; border-radius: 6px; }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--accent); }
+    </style>
+</head>
+<body>
+    <script>checkAuth('admin');</script>
+
+    <div class="container">
+        <header>
+            <h1>🎛️ Admin Prix</h1>
+            <div class="btn-group">
+                <button class="btn" onclick="window.location.href='stock.html'" style="background: #8b5cf6;">📦 Gestion Stock</button>
+                <button class="btn" onclick="openUsersModal()" style="background: #3b82f6;">👥 Gestion Utilisateurs</button>
+                <button class="btn btn-reset" onclick="resetOrders()">🗑️ Vider Commandes</button>
+                <button class="btn btn-save" onclick="saveAllPrices()">💾 SAUVEGARDER CONFIG</button>
+                <button class="btn btn-logout" onclick="logout()">Quitter</button>
+            </div>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('flyers')">Flyers</button>
+            <button class="tab-btn" onclick="switchTab('cartes')">Cartes</button>
+            <button class="tab-btn" onclick="switchTab('affiches')">🖼️ Affiches</button>
+            <button class="tab-btn" onclick="switchTab('depliants')">Dépliants</button>
+            <button class="tab-btn" onclick="switchTab('entetes')">En-têtes</button>
+            <button class="tab-btn" onclick="switchTab('livres')">Livres</button>
+            <button class="tab-btn" onclick="switchTab('brochures')">Brochures</button>
+            <button class="tab-btn" onclick="switchTab('fixes')">Paramètres</button>
+        </div>
+
+        <div id="flyers" class="tab-content active">
+            <div class="grid-2">
+                <div class="card"><h2>Flyers Recto</h2><table id="flyer-recto-table"><thead><tr><th>Qté Max</th><th>Prix (DT)</th><th></th></tr></thead><tbody></tbody></table><button class="add-row-btn" onclick="addRow('flyer-recto')">+ Ajouter palier</button></div>
+                <div class="card"><h2>Flyers R/V</h2><table id="flyer-rectoverso-table"><thead><tr><th>Qté Max</th><th>Prix (DT)</th><th></th></tr></thead><tbody></tbody></table><button class="add-row-btn" onclick="addRow('flyer-rectoverso')">+ Ajouter palier</button></div>
+            </div>
+        </div>
+
+        <div id="cartes" class="tab-content">
+            <div class="grid-2">
+                <div class="card"><h2>Cartes Standard</h2><table id="carte-recto-table"><thead><tr><th>Qté Max</th><th>Prix (DT)</th><th></th></tr></thead><tbody></tbody></table><button class="add-row-btn" onclick="addRow('carte-recto')">+ Ajouter palier</button></div>
+                <div class="card"><h2>Cartes Pelliculées</h2><table id="carte-pellicule-table"><thead><tr><th>Qté Max</th><th>Prix (DT)</th><th></th></tr></thead><tbody></tbody></table><button class="add-row-btn" onclick="addRow('carte-pellicule')">+ Ajouter palier</button></div>
+            </div>
+        </div>
+
+        <div id="affiches" class="tab-content">
+            <div class="card">
+                <h2>Affiches Grand Format (Base A3)</h2>
+                <p style="color:#64748b; font-size:0.9rem; margin-bottom:15px;">Le format A3+ sera calculé automatiquement (Prix A3 x 1.2)</p>
+                <table id="affiche-table"><thead><tr><th>Qté Max</th><th>Prix Unitaire A3 (DT)</th><th></th></tr></thead><tbody></tbody></table>
+                <button class="add-row-btn" onclick="addRow('affiche')">+ Ajouter palier</button>
+            </div>
+        </div>
+
+        <div id="depliants" class="tab-content">
+            <div class="card"><h2>Dépliants 3 Volets</h2><table id="depliant-table"><thead><tr><th>Qté Max</th><th>Prix (DT)</th><th></th></tr></thead><tbody></tbody></table><button class="add-row-btn" onclick="addRow('depliant')">+ Ajouter palier</button></div>
+        </div>
+
+        <div id="entetes" class="tab-content">
+            <div class="card"><h2>Papier En-tête</h2><table id="entete-table"><thead><tr><th>Qté Max</th><th>Prix (DT)</th><th></th></tr></thead><tbody></tbody></table><button class="add-row-btn" onclick="addRow('entete')">+ Ajouter palier</button></div>
+        </div>
+        
+        <div id="livres" class="tab-content">
+            <div class="card">
+                <h2>Prix Couvertures Livres</h2>
+                <div class="grid-2">
+                    <div><label>A4 Recto</label><input type="number" id="livre-a4-recto" step="0.01"></div>
+                    <div><label>A4 R/V</label><input type="number" id="livre-a4-rectoverso" step="0.01"></div>
+                    <div><label>A5 Recto</label><input type="number" id="livre-a5-recto" step="0.01"></div>
+                    <div><label>A5 R/V</label><input type="number" id="livre-a5-rectoverso" step="0.01"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="brochures" class="tab-content">
+            <div class="card"><h2>Paliers Brochures (Prix par page)</h2><table id="brochure-paliers-table"><thead><tr><th>Min</th><th>Max</th><th>Prix/feuille</th><th></th></tr></thead><tbody></tbody></table><button class="add-row-btn" onclick="addRow('brochure-paliers')">+ Ajouter palier</button></div>
+        </div>
+
+        <div id="fixes" class="tab-content">
+            <div class="card">
+                <h2>Coûts Matières & Fixes</h2>
+                <div class="grid-2">
+                    <div><label>Coût Pelliculage (par unité)</label><input type="number" id="prix-pelliculage" step="0.01"></div>
+                    <div><label>Coût Feuille N&B (Livre)</label><input type="number" id="prix-feuille-nb" step="0.01"></div>
+                    <div><label>Supplément Offset 100g</label><input type="number" id="prix-offset-100" step="0.001"></div>
+                    <div><label>Coût par gramme papier couché</label><input type="number" id="prix-gramme-couche" step="0.0001"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL GESTION UTILISATEURS -->
+    <div id="modal-users" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">👥 Gestion des Utilisateurs</h2>
+                <button class="close-btn" onclick="closeUsersModal()">&times;</button>
+            </div>
+            
+            <div style="overflow-x: auto;">
+                <table class="users-table">
+                    <thead>
+                        <tr>
+                            <th>Identifiant</th>
+                            <th>Nom</th>
+                            <th>Rôle</th>
+                            <th>Page par défaut</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="users-table-body"></tbody>
+                </table>
+            </div>
+
+            <div class="user-form">
+                <h3 style="color: var(--accent); margin-top: 0;">➕ Ajouter / Modifier un Utilisateur</h3>
+                <form id="user-form" onsubmit="saveUserForm(event)">
+                    <input type="hidden" id="user-original-id">
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Identifiant de connexion *</label>
+                            <input type="text" id="user-id" placeholder="Ex: comm02" required>
+                            <small style="color: #64748b; font-size: 0.85rem;">Utilisé pour se connecter</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label id="pass-label">Mot de passe *</label>
+                            <input type="text" id="user-pass" placeholder="Ex: motdepasse123">
+                            <small id="pass-hint" style="color: #64748b; font-size: 0.85rem;">Visible pour l'admin</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Nom d'affichage *</label>
+                            <input type="text" id="user-name" placeholder="Ex: Commercial 2" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Rôle *</label>
+                            <select id="user-role" required>
+                                <option value="">-- Sélectionner --</option>
+                                <option value="superadmin">🔴 Super Admin (accès total)</option>
+                                <option value="admin">🟠 Admin (prix, stock, utilisateurs)</option>
+                                <option value="production">🔵 Production (atelier, stock)</option>
+                                <option value="commercial">🟣 Commercial (commandes)</option>
+                                <option value="compta">🟢 Comptabilité (finances)</option>
+                                <option value="client">⚪ Client (commandes uniquement)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group form-group-full">
+                            <label>Page de redirection *</label>
+                            <select id="user-redirect" required>
+                                <option value="admin.html">Admin (prix, config)</option>
+                                <option value="stock.html">Stock (gestion papier)</option>
+                                <option value="production.html">Production (atelier)</option>
+                                <option value="commercial.html">Commercial (commandes)</option>
+                                <option value="compta.html">Comptabilité</option>
+                                <option value="client.html">Client</option>
+                            </select>
+                            <small style="color: #64748b; font-size: 0.85rem;">Page affichée après connexion</small>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                        <button type="submit" class="btn btn-save" style="flex: 1;">💾 Enregistrer l'utilisateur</button>
+                        <button type="button" class="btn btn-logout" onclick="resetUserForm()">🔄 Réinitialiser</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let prixData = {};
+
+        // INITIALISATION
+        async function loadPrices() {
+            try {
+                // Essayer de charger la config, sinon utiliser une base vide
+                const r = await fetch('prix_config.json');
+                prixData = await r.json();
+            } catch (e) {
+                console.log("Config non trouvée, création base vide.");
+                prixData = { tarifs: { flyer: {}, carte: {}, depliant: [], entete: [], affiche: [] }, prix_couverture_livre: {}, prix_fixes: {}, paliers_brochure: {} };
+            }
+            
+            // Remplissage des tableaux
+            fillTable('flyer-recto', prixData.tarifs.flyer.recto);
+            fillTable('flyer-rectoverso', prixData.tarifs.flyer.rectoVerso);
+            fillTable('carte-recto', prixData.tarifs.carte.recto);
+            fillTable('carte-pellicule', prixData.tarifs.carte.pellicule);
+            fillTable('depliant', prixData.tarifs.depliant);
+            fillTable('entete', prixData.tarifs.entete);
+            
+            // Gestion spécifique Affiches (Si pas de données, on initie un tableau vide)
+            fillTable('affiche', prixData.tarifs.affiche || []);
+
+            fillBrochureTable(prixData.paliers_brochure.couleur_recto_verso);
+
+            // Inputs simples
+            setVal('livre-a4-recto', prixData.prix_couverture_livre.a4?.recto);
+            setVal('livre-a4-rectoverso', prixData.prix_couverture_livre.a4?.rectoVerso);
+            setVal('livre-a5-recto', prixData.prix_couverture_livre.a5?.recto);
+            setVal('livre-a5-rectoverso', prixData.prix_couverture_livre.a5?.rectoVerso);
+
+            setVal('prix-pelliculage', prixData.prix_fixes.pelliculage);
+            setVal('prix-feuille-nb', prixData.prix_fixes.feuille_nb);
+            setVal('prix-offset-100', prixData.prix_fixes.offset_100);
+            setVal('prix-gramme-couche', prixData.prix_fixes.gramme_couche);
+        }
+
+        // FONCTIONS UTILITAIRES
+        function switchTab(id) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById(id).classList.add('active');
+        }
+
+        function setVal(id, val) { if(val !== undefined) document.getElementById(id).value = val; }
+
+        function fillTable(id, data) {
+            const tbody = document.querySelector(`#${id}-table tbody`);
+            tbody.innerHTML = '';
+            if(!data) return;
+            data.forEach(item => {
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td><input type="number" value="${item.qty || item.min || 0}"></td>
+                    <td><input type="number" value="${item.price || item.max || 0}"></td>
+                    <td><button class="delete-btn" onclick="this.closest('tr').remove()">×</button></td>
+                `;
+            });
+        }
+
+        function fillBrochureTable(data) {
+            const tbody = document.querySelector('#brochure-paliers-table tbody');
+            tbody.innerHTML = '';
+            if(!data) return;
+            data.forEach(item => {
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td><input type="number" value="${item.min}"></td>
+                    <td><input type="number" value="${item.max}"></td>
+                    <td><input type="number" value="${item.price}"></td>
+                    <td><button class="delete-btn" onclick="this.closest('tr').remove()">×</button></td>
+                `;
+            });
+        }
+
+        function addRow(type) {
+            const tbody = type === 'brochure-paliers' 
+                ? document.querySelector(`#${type}-table tbody`)
+                : document.querySelector(`#${type}-table tbody`);
+                
+            const row = tbody.insertRow();
+            if(type === 'brochure-paliers') {
+                row.innerHTML = `<td><input type="number" value="0"></td><td><input type="number" value="0"></td><td><input type="number" value="0"></td><td><button class="delete-btn" onclick="this.closest('tr').remove()">×</button></td>`;
+            } else {
+                row.innerHTML = `<td><input type="number" value="0"></td><td><input type="number" value="0"></td><td><button class="delete-btn" onclick="this.closest('tr').remove()">×</button></td>`;
+            }
+        }
+
+        function getTableData(id) {
+            return Array.from(document.querySelectorAll(`#${id}-table tbody tr`)).map(row => {
+                const inputs = row.querySelectorAll('input');
+                return { qty: parseFloat(inputs[0].value), price: parseFloat(inputs[1].value) };
+            });
+        }
+
+        function getBrochureData() {
+            return Array.from(document.querySelectorAll(`#brochure-paliers-table tbody tr`)).map(row => {
+                const inputs = row.querySelectorAll('input');
+                return { min: parseFloat(inputs[0].value), max: parseFloat(inputs[1].value), price: parseFloat(inputs[2].value) };
+            });
+        }
+
+        // SAUVEGARDE
+        function saveAllPrices() {
+            const config = {
+                tarifs: {
+                    flyer: { recto: getTableData('flyer-recto'), rectoVerso: getTableData('flyer-rectoverso') },
+                    carte: { recto: getTableData('carte-recto'), pellicule: getTableData('carte-pellicule') },
+                    depliant: getTableData('depliant'),
+                    entete: getTableData('entete'),
+                    affiche: getTableData('affiche') // Sauvegarde des affiches
+                },
+                prix_couverture_livre: {
+                    a4: { recto: parseFloat(document.getElementById('livre-a4-recto').value), rectoVerso: parseFloat(document.getElementById('livre-a4-rectoverso').value) },
+                    a5: { recto: parseFloat(document.getElementById('livre-a5-recto').value), rectoVerso: parseFloat(document.getElementById('livre-a5-rectoverso').value) }
+                },
+                paliers_brochure: { couleur_recto_verso: getBrochureData() },
+                prix_fixes: {
+                    pelliculage: parseFloat(document.getElementById('prix-pelliculage').value),
+                    feuille_nb: parseFloat(document.getElementById('prix-feuille-nb').value),
+                    offset_100: parseFloat(document.getElementById('prix-offset-100').value),
+                    gramme_couche: parseFloat(document.getElementById('prix-gramme-couche').value)
+                },
+                version: Date.now()
+            };
+
+            const blob = new Blob([JSON.stringify(config, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'prix_config.json';
+            a.click();
+            alert("✅ Configuration téléchargée ! Remplacez le fichier 'prix_config.json' sur GitHub.");
+        }
+
+        function resetOrders() {
+            if(confirm("⚠️ Etes-vous sûr de vouloir effacer TOUTES les commandes locales ?")) {
+                localStorage.removeItem('SIMPACT_ORDERS');
+                alert("Commandes effacées.");
+            }
+        }
+
+        loadPrices();
+
+        // ============================================
+        // GESTION DES UTILISATEURS
+        // ============================================
+
+        function openUsersModal() {
+            loadUsersTable();
+            document.getElementById('modal-users').style.display = 'flex';
+        }
+
+        function closeUsersModal() {
+            document.getElementById('modal-users').style.display = 'none';
+            resetUserForm();
+        }
+
+        function loadUsersTable() {
+            const users = getAllUsers();
+            const tbody = document.getElementById('users-table-body');
+            tbody.innerHTML = '';
+
+            users.forEach(user => {
+                const row = tbody.insertRow();
+                
+                const roleClass = `role-${user.role}`;
+                const roleName = {
+                    'superadmin': '🔴 Super Admin',
+                    'admin': '🟠 Admin',
+                    'production': '🔵 Production',
+                    'commercial': '🟣 Commercial',
+                    'compta': '🟢 Comptabilité',
+                    'client': '⚪ Client'
+                }[user.role] || user.role;
+
+                row.innerHTML = `
+                    <td style="font-family: monospace; font-weight: bold;">${user.id}</td>
+                    <td>${user.name}</td>
+                    <td><span class="role-badge ${roleClass}">${roleName}</span></td>
+                    <td style="font-size: 0.9rem; color: #94a3b8;">${user.redirect}</td>
+                    <td>
+                        <div class="action-btns">
+                            <button class="btn-edit-user" onclick='editUser(${JSON.stringify(user)})'>✏️ Modifier</button>
+                            ${user.id !== 'youssef' ? `<button class="btn-delete-user" onclick="deleteUserConfirm('${user.id}', '${user.name}')">🗑️</button>` : '<span style="color: #64748b; font-size: 0.8rem;">Protégé</span>'}
+                        </div>
+                    </td>
+                `;
+            });
+        }
+
+        function editUser(user) {
+            document.getElementById('user-original-id').value = user.id;
+            document.getElementById('user-id').value = user.id;
+            document.getElementById('user-pass').value = '';  // Ne jamais afficher le hash
+            document.getElementById('user-pass').placeholder = 'Laisser vide = mot de passe inchangé';
+            document.getElementById('user-pass').required = false;
+            document.getElementById('pass-label').textContent = 'Nouveau mot de passe (optionnel)';
+            document.getElementById('pass-hint').textContent = '⚠️ Laissez vide pour conserver l\'ancien mot de passe';
+            document.getElementById('pass-hint').style.color = '#f59e0b';
+            document.getElementById('user-name').value = user.name;
+            document.getElementById('user-role').value = user.role;
+            document.getElementById('user-redirect').value = user.redirect;
+
+            // Désactiver la modification de l'ID pour le super admin
+            if(user.id === 'youssef') {
+                document.getElementById('user-id').disabled = true;
+                document.getElementById('user-role').disabled = true;
+            } else {
+                document.getElementById('user-id').disabled = false;
+                document.getElementById('user-role').disabled = false;
+            }
+
+            // Scroll vers le formulaire
+            document.querySelector('.user-form').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function deleteUserConfirm(userId, userName) {
+            if(confirm(`⚠️ Êtes-vous sûr de vouloir supprimer l'utilisateur "${userName}" (${userId}) ?\n\nCette action est irréversible.`)) {
+                if(deleteUser(userId)) {
+                    alert('✅ Utilisateur supprimé avec succès');
+                    loadUsersTable();
+                }
+            }
+        }
+
+        function saveUserForm(event) {
+            event.preventDefault();
+
+            const originalId = document.getElementById('user-original-id').value;
+            const userId = document.getElementById('user-id').value.trim();
+            const userPassInput = document.getElementById('user-pass').value.trim();
+            const userName = document.getElementById('user-name').value.trim();
+            const userRole = document.getElementById('user-role').value;
+            const userRedirect = document.getElementById('user-redirect').value;
+
+            // Validation
+            if(!userId || !userName || !userRole || !userRedirect) {
+                alert('⚠️ Veuillez remplir tous les champs obligatoires');
+                return;
+            }
+
+            // Mot de passe : obligatoire pour la création, optionnel pour la modification
+            if(!originalId && !userPassInput) {
+                alert('⚠️ Le mot de passe est obligatoire pour un nouvel utilisateur');
+                return;
+            }
+
+            // Vérifier si l'ID existe déjà (sauf si modification du même utilisateur)
+            const users = getAllUsers();
+            const existingUser = users.find(u => u.id === userId);
+            if(existingUser && originalId !== userId) {
+                alert(`⚠️ L'identifiant "${userId}" existe déjà. Veuillez en choisir un autre.`);
+                return;
+            }
+
+            // Si modification et changement d'ID, supprimer l'ancien
+            if(originalId && originalId !== userId) {
+                deleteUser(originalId);
+            }
+
+            // Créer/Modifier l'utilisateur
+            const userData = {
+                id: userId,
+                role: userRole,
+                name: userName,
+                redirect: userRedirect
+            };
+
+            // Si un nouveau mot de passe est fourni, on l'utilise
+            // Sinon (modification sans nouveau mdp), on récupère l'ancien mot de passe existant
+            if(userPassInput) {
+                userData.pass = userPassInput;
+            } else if(originalId) {
+                const allUsers = getAllUsers();
+                const existing = allUsers.find(u => u.id === originalId);
+                if(existing) userData.pass = existing.pass; // conserver l'ancien mot de passe
+            }
+
+            saveUser(userData);
+            
+            alert(`✅ Utilisateur "${userName}" ${originalId ? 'modifié' : 'créé'} avec succès !`);
+            
+            resetUserForm();
+            loadUsersTable();
+        }
+
+        function resetUserForm() {
+            document.getElementById('user-form').reset();
+            document.getElementById('user-original-id').value = '';
+            document.getElementById('user-id').disabled = false;
+            document.getElementById('user-role').disabled = false;
+            document.getElementById('user-pass').placeholder = 'Ex: motdepasse123';
+            document.getElementById('user-pass').required = true;
+            document.getElementById('pass-label').textContent = 'Mot de passe *';
+            document.getElementById('pass-hint').textContent = 'Visible pour l\'admin';
+            document.getElementById('pass-hint').style.color = '#64748b';
+        }
+
+        // Fermer le modal en cliquant en dehors
+        window.onclick = function(event) {
+            const modal = document.getElementById('modal-users');
+            if(event.target === modal) {
+                closeUsersModal();
+            }
+        }
+    </script>
+</body>
+</html>

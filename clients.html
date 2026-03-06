@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIMPACT — Gestion Clients</title>
+    <script src="users.js?v=3"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg: #f5f3ee; --ink: #0a0a0f; --white: #fff;
+            --blue: #1a4fff; --green: #059669; --amber: #d97706; --red: #dc2626; --purple: #6d28d9;
+            --border: #e2ddd5; --muted: #6b7280; --light: #f8f7f4;
+        }
+        body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--ink); min-height: 100vh; }
+        .topbar { background: var(--ink); color: white; display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 2rem; position: sticky; top: 0; z-index: 100; }
+        .topbar-brand { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; }
+        .topbar-brand span { background: var(--purple); padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; }
+        .topbar-right { display: flex; align-items: center; gap: 12px; }
+        .user-chip { background: rgba(255,255,255,0.1); padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; }
+        .btn-logout { background: transparent; border: 1px solid rgba(255,255,255,0.2); color: white; padding: 5px 12px; border-radius: 6px; cursor: pointer; }
+        .btn-logout:hover { background: rgba(255,255,255,0.1); }
+
+        .page { max-width: 1400px; margin: 0 auto; padding: 2rem; display: grid; grid-template-columns: 320px 1fr; gap: 1.5rem; }
+        .card { background: var(--white); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; }
+        .card-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.9rem; margin-bottom: 1.25rem; }
+
+        /* CLIENT LIST */
+        .search-box { width: 100%; padding: 0.7rem 0.9rem; background: var(--light); border: 1.5px solid var(--border); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; outline: none; margin-bottom: 1rem; }
+        .search-box:focus { border-color: var(--blue); }
+        .client-item { display: flex; align-items: center; gap: 10px; padding: 0.75rem; border-radius: 8px; cursor: pointer; transition: 0.15s; border: 1.5px solid transparent; margin-bottom: 4px; }
+        .client-item:hover { background: var(--light); }
+        .client-item.active { background: #eff6ff; border-color: var(--blue); }
+        .client-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--blue); display: flex; align-items: center; justify-content: center; color: white; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.9rem; flex-shrink: 0; }
+        .client-item-info { flex: 1; overflow: hidden; }
+        .client-item-name { font-weight: 600; font-size: 0.88rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .client-item-meta { font-size: 0.75rem; color: var(--muted); }
+        .client-badge { font-size: 0.7rem; font-weight: 700; padding: 2px 6px; border-radius: 8px; flex-shrink: 0; }
+        .badge-bronze { background: #fed7aa; color: #9a3412; }
+        .badge-silver { background: #e2e8f0; color: #334155; }
+        .badge-gold { background: #fef3c7; color: #92400e; }
+        .badge-platinum { background: #ede9fe; color: #5b21b6; }
+
+        /* CLIENT DETAIL */
+        .empty-detail { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 400px; color: var(--muted); gap: 1rem; }
+        .empty-icon { font-size: 3rem; opacity: 0.3; }
+
+        .client-header { display: flex; align-items: center; gap: 1.5rem; margin-bottom: 2rem; }
+        .client-big-avatar { width: 64px; height: 64px; border-radius: 50%; background: linear-gradient(135deg, var(--blue), #4d78ff); display: flex; align-items: center; justify-content: center; color: white; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.4rem; flex-shrink: 0; }
+        .client-header-info h2 { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.4rem; margin-bottom: 4px; }
+        .client-header-info p { font-size: 0.85rem; color: var(--muted); }
+
+        .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 2rem; }
+        .stat-box { background: var(--light); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; text-align: center; }
+        .stat-value { font-family: 'DM Mono', monospace; font-size: 1.4rem; color: var(--blue); }
+        .stat-label { font-size: 0.75rem; color: var(--muted); margin-top: 3px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* LOYALTY */
+        .loyalty-section { background: #f5f3ff; border: 1px solid #ddd6fe; border-radius: 10px; padding: 1.25rem; margin-bottom: 2rem; }
+        .loyalty-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .loyalty-title { font-weight: 600; font-size: 0.85rem; color: var(--purple); }
+        .loyalty-bar { height: 7px; background: #e2e8f0; border-radius: 4px; overflow: hidden; }
+        .loyalty-fill { height: 100%; background: linear-gradient(90deg, var(--purple), #a78bfa); border-radius: 4px; }
+
+        /* ORDER LIST */
+        .order-row { display: flex; justify-content: space-between; align-items: center; padding: 0.85rem 0; border-bottom: 1px solid var(--border); }
+        .order-row:last-child { border-bottom: none; }
+        .order-prod { font-weight: 600; font-size: 0.88rem; }
+        .order-meta { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+        .order-right { display: flex; align-items: center; gap: 12px; }
+        .order-price { font-family: 'DM Mono', monospace; font-size: 0.88rem; }
+        .status-pill { font-size: 0.72rem; font-weight: 600; padding: 2px 8px; border-radius: 10px; }
+        .s-done { background: #dcfce7; color: #166534; }
+        .s-wait { background: #fef3c7; color: #92400e; }
+        .s-prod { background: #dbeafe; color: #1e40af; }
+    </style>
+</head>
+<body>
+
+<div class="topbar">
+    <div class="topbar-brand">SIMPACT <span>CLIENTS</span></div>
+    <div class="topbar-right">
+        <span class="user-chip" id="user-display">—</span>
+        <button class="btn-logout" onclick="logout()">Déconnexion</button>
+    </div>
+</div>
+
+<div class="page">
+
+    <!-- LIST -->
+    <div class="card">
+        <div class="card-title">👥 Clients actifs</div>
+        <input type="text" class="search-box" id="search-input" placeholder="Rechercher un client..." oninput="filterClients()">
+        <div id="clients-list">
+            <p style="text-align:center;color:var(--muted);padding:2rem;">Chargement...</p>
+        </div>
+    </div>
+
+    <!-- DETAIL -->
+    <div class="card" id="detail-panel">
+        <div class="empty-detail">
+            <div class="empty-icon">👆</div>
+            <div>Sélectionnez un client pour voir sa fiche</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const user = checkAuth(['commercial', 'admin', 'compta']);
+    if (user) document.getElementById('user-display').textContent = user.name;
+
+    let allClients = [];
+    let selectedClient = null;
+
+    function getLevel(count) {
+        if (count >= 20) return { name: 'Platinum', cls: 'badge-platinum', progress: 100, next: 20 };
+        if (count >= 10) return { name: 'Gold', cls: 'badge-gold', progress: ((count-10)/10)*100, next: 20 };
+        if (count >= 5) return { name: 'Silver', cls: 'badge-silver', progress: ((count-5)/5)*100, next: 10 };
+        return { name: 'Bronze', cls: 'badge-bronze', progress: (count/5)*100, next: 5 };
+    }
+
+    function buildClientList() {
+        const orders = getOrders();
+        const clientMap = {};
+
+        orders.forEach(o => {
+            const key = o.clientId || o.client;
+            if (!clientMap[key]) {
+                clientMap[key] = { id: o.clientId || o.client, name: o.client, orders: [], totalCA: 0 };
+            }
+            clientMap[key].orders.push(o);
+            clientMap[key].totalCA += parseFloat(o.price || 0);
+        });
+
+        allClients = Object.values(clientMap).sort((a,b) => b.totalCA - a.totalCA);
+        renderList(allClients);
+    }
+
+    function renderList(clients) {
+        const el = document.getElementById('clients-list');
+        if (!clients.length) {
+            el.innerHTML = '<p style="text-align:center;color:var(--muted);padding:2rem;">Aucun client trouvé.</p>';
+            return;
+        }
+        el.innerHTML = clients.map(c => {
+            const level = getLevel(c.orders.length);
+            const initials = c.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+            return `
+                <div class="client-item ${selectedClient && selectedClient.id === c.id ? 'active' : ''}" onclick="showDetail('${c.id}')">
+                    <div class="client-avatar">${initials}</div>
+                    <div class="client-item-info">
+                        <div class="client-item-name">${c.name}</div>
+                        <div class="client-item-meta">${c.orders.length} cmd · ${c.totalCA.toFixed(0)} DT</div>
+                    </div>
+                    <span class="client-badge ${level.cls}">${level.name}</span>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function filterClients() {
+        const q = document.getElementById('search-input').value.toLowerCase();
+        renderList(allClients.filter(c => c.name.toLowerCase().includes(q)));
+    }
+
+    function showDetail(clientId) {
+        selectedClient = allClients.find(c => c.id === clientId);
+        if (!selectedClient) return;
+
+        // Re-render list to update active state
+        const q = document.getElementById('search-input').value.toLowerCase();
+        renderList(allClients.filter(c => c.name.toLowerCase().includes(q)));
+
+        const c = selectedClient;
+        const level = getLevel(c.orders.length);
+        const initials = c.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+        const products = {};
+        c.orders.forEach(o => { products[o.prod] = (products[o.prod] || 0) + 1; });
+        const topProd = Object.keys(products).sort((a,b) => products[b]-products[a])[0] || '—';
+        const lastOrder = c.orders[0];
+        const paidOrders = c.orders.filter(o => o.statusCompta === 'Payé').length;
+
+        document.getElementById('detail-panel').innerHTML = `
+            <div class="client-header">
+                <div class="client-big-avatar">${initials}</div>
+                <div class="client-header-info">
+                    <h2>${c.name}</h2>
+                    <p>Client Simpact &nbsp;·&nbsp; Niveau <span class="client-badge ${level.cls}" style="display:inline;">${level.name}</span></p>
+                </div>
+            </div>
+
+            <div class="stats-row">
+                <div class="stat-box">
+                    <div class="stat-value">${c.orders.length}</div>
+                    <div class="stat-label">Commandes</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value">${c.totalCA.toFixed(0)}<span style="font-size:0.9rem"> DT</span></div>
+                    <div class="stat-label">CA Total HT</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value">${paidOrders}/${c.orders.length}</div>
+                    <div class="stat-label">Factures payées</div>
+                </div>
+            </div>
+
+            <div class="loyalty-section">
+                <div class="loyalty-header">
+                    <span class="loyalty-title">⭐ Fidélité : ${level.name}</span>
+                    <span style="font-size:0.78rem;color:var(--muted);">${c.orders.length} / ${level.next} cmd</span>
+                </div>
+                <div class="loyalty-bar"><div class="loyalty-fill" style="width:${level.progress.toFixed(1)}%"></div></div>
+            </div>
+
+            <div style="margin-bottom:1rem;padding:1rem;background:var(--light);border-radius:10px;display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;font-size:0.85rem;">
+                <div><span style="color:var(--muted);">Produit favori :</span><br><strong>${topProd}</strong></div>
+                <div><span style="color:var(--muted);">Dernière commande :</span><br><strong>${lastOrder ? lastOrder.date : '—'}</strong></div>
+                <div><span style="color:var(--muted);">Panier moyen :</span><br><strong>${c.orders.length ? (c.totalCA / c.orders.length).toFixed(2) + ' DT' : '—'}</strong></div>
+                <div><span style="color:var(--muted);">Commercial :</span><br><strong>${lastOrder ? lastOrder.user : '—'}</strong></div>
+            </div>
+
+            <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.85rem;margin-bottom:0.75rem;">Historique des commandes</div>
+            <div>
+                ${c.orders.map(o => {
+                    const sc = o.statusProd === 'Terminé' ? 's-done' : o.statusProd === 'En attente' ? 's-wait' : 's-prod';
+                    return `
+                        <div class="order-row">
+                            <div>
+                                <div class="order-prod">${o.prod} ×${o.qty}</div>
+                                <div class="order-meta">${o.ref} · ${o.date}</div>
+                            </div>
+                            <div class="order-right">
+                                <span class="status-pill ${sc}">${o.statusProd}</span>
+                                <span class="order-price">${parseFloat(o.price).toFixed(2)} DT</span>
+                            </div>
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+        `;
+    }
+
+    buildClientList();
+</script>
+</body>
+</html>

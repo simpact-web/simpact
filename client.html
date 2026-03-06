@@ -1,0 +1,2047 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIMPACT — Mon Espace</title>
+    <script src="users.js?v=3"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Crimson+Pro:ital,wght@0,300;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg: #080c16;
+            --surface: #0d1421;
+            --surface2: #111827;
+            --surface3: #1a2235;
+            --border: rgba(255,255,255,0.07);
+            --border2: rgba(255,255,255,0.12);
+            --gold: #C9A84C;
+            --gold-dim: rgba(201,168,76,0.15);
+            --gold-glow: rgba(201,168,76,0.3);
+            --blue: #3B6FFF;
+            --blue-dim: rgba(59,111,255,0.15);
+            --green: #10b981;
+            --green-dim: rgba(16,185,129,0.15);
+            --red: #ef4444;
+            --orange: #f59e0b;
+            --text: #f0ede8;
+            --text2: #9ca3af;
+            --text3: #4b5563;
+            --radius: 14px;
+            --sidebar: 240px;
+        }
+
+        html, body { height: 100%; }
+        body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); overflow: hidden; }
+
+        /* ════════════════════════════════
+           LAYOUT
+        ════════════════════════════════ */
+        .app { display: flex; height: 100vh; }
+
+        /* ── SIDEBAR ── */
+        .sidebar {
+            width: var(--sidebar); flex-shrink: 0;
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            display: flex; flex-direction: column;
+            padding: 0;
+            overflow: hidden;
+            transition: width 0.3s ease;
+        }
+
+        .sidebar-brand {
+            padding: 1.5rem 1.25rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .brand-logo {
+            font-size: 1.3rem; font-weight: 900; letter-spacing: -0.5px;
+            color: var(--text);
+        }
+        .brand-logo span { color: var(--gold); }
+        .brand-sub {
+            font-size: 0.68rem; color: var(--text2);
+            text-transform: uppercase; letter-spacing: 1px;
+            margin-top: 2px;
+        }
+
+        .sidebar-user {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .user-avatar {
+            width: 36px; height: 36px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--gold), #8b6520);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 0.8rem; color: #080c16;
+            margin-bottom: 8px; flex-shrink: 0;
+        }
+        .user-name { font-size: 0.82rem; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .user-level { font-size: 0.7rem; color: var(--gold); margin-top: 1px; }
+
+        .nav { flex: 1; padding: 1rem 0.75rem; overflow-y: auto; }
+        .nav-section-label {
+            font-size: 0.62rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 1.5px; color: var(--text3); padding: 0.5rem 0.5rem 0.4rem;
+        }
+        .nav-item {
+            display: flex; align-items: center; gap: 10px;
+            padding: 0.65rem 0.75rem; border-radius: 9px;
+            cursor: pointer; transition: all 0.15s;
+            font-size: 0.85rem; font-weight: 500; color: var(--text2);
+            margin-bottom: 2px; position: relative;
+        }
+        .nav-item:hover { background: rgba(255,255,255,0.05); color: var(--text); }
+        .nav-item.active {
+            background: var(--gold-dim);
+            color: var(--gold);
+            font-weight: 600;
+        }
+        .nav-icon { font-size: 1rem; width: 20px; text-align: center; }
+        .nav-badge {
+            margin-left: auto; background: var(--red); color: white;
+            font-size: 0.65rem; font-weight: 700; padding: 1px 6px;
+            border-radius: 10px; display: none;
+        }
+        .nav-badge.show { display: block; }
+
+        .sidebar-bottom {
+            padding: 1rem 0.75rem;
+            border-top: 1px solid var(--border);
+        }
+        .btn-logout {
+            width: 100%; padding: 0.6rem 0.75rem;
+            background: transparent; border: 1px solid var(--border);
+            border-radius: 9px; color: var(--text2);
+            font-family: 'Outfit', sans-serif; font-size: 0.82rem;
+            cursor: pointer; transition: all 0.2s; text-align: left;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .btn-logout:hover { border-color: var(--red); color: #f87171; }
+
+        /* ── MAIN ── */
+        .main {
+            flex: 1; overflow-y: auto;
+            background: radial-gradient(ellipse 100% 80% at 80% 20%, rgba(59,111,255,0.04) 0%, transparent 60%), var(--bg);
+        }
+
+        /* ── TOP BAR ── */
+        .topbar {
+            position: sticky; top: 0; z-index: 50;
+            background: rgba(8,12,22,0.85); backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 2rem; height: 60px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .topbar-title {
+            font-size: 1.05rem; font-weight: 700; color: var(--text);
+        }
+        .topbar-right { display: flex; align-items: center; gap: 12px; }
+        .notif-btn {
+            width: 38px; height: 38px; border-radius: 10px;
+            background: var(--surface); border: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; position: relative; font-size: 1rem;
+            transition: all 0.15s;
+        }
+        .notif-btn:hover { border-color: var(--border2); }
+        .notif-dot {
+            position: absolute; top: 6px; right: 6px;
+            width: 8px; height: 8px; border-radius: 50%;
+            background: var(--red); border: 1.5px solid var(--bg);
+            display: none;
+        }
+        .notif-dot.show { display: block; }
+        .msg-btn {
+            width: 38px; height: 38px; border-radius: 10px;
+            background: var(--surface); border: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; position: relative; font-size: 1rem;
+            transition: all 0.15s;
+        }
+        .msg-dot {
+            position: absolute; top: 6px; right: 6px;
+            width: 8px; height: 8px; border-radius: 50%;
+            background: var(--blue); border: 1.5px solid var(--bg);
+            display: none;
+        }
+        .msg-dot.show { display: block; }
+
+        /* ── PAGES ── */
+        .page { display: none; padding: 2rem; animation: fadeIn 0.25s ease; }
+        .page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ════════════════════════════════
+           COMPONENTS
+        ════════════════════════════════ */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+        }
+        .card-sm { padding: 1.25rem; }
+        .card-title {
+            font-size: 0.78rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 1px;
+            color: var(--text2); margin-bottom: 1.25rem;
+        }
+        .card-heading {
+            font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 1rem;
+        }
+
+        .btn {
+            display: inline-flex; align-items: center; gap: 7px;
+            padding: 0.65rem 1.25rem; border-radius: 9px;
+            font-family: 'Outfit', sans-serif; font-size: 0.88rem; font-weight: 600;
+            cursor: pointer; border: none; transition: all 0.2s;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--gold), #a87e32);
+            color: #080c16;
+        }
+        .btn-primary:hover { box-shadow: 0 4px 20px var(--gold-glow); transform: translateY(-1px); }
+        .btn-secondary {
+            background: var(--surface3); color: var(--text);
+            border: 1px solid var(--border);
+        }
+        .btn-secondary:hover { border-color: var(--border2); }
+        .btn-ghost {
+            background: transparent; color: var(--text2);
+            border: 1px solid var(--border);
+        }
+        .btn-ghost:hover { color: var(--text); border-color: var(--border2); }
+        .btn-blue {
+            background: var(--blue); color: white;
+        }
+        .btn-blue:hover { box-shadow: 0 4px 20px rgba(59,111,255,0.4); transform: translateY(-1px); }
+        .btn-full { width: 100%; justify-content: center; }
+        .btn-sm { padding: 0.45rem 0.9rem; font-size: 0.8rem; }
+        .btn-lg { padding: 0.85rem 1.75rem; font-size: 1rem; }
+
+        .badge {
+            display: inline-flex; align-items: center; gap: 4px;
+            padding: 3px 10px; border-radius: 20px;
+            font-size: 0.72rem; font-weight: 600;
+        }
+        .badge-green { background: var(--green-dim); color: var(--green); }
+        .badge-orange { background: rgba(245,158,11,0.15); color: var(--orange); }
+        .badge-blue { background: var(--blue-dim); color: #60a5fa; }
+        .badge-red { background: rgba(239,68,68,0.15); color: #f87171; }
+        .badge-gray { background: rgba(255,255,255,0.07); color: var(--text2); }
+        .badge-gold { background: var(--gold-dim); color: var(--gold); }
+
+        .status-badge {
+            padding: 4px 10px; border-radius: 20px;
+            font-size: 0.72rem; font-weight: 600;
+        }
+
+        .input-field {
+            width: 100%; padding: 0.75rem 1rem;
+            background: var(--surface3); border: 1.5px solid var(--border);
+            border-radius: 9px; color: var(--text);
+            font-family: 'Outfit', sans-serif; font-size: 0.9rem;
+            outline: none; transition: all 0.2s;
+        }
+        .input-field::placeholder { color: var(--text3); }
+        .input-field:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201,168,76,0.08); }
+        .input-label {
+            display: block; font-size: 0.75rem; font-weight: 600;
+            color: var(--text2); margin-bottom: 0.4rem;
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .form-group { margin-bottom: 1rem; }
+
+        .divider { height: 1px; background: var(--border); margin: 1.25rem 0; }
+
+        /* ════════════════════════════════
+           PAGE: DASHBOARD
+        ════════════════════════════════ */
+        .dash-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .kpi-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.25rem;
+            position: relative; overflow: hidden;
+        }
+        .kpi-card::before {
+            content: ''; position: absolute;
+            top: 0; left: 0; right: 0; height: 2px;
+        }
+        .kpi-gold::before { background: linear-gradient(90deg, var(--gold), transparent); }
+        .kpi-blue::before { background: linear-gradient(90deg, var(--blue), transparent); }
+        .kpi-green::before { background: linear-gradient(90deg, var(--green), transparent); }
+        .kpi-label { font-size: 0.72rem; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.5rem; }
+        .kpi-value { font-family: 'DM Mono', monospace; font-size: 1.8rem; font-weight: 500; color: var(--text); }
+        .kpi-value .unit { font-size: 0.9rem; }
+        .kpi-sub { font-size: 0.75rem; color: var(--text3); margin-top: 4px; }
+
+        /* LOYALTY CARD */
+        .loyalty-card {
+            background: linear-gradient(135deg, #1a1428 0%, #0f1629 50%, #1a2235 100%);
+            border: 1px solid rgba(201,168,76,0.2);
+            border-radius: var(--radius);
+            padding: 1.75rem;
+            position: relative; overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+        .loyalty-card::before {
+            content: ''; position: absolute;
+            top: -50%; right: -20%;
+            width: 300px; height: 300px;
+            background: radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 70%);
+        }
+        .loyalty-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem; }
+        .loyalty-level-name { font-family: 'Outfit', sans-serif; font-size: 1.5rem; font-weight: 800; color: var(--gold); }
+        .loyalty-icon { font-size: 2.5rem; }
+        .loyalty-progress-wrap { margin-bottom: 0.75rem; }
+        .loyalty-progress-label { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text2); margin-bottom: 6px; }
+        .loyalty-bar { height: 6px; background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden; }
+        .loyalty-fill {
+            height: 100%; border-radius: 3px;
+            background: linear-gradient(90deg, var(--gold), #f0c870);
+            transition: width 1s ease;
+        }
+        .loyalty-perks { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 1rem; }
+        .perk-tag {
+            padding: 3px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 600;
+            background: var(--gold-dim); color: var(--gold);
+            border: 1px solid rgba(201,168,76,0.2);
+        }
+
+        /* ORDERS RECENT */
+        .orders-table { width: 100%; border-collapse: collapse; }
+        .orders-table th {
+            padding: 0.75rem 1rem; text-align: left;
+            font-size: 0.7rem; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 0.8px; color: var(--text3);
+            border-bottom: 1px solid var(--border);
+        }
+        .orders-table td {
+            padding: 0.9rem 1rem; border-bottom: 1px solid var(--border);
+            font-size: 0.85rem; vertical-align: middle;
+        }
+        .orders-table tr:last-child td { border-bottom: none; }
+        .orders-table tr:hover td { background: rgba(255,255,255,0.02); }
+        .order-ref { font-family: 'DM Mono', monospace; font-size: 0.78rem; color: var(--text2); }
+        .order-prod { font-weight: 600; color: var(--text); }
+        .order-price { font-family: 'DM Mono', monospace; color: var(--gold); }
+
+        /* STATUS BADGE */
+        .s-en-attente { background: rgba(245,158,11,0.15); color: #fbbf24; }
+        .s-en-cours { background: var(--blue-dim); color: #60a5fa; }
+        .s-termine { background: var(--green-dim); color: #34d399; }
+        .s-annulee { background: rgba(239,68,68,0.15); color: #f87171; }
+        .s-valider { background: rgba(139,92,246,0.15); color: #a78bfa; }
+        .s-paye { background: var(--green-dim); color: #34d399; }
+        .s-non-paye { background: rgba(245,158,11,0.15); color: #fbbf24; }
+
+        /* QUICK ACTIONS */
+        .quick-actions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+        .quick-action {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.25rem 1rem;
+            text-align: center; cursor: pointer;
+            transition: all 0.2s;
+        }
+        .quick-action:hover {
+            border-color: var(--gold);
+            background: var(--gold-dim);
+            transform: translateY(-2px);
+        }
+        .qa-icon { font-size: 1.6rem; margin-bottom: 8px; }
+        .qa-label { font-size: 0.78rem; font-weight: 600; color: var(--text2); }
+
+        /* NOTIF PANEL */
+        .notif-panel {
+            position: fixed; top: 65px; right: 1rem; width: 340px;
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: var(--radius); z-index: 200;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            display: none; max-height: 500px; overflow-y: auto;
+        }
+        .notif-panel.show { display: block; }
+        .notif-header { padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .notif-title { font-size: 0.85rem; font-weight: 700; }
+        .notif-item { padding: 0.9rem 1.25rem; border-bottom: 1px solid var(--border); transition: background 0.15s; }
+        .notif-item:last-child { border-bottom: none; }
+        .notif-item:hover { background: rgba(255,255,255,0.03); }
+        .notif-item.unread { border-left: 2px solid var(--gold); }
+        .notif-msg-title { font-size: 0.83rem; font-weight: 600; margin-bottom: 3px; }
+        .notif-msg-text { font-size: 0.78rem; color: var(--text2); }
+        .notif-time { font-size: 0.68rem; color: var(--text3); margin-top: 4px; }
+
+        /* ════════════════════════════════
+           PAGE: DEVIS (CONFIGURATOR)
+        ════════════════════════════════ */
+        .config-layout { display: grid; grid-template-columns: 1fr 340px; gap: 1.5rem; }
+
+        .step-indicator {
+            display: flex; gap: 0; margin-bottom: 2rem;
+        }
+        .step {
+            flex: 1; display: flex; align-items: center; gap: 8px;
+            padding: 0.75rem 1rem;
+            background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+            position: relative;
+        }
+        .step:first-child { border-left: 1px solid var(--border); border-radius: 10px 0 0 10px; }
+        .step:last-child { border-right: 1px solid var(--border); border-radius: 0 10px 10px 0; }
+        .step + .step { border-left: 1px solid var(--border); }
+        .step.active { background: var(--gold-dim); border-color: rgba(201,168,76,0.3); }
+        .step.done { background: rgba(16,185,129,0.08); border-color: rgba(16,185,129,0.2); }
+        .step-num {
+            width: 26px; height: 26px; border-radius: 50%;
+            background: var(--surface3); color: var(--text2);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.75rem; font-weight: 700; flex-shrink: 0;
+        }
+        .step.active .step-num { background: var(--gold); color: #080c16; }
+        .step.done .step-num { background: var(--green); color: white; }
+        .step-label { font-size: 0.82rem; font-weight: 600; color: var(--text2); }
+        .step.active .step-label { color: var(--gold); }
+        .step.done .step-label { color: var(--green); }
+
+        .config-step { display: none; }
+        .config-step.active { display: block; animation: fadeIn 0.2s ease; }
+
+        .product-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 1.5rem; }
+        .product-card {
+            background: var(--surface3); border: 2px solid var(--border);
+            border-radius: 12px; padding: 1.25rem;
+            cursor: pointer; transition: all 0.2s; text-align: center;
+        }
+        .product-card:hover { border-color: rgba(201,168,76,0.4); background: var(--gold-dim); }
+        .product-card.selected { border-color: var(--gold); background: var(--gold-dim); }
+        .prod-icon { font-size: 2rem; margin-bottom: 8px; }
+        .prod-name { font-size: 0.85rem; font-weight: 700; color: var(--text); }
+        .prod-desc { font-size: 0.72rem; color: var(--text2); margin-top: 3px; }
+
+        .option-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+        .chip {
+            padding: 0.5rem 1rem; border-radius: 20px;
+            border: 1.5px solid var(--border);
+            background: var(--surface3);
+            color: var(--text2); font-size: 0.82rem; font-weight: 500;
+            cursor: pointer; transition: all 0.15s;
+        }
+        .chip:hover { border-color: rgba(201,168,76,0.4); color: var(--text); }
+        .chip.selected { border-color: var(--gold); background: var(--gold-dim); color: var(--gold); font-weight: 600; }
+
+        .qty-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+        .qty-chip {
+            padding: 0.6rem; border-radius: 9px;
+            border: 1.5px solid var(--border);
+            background: var(--surface3); color: var(--text2);
+            font-family: 'DM Mono', monospace; font-size: 0.82rem;
+            cursor: pointer; text-align: center; transition: all 0.15s;
+        }
+        .qty-chip:hover { border-color: rgba(201,168,76,0.4); }
+        .qty-chip.selected { border-color: var(--gold); background: var(--gold-dim); color: var(--gold); font-weight: 600; }
+
+        .delay-card {
+            border: 2px solid var(--border); border-radius: 12px;
+            padding: 1rem; cursor: pointer; transition: all 0.2s;
+            display: flex; align-items: flex-start; gap: 1rem;
+            margin-bottom: 8px;
+        }
+        .delay-card:hover { border-color: rgba(201,168,76,0.3); }
+        .delay-card.selected { border-color: var(--gold); background: var(--gold-dim); }
+        .delay-name { font-size: 0.9rem; font-weight: 700; }
+        .delay-desc { font-size: 0.78rem; color: var(--text2); margin-top: 2px; }
+        .delay-price { font-size: 0.78rem; font-weight: 600; margin-top: 4px; }
+
+        /* PRICE BOX */
+        .price-sticky {
+            position: sticky; top: 80px;
+        }
+        .price-hero {
+            text-align: center; padding: 1.5rem 1rem;
+            border-bottom: 1px solid var(--border); margin-bottom: 1rem;
+        }
+        .price-label { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--text2); margin-bottom: 6px; }
+        .price-ht { font-family: 'DM Mono', monospace; font-size: 2.8rem; font-weight: 500; color: var(--gold); line-height: 1; }
+        .price-ht .unit { font-size: 1.2rem; }
+        .price-tva-row { display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--text2); padding: 4px 0; }
+        .price-ttc { font-size: 1.1rem; font-weight: 700; color: var(--text); }
+        .price-unit-cost { font-size: 0.72rem; color: var(--text3); margin-top: 6px; }
+
+        .config-summary { display: flex; flex-direction: column; gap: 6px; margin-bottom: 1.25rem; }
+        .summary-row { display: flex; justify-content: space-between; font-size: 0.82rem; }
+        .summary-key { color: var(--text2); }
+        .summary-val { color: var(--text); font-weight: 500; }
+
+        /* ════════════════════════════════
+           PAGE: COMMANDES
+        ════════════════════════════════ */
+        .filter-bar {
+            display: flex; gap: 10px; margin-bottom: 1.5rem; align-items: center;
+            flex-wrap: wrap;
+        }
+        .filter-search {
+            flex: 1; min-width: 200px;
+            padding: 0.65rem 1rem;
+            background: var(--surface); border: 1.5px solid var(--border);
+            border-radius: 9px; color: var(--text);
+            font-family: 'Outfit', sans-serif; font-size: 0.88rem;
+            outline: none; transition: all 0.2s;
+        }
+        .filter-search:focus { border-color: var(--gold); }
+        .filter-select {
+            padding: 0.65rem 1rem;
+            background: var(--surface); border: 1.5px solid var(--border);
+            border-radius: 9px; color: var(--text);
+            font-family: 'Outfit', sans-serif; font-size: 0.88rem;
+            outline: none; cursor: pointer;
+        }
+
+        .order-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.25rem;
+            margin-bottom: 10px;
+            transition: all 0.2s;
+            display: grid;
+            grid-template-columns: auto 1fr auto auto auto;
+            gap: 1rem; align-items: center;
+        }
+        .order-card:hover { border-color: var(--border2); transform: translateX(3px); }
+        .order-card.urgent { border-left: 3px solid var(--red); }
+        .order-num { font-family: 'DM Mono', monospace; font-size: 0.72rem; color: var(--text3); }
+        .order-name { font-size: 0.9rem; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+        .order-meta { font-size: 0.75rem; color: var(--text2); }
+        .order-amount { font-family: 'DM Mono', monospace; font-size: 0.95rem; color: var(--gold); font-weight: 500; white-space: nowrap; }
+
+        /* TIMELINE */
+        .timeline {
+            position: relative; padding-left: 1.5rem;
+            margin: 1rem 0;
+        }
+        .timeline::before {
+            content: ''; position: absolute; left: 6px; top: 8px; bottom: 8px;
+            width: 2px; background: var(--border);
+        }
+        .timeline-item { display: flex; gap: 1rem; margin-bottom: 1rem; position: relative; }
+        .timeline-dot {
+            position: absolute; left: -1.5rem; top: 4px;
+            width: 12px; height: 12px; border-radius: 50%;
+            background: var(--surface3); border: 2px solid var(--border);
+        }
+        .timeline-dot.done { background: var(--green); border-color: var(--green); }
+        .timeline-dot.active { background: var(--gold); border-color: var(--gold); box-shadow: 0 0 8px var(--gold-glow); }
+        .timeline-label { font-size: 0.82rem; font-weight: 600; color: var(--text); }
+        .timeline-time { font-size: 0.72rem; color: var(--text3); margin-top: 2px; }
+
+        /* ════════════════════════════════
+           PAGE: DOCUMENTS
+        ════════════════════════════════ */
+        .doc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1rem; }
+        .doc-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.25rem;
+            cursor: pointer; transition: all 0.2s;
+            text-align: center;
+        }
+        .doc-card:hover { border-color: var(--gold); transform: translateY(-2px); }
+        .doc-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+        .doc-name { font-size: 0.82rem; font-weight: 600; color: var(--text); margin-bottom: 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .doc-meta { font-size: 0.7rem; color: var(--text2); }
+
+        .upload-zone {
+            border: 2px dashed var(--border);
+            border-radius: var(--radius);
+            padding: 3rem;
+            text-align: center; cursor: pointer;
+            transition: all 0.2s; margin-bottom: 1.5rem;
+        }
+        .upload-zone:hover, .upload-zone.dragging { border-color: var(--gold); background: var(--gold-dim); }
+        .upload-icon { font-size: 2.5rem; margin-bottom: 1rem; opacity: 0.6; }
+        .upload-text { font-size: 0.9rem; color: var(--text2); }
+        .upload-hint { font-size: 0.78rem; color: var(--text3); margin-top: 6px; }
+
+        /* ════════════════════════════════
+           PAGE: MESSAGES
+        ════════════════════════════════ */
+        .chat-layout { display: grid; grid-template-columns: 1fr; max-height: calc(100vh - 140px); }
+        .chat-window {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            display: flex; flex-direction: column;
+            height: calc(100vh - 180px);
+        }
+        .chat-header {
+            padding: 1rem 1.5rem; border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; gap: 10px;
+        }
+        .chat-avatar {
+            width: 36px; height: 36px; border-radius: 50%;
+            background: linear-gradient(135deg, #1a4fff, #4d78ff);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1rem;
+        }
+        .chat-name { font-weight: 600; font-size: 0.9rem; }
+        .chat-status { font-size: 0.72rem; color: var(--green); }
+        .chat-msgs { flex: 1; overflow-y: auto; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; }
+        .msg {
+            max-width: 70%; padding: 0.85rem 1.1rem; border-radius: 12px;
+            font-size: 0.85rem; line-height: 1.5;
+        }
+        .msg-incoming { background: var(--surface3); border: 1px solid var(--border); align-self: flex-start; border-radius: 4px 12px 12px 12px; }
+        .msg-outgoing { background: var(--blue-dim); border: 1px solid rgba(59,111,255,0.2); align-self: flex-end; color: #bfdbfe; border-radius: 12px 4px 12px 12px; }
+        .msg-time { font-size: 0.65rem; color: var(--text3); margin-top: 4px; }
+        .chat-input-row {
+            padding: 1rem 1.5rem; border-top: 1px solid var(--border);
+            display: flex; gap: 10px;
+        }
+        .chat-input {
+            flex: 1; padding: 0.75rem 1rem;
+            background: var(--surface3); border: 1.5px solid var(--border);
+            border-radius: 9px; color: var(--text);
+            font-family: 'Outfit', sans-serif; font-size: 0.88rem;
+            outline: none;
+        }
+        .chat-input:focus { border-color: var(--blue); }
+
+        /* ════════════════════════════════
+           PAGE: PROFILE
+        ════════════════════════════════ */
+        .profile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        .profile-header {
+            display: flex; align-items: center; gap: 1.5rem;
+            padding: 2rem; background: var(--surface);
+            border: 1px solid var(--border); border-radius: var(--radius);
+            margin-bottom: 1.5rem;
+        }
+        .profile-avatar-lg {
+            width: 72px; height: 72px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--gold), #8b6520);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 900; font-size: 1.6rem; color: #080c16;
+            flex-shrink: 0;
+        }
+        .profile-name { font-size: 1.5rem; font-weight: 800; margin-bottom: 4px; }
+        .profile-sector { font-size: 0.85rem; color: var(--text2); margin-bottom: 8px; }
+
+        /* ════════════════════════════════
+           MODAL
+        ════════════════════════════════ */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(8px); z-index: 500;
+            display: none; align-items: center; justify-content: center;
+            padding: 2rem;
+        }
+        .modal-overlay.show { display: flex; }
+        .modal {
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: 18px; padding: 2rem; width: 100%; max-width: 600px;
+            max-height: 90vh; overflow-y: auto;
+            animation: modalIn 0.25s ease;
+        }
+        @keyframes modalIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        .modal-title { font-size: 1.2rem; font-weight: 800; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; }
+        .modal-close { background: none; border: none; color: var(--text2); cursor: pointer; font-size: 1.2rem; padding: 4px; }
+
+        /* TOAST */
+        .toast-container {
+            position: fixed; bottom: 1.5rem; right: 1.5rem;
+            z-index: 999; display: flex; flex-direction: column; gap: 8px;
+        }
+        .toast {
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: 12px; padding: 1rem 1.25rem;
+            font-size: 0.85rem; color: var(--text);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+            display: flex; align-items: center; gap: 10px;
+            animation: toastIn 0.3s ease;
+            min-width: 280px; max-width: 380px;
+        }
+        .toast-success { border-left: 3px solid var(--green); }
+        .toast-error { border-left: 3px solid var(--red); }
+        .toast-info { border-left: 3px solid var(--blue); }
+        @keyframes toastIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+
+        /* SCROLLBAR */
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+
+        /* EMPTY STATE */
+        .empty-state { text-align: center; padding: 4rem 2rem; color: var(--text3); }
+        .empty-icon { font-size: 3rem; opacity: 0.4; margin-bottom: 1rem; }
+        .empty-text { font-size: 0.9rem; }
+
+        /* MOBILE */
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+            .dash-grid { grid-template-columns: 1fr 1fr; }
+            .quick-actions { grid-template-columns: repeat(2, 1fr); }
+            .config-layout { grid-template-columns: 1fr; }
+            .product-grid { grid-template-columns: repeat(2, 1fr); }
+            .profile-grid { grid-template-columns: 1fr; }
+        }
+
+        /* ANIMATION UTILITIES */
+        .fade-in { animation: fadeIn 0.3s ease both; }
+        .scale-in { animation: scaleIn 0.2s ease both; }
+        @keyframes scaleIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    </style>
+</head>
+<body>
+<div class="app">
+
+    <!-- ═══════════════════════════
+         SIDEBAR
+    ═══════════════════════════ -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-logo">SIMP<span>ACT</span></div>
+            <div class="brand-sub">Espace Client</div>
+        </div>
+
+        <div class="sidebar-user">
+            <div style="display:flex;align-items:center;gap:10px;">
+                <div class="user-avatar" id="sb-avatar">—</div>
+                <div>
+                    <div class="user-name" id="sb-name">Chargement...</div>
+                    <div class="user-level" id="sb-level">—</div>
+                </div>
+            </div>
+        </div>
+
+        <nav class="nav">
+            <div class="nav-section-label">Navigation</div>
+            <div class="nav-item active" onclick="goTo('dashboard')">
+                <span class="nav-icon">🏠</span> Tableau de bord
+            </div>
+            <div class="nav-item" onclick="goTo('devis')">
+                <span class="nav-icon">✏️</span> Nouveau devis
+            </div>
+            <div class="nav-item" onclick="goTo('commandes')">
+                <span class="nav-icon">📦</span> Mes commandes
+                <span class="nav-badge" id="badge-orders">0</span>
+            </div>
+            <div class="nav-item" onclick="goTo('devis-list')">
+                <span class="nav-icon">📋</span> Mes devis
+            </div>
+            <div class="nav-section-label" style="margin-top:0.75rem;">Ressources</div>
+            <div class="nav-item" onclick="goTo('documents')">
+                <span class="nav-icon">📁</span> Mes fichiers
+            </div>
+            <div class="nav-item" onclick="goTo('messages')">
+                <span class="nav-icon">💬</span> Messages
+                <span class="nav-badge" id="badge-msgs">0</span>
+            </div>
+            <div class="nav-item" onclick="goTo('analytics')">
+                <span class="nav-icon">📊</span> Mes statistiques
+            </div>
+            <div class="nav-section-label" style="margin-top:0.75rem;">Compte</div>
+            <div class="nav-item" onclick="goTo('profile')">
+                <span class="nav-icon">⚙️</span> Mon profil
+            </div>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <button class="btn-logout" onclick="logout()">
+                <span>→</span> Déconnexion
+            </button>
+        </div>
+    </aside>
+
+    <!-- ═══════════════════════════
+         MAIN
+    ═══════════════════════════ -->
+    <main class="main">
+        <div class="topbar">
+            <div class="topbar-title" id="page-title">Tableau de bord</div>
+            <div class="topbar-right">
+                <div class="msg-btn" onclick="goTo('messages')" title="Messages">
+                    💬<span class="msg-dot" id="msg-dot"></span>
+                </div>
+                <div class="notif-btn" onclick="toggleNotifs()" title="Notifications">
+                    🔔<span class="notif-dot" id="notif-dot"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ────── DASHBOARD ────── -->
+        <div class="page active" id="page-dashboard">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
+                <div>
+                    <h1 style="font-size:1.5rem;font-weight:800;" id="dash-welcome">Bonjour ! 👋</h1>
+                    <p style="color:var(--text2);font-size:0.85rem;margin-top:3px;" id="dash-date"></p>
+                </div>
+                <button class="btn btn-primary" onclick="goTo('devis')">
+                    ✏️ Nouveau devis
+                </button>
+            </div>
+
+            <!-- KPIs -->
+            <div class="dash-grid" id="kpi-grid"></div>
+
+            <!-- LOYALTY -->
+            <div class="loyalty-card" id="loyalty-card"></div>
+
+            <!-- QUICK ACTIONS -->
+            <div class="quick-actions">
+                <div class="quick-action" onclick="goTo('devis')">
+                    <div class="qa-icon">✏️</div>
+                    <div class="qa-label">Nouveau devis</div>
+                </div>
+                <div class="quick-action" onclick="goTo('commandes')">
+                    <div class="qa-icon">📦</div>
+                    <div class="qa-label">Mes commandes</div>
+                </div>
+                <div class="quick-action" onclick="goTo('documents')">
+                    <div class="qa-icon">📁</div>
+                    <div class="qa-label">Mes fichiers</div>
+                </div>
+                <div class="quick-action" onclick="goTo('messages')">
+                    <div class="qa-icon">💬</div>
+                    <div class="qa-label">Contacter Simpact</div>
+                </div>
+            </div>
+
+            <!-- RECENT ORDERS -->
+            <div class="card">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;">
+                    <div class="card-title" style="margin:0;">Commandes récentes</div>
+                    <button class="btn btn-ghost btn-sm" onclick="goTo('commandes')">Voir tout →</button>
+                </div>
+                <div id="recent-orders"></div>
+            </div>
+        </div>
+
+        <!-- ────── NOUVEAU DEVIS ────── -->
+        <div class="page" id="page-devis">
+            <div style="margin-bottom:1.5rem;">
+                <h1 style="font-size:1.5rem;font-weight:800;">Configurer un devis</h1>
+                <p style="color:var(--text2);font-size:0.85rem;margin-top:3px;">Prix calculé en temps réel selon votre configuration</p>
+            </div>
+
+            <div class="step-indicator" id="step-indicator">
+                <div class="step active" id="step-1"><span class="step-num">1</span><span class="step-label">Produit</span></div>
+                <div class="step" id="step-2"><span class="step-num">2</span><span class="step-label">Options</span></div>
+                <div class="step" id="step-3"><span class="step-num">3</span><span class="step-label">Quantité</span></div>
+                <div class="step" id="step-4"><span class="step-num">4</span><span class="step-label">Délai</span></div>
+                <div class="step" id="step-5"><span class="step-num">5</span><span class="step-label">Validation</span></div>
+            </div>
+
+            <div class="config-layout">
+                <div>
+                    <!-- Step 1: Product -->
+                    <div class="config-step active" id="cstep-1">
+                        <div class="card">
+                            <div class="card-heading">Quel produit souhaitez-vous imprimer ?</div>
+                            <div class="product-grid" id="product-grid"></div>
+                            <div id="step1-error" style="color:var(--red);font-size:0.82rem;display:none;">⚠️ Sélectionnez un produit pour continuer.</div>
+                            <button class="btn btn-primary" onclick="nextStep(1)" style="margin-top:1rem;">Continuer →</button>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Options -->
+                    <div class="config-step" id="cstep-2">
+                        <div class="card" id="options-card">
+                            <div class="card-heading">Options d'impression</div>
+                            <div id="options-content"></div>
+                            <div style="display:flex;gap:10px;margin-top:1.5rem;">
+                                <button class="btn btn-ghost" onclick="prevStep(2)">← Retour</button>
+                                <button class="btn btn-primary" onclick="nextStep(2)">Continuer →</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Quantity -->
+                    <div class="config-step" id="cstep-3">
+                        <div class="card">
+                            <div class="card-heading">Choisissez votre quantité</div>
+                            <div class="qty-grid" id="qty-grid"></div>
+                            <div class="form-group" style="margin-top:1rem;">
+                                <label class="input-label">Ou saisissez une quantité personnalisée</label>
+                                <input type="number" class="input-field" id="qty-custom" placeholder="Ex: 750" min="1" oninput="onCustomQty()">
+                            </div>
+                            <div style="display:flex;gap:10px;margin-top:1.5rem;">
+                                <button class="btn btn-ghost" onclick="prevStep(3)">← Retour</button>
+                                <button class="btn btn-primary" onclick="nextStep(3)">Continuer →</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Delay -->
+                    <div class="config-step" id="cstep-4">
+                        <div class="card">
+                            <div class="card-heading">Choisissez votre délai</div>
+                            <div id="delay-cards">
+                                <div class="delay-card selected" data-delay="Standard" onclick="selectDelay(this,'Standard',0)">
+                                    <span style="font-size:1.5rem;">📅</span>
+                                    <div>
+                                        <div class="delay-name">Standard</div>
+                                        <div class="delay-desc">Délai normal de production (3-5 jours ouvrés)</div>
+                                        <div class="delay-price" style="color:var(--green);">Inclus dans le prix</div>
+                                    </div>
+                                </div>
+                                <div class="delay-card" data-delay="Express" onclick="selectDelay(this,'Express',20)">
+                                    <span style="font-size:1.5rem;">⚡</span>
+                                    <div>
+                                        <div class="delay-name">Express</div>
+                                        <div class="delay-desc">Livraison sous 24-48h</div>
+                                        <div class="delay-price" style="color:var(--orange);">+ 20% sur le prix HT</div>
+                                    </div>
+                                </div>
+                                <div class="delay-card" data-delay="Urgence" onclick="selectDelay(this,'Urgence',40)">
+                                    <span style="font-size:1.5rem;">🚨</span>
+                                    <div>
+                                        <div class="delay-name" style="color:var(--red);">Urgence</div>
+                                        <div class="delay-desc">Même jour — priorité absolue en atelier</div>
+                                        <div class="delay-price" style="color:var(--red);">+ 40% sur le prix HT</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="display:flex;gap:10px;margin-top:1.5rem;">
+                                <button class="btn btn-ghost" onclick="prevStep(4)">← Retour</button>
+                                <button class="btn btn-primary" onclick="nextStep(4)">Continuer →</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 5: Confirm -->
+                    <div class="config-step" id="cstep-5">
+                        <div class="card">
+                            <div class="card-heading">✅ Confirmer votre devis</div>
+                            <div id="final-summary" style="background:var(--surface3);border:1px solid var(--border);border-radius:10px;padding:1.25rem;margin-bottom:1.25rem;"></div>
+                            <div class="form-group">
+                                <label class="input-label">Instructions spéciales / fichiers attendus</label>
+                                <textarea class="input-field" id="desc-field" rows="3" placeholder="Ex: Fichier AI à envoyer par email. Couleurs : bleu marine + or. Recto uniquement."></textarea>
+                            </div>
+                            <div style="display:flex;gap:10px;margin-top:1.5rem;flex-wrap:wrap;">
+                                <button class="btn btn-ghost" onclick="prevStep(5)">← Retour</button>
+                                <button class="btn btn-secondary" onclick="submitDevis('quote')" style="flex:1;">💾 Enregistrer comme devis</button>
+                                <button class="btn btn-primary" onclick="submitDevis('order')" style="flex:1;">🚀 Lancer la commande</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PRICE PANEL -->
+                <div class="price-sticky">
+                    <div class="card">
+                        <div class="price-hero">
+                            <div class="price-label">Prix estimé HT</div>
+                            <div class="price-ht" id="live-price">— <span class="unit">DT</span></div>
+                            <div id="price-breakdown"></div>
+                        </div>
+                        <div class="config-summary" id="live-summary">
+                            <div style="color:var(--text3);font-size:0.8rem;text-align:center;padding:0.5rem;">Configurez votre commande pour voir le prix</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ────── COMMANDES ────── -->
+        <div class="page" id="page-commandes">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
+                <h1 style="font-size:1.5rem;font-weight:800;">Mes commandes</h1>
+                <button class="btn btn-primary" onclick="goTo('devis')">✏️ Nouveau devis</button>
+            </div>
+            <div class="filter-bar">
+                <input class="filter-search" type="text" placeholder="🔍 Rechercher..." id="cmd-search" oninput="renderOrders()">
+                <select class="filter-select" id="cmd-status" onchange="renderOrders()">
+                    <option value="">Tous les statuts</option>
+                    <option value="En attente">En attente</option>
+                    <option value="En cours">En cours</option>
+                    <option value="Terminé">Terminé</option>
+                    <option value="Annulée">Annulée</option>
+                </select>
+                <select class="filter-select" id="cmd-sort" onchange="renderOrders()">
+                    <option value="recent">Plus récent</option>
+                    <option value="price_desc">Prix décroissant</option>
+                    <option value="price_asc">Prix croissant</option>
+                </select>
+            </div>
+            <div id="orders-list"></div>
+        </div>
+
+        <!-- ────── DEVIS LIST ────── -->
+        <div class="page" id="page-devis-list">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
+                <h1 style="font-size:1.5rem;font-weight:800;">Mes devis</h1>
+                <button class="btn btn-primary" onclick="goTo('devis')">✏️ Nouveau devis</button>
+            </div>
+            <div id="quotes-list"></div>
+        </div>
+
+        <!-- ────── DOCUMENTS ────── -->
+        <div class="page" id="page-documents">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
+                <h1 style="font-size:1.5rem;font-weight:800;">Mes fichiers</h1>
+                <button class="btn btn-primary" onclick="document.getElementById('file-input').click()">📎 Ajouter un fichier</button>
+            </div>
+            <input type="file" id="file-input" style="display:none;" multiple accept=".pdf,.ai,.eps,.jpg,.jpeg,.png,.zip,.psd,.indd" onchange="handleFileUpload(this)">
+
+            <div class="upload-zone" id="upload-zone"
+                 ondragover="event.preventDefault();this.classList.add('dragging')"
+                 ondragleave="this.classList.remove('dragging')"
+                 ondrop="handleDrop(event)"
+                 onclick="document.getElementById('file-input').click()">
+                <div class="upload-icon">☁️</div>
+                <div class="upload-text">Glissez vos fichiers ici ou cliquez pour uploader</div>
+                <div class="upload-hint">PDF, AI, EPS, PSD, InDesign, JPG, PNG, ZIP — Max 50MB par fichier</div>
+            </div>
+
+            <div style="margin-bottom:1rem;">
+                <div class="card-title">📂 Bibliothèque de fichiers</div>
+            </div>
+            <div class="doc-grid" id="doc-grid"></div>
+        </div>
+
+        <!-- ────── MESSAGES ────── -->
+        <div class="page" id="page-messages">
+            <div style="margin-bottom:1.5rem;">
+                <h1 style="font-size:1.5rem;font-weight:800;">Messages</h1>
+                <p style="color:var(--text2);font-size:0.85rem;margin-top:3px;">Échangez directement avec l'équipe SIMPACT</p>
+            </div>
+            <div class="chat-window">
+                <div class="chat-header">
+                    <div class="chat-avatar">🖨️</div>
+                    <div>
+                        <div class="chat-name">Équipe SIMPACT</div>
+                        <div class="chat-status">● En ligne</div>
+                    </div>
+                </div>
+                <div class="chat-msgs" id="chat-msgs">
+                    <div class="msg msg-incoming">
+                        Bonjour ! 👋 Bienvenue sur votre espace SIMPACT. Nous sommes à votre disposition pour tout renseignement sur vos commandes ou pour vous aider à configurer un devis.
+                        <div class="msg-time">Service client SIMPACT</div>
+                    </div>
+                </div>
+                <div class="chat-input-row">
+                    <input class="chat-input" type="text" id="chat-input" placeholder="Votre message..." onkeydown="if(event.key==='Enter')sendMsg()">
+                    <button class="btn btn-blue" onclick="sendMsg()">Envoyer →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ────── ANALYTICS ────── -->
+        <div class="page" id="page-analytics">
+            <div style="margin-bottom:1.5rem;">
+                <h1 style="font-size:1.5rem;font-weight:800;">Mes statistiques</h1>
+            </div>
+            <div id="analytics-content"></div>
+        </div>
+
+        <!-- ────── PROFILE ────── -->
+        <div class="page" id="page-profile">
+            <div style="margin-bottom:1.5rem;">
+                <h1 style="font-size:1.5rem;font-weight:800;">Mon profil</h1>
+            </div>
+            <div class="profile-header" id="profile-header"></div>
+            <div class="profile-grid" id="profile-grid"></div>
+        </div>
+
+    </main>
+</div>
+
+<!-- NOTIFICATIONS PANEL -->
+<div class="notif-panel" id="notif-panel">
+    <div class="notif-header">
+        <span class="notif-title">🔔 Notifications</span>
+        <button class="btn btn-ghost btn-sm" onclick="markAllNotifsRead()">Tout lire</button>
+    </div>
+    <div id="notif-list"></div>
+</div>
+
+<!-- MODAL ORDER DETAIL -->
+<div class="modal-overlay" id="modal-order">
+    <div class="modal">
+        <div class="modal-title">
+            Détail de la commande
+            <button class="modal-close" onclick="closeModal('modal-order')">✕</button>
+        </div>
+        <div id="modal-order-content"></div>
+    </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toasts"></div>
+
+<!-- ════════════════════════════════════════════════════════════
+     JAVASCRIPT
+════════════════════════════════════════════════════════════ -->
+<script>
+// ─── AUTH ──────────────────────────────────────────
+const sessionUser = checkAuth(['client', 'admin', 'superadmin', 'commercial', 'compta']);
+if (!sessionUser) throw new Error('Unauthorized');
+const clientId = sessionUser.id;
+const clientName = sessionUser.name;
+
+// ─── PRIX ──────────────────────────────────────────
+let prixConfig = null;
+async function loadPrix() {
+    try {
+        const r = await fetch('prix_config.json?v=3');
+        prixConfig = await r.json();
+    } catch(e) {
+        // Fallback inline
+        prixConfig = {"tarifs":{"flyer":{"recto":[{"qty":50,"price":36},{"qty":100,"price":66},{"qty":200,"price":100},{"qty":500,"price":230},{"qty":1000,"price":350},{"qty":1500,"price":490},{"qty":2000,"price":610},{"qty":3000,"price":890}],"rectoVerso":[{"qty":50,"price":40},{"qty":100,"price":76},{"qty":200,"price":125},{"qty":500,"price":240},{"qty":1000,"price":390},{"qty":1500,"price":550},{"qty":2000,"price":720},{"qty":3000,"price":990}]},"carte":{"recto":[{"qty":100,"price":20},{"qty":200,"price":36},{"qty":500,"price":50},{"qty":1000,"price":79},{"qty":1500,"price":109},{"qty":2000,"price":122},{"qty":2500,"price":149},{"qty":5000,"price":249},{"qty":10000,"price":479}],"pellicule":[{"qty":100,"price":28},{"qty":200,"price":44},{"qty":500,"price":59},{"qty":1000,"price":89},{"qty":1500,"price":119},{"qty":2000,"price":136},{"qty":2500,"price":171},{"qty":5000,"price":299},{"qty":10000,"price":560}]},"depliant":[{"qty":25,"price":29},{"qty":50,"price":47},{"qty":100,"price":84},{"qty":200,"price":149},{"qty":500,"price":349},{"qty":1000,"price":649},{"qty":1500,"price":889},{"qty":2000,"price":1119},{"qty":2500,"price":1379},{"qty":5000,"price":2599},{"qty":10000,"price":4990}],"entete":[{"qty":10,"price":28.5},{"qty":25,"price":36},{"qty":50,"price":59},{"qty":75,"price":74.5},{"qty":100,"price":90},{"qty":200,"price":156},{"qty":500,"price":340},{"qty":1000,"price":519},{"qty":2000,"price":999},{"qty":5000,"price":2490}],"affiche":[{"qty":24,"price":2.8},{"qty":49,"price":2.3},{"qty":99,"price":1.8},{"qty":199,"price":1.7},{"qty":499,"price":1.4},{"qty":5000,"price":1.3}]},"tva_rate":0.19};
+    }
+}
+
+// ─── CONFIGURATEUR STATE ───────────────────────────
+let cfg = { product: null, options: {}, qty: null, delay: 'Standard', delayPct: 0 };
+let currentStep = 1;
+
+const PRODUCTS = [
+    { id: 'flyer', icon: '📄', name: 'Flyer', desc: 'A5/A6 recto ou recto-verso' },
+    { id: 'carte', icon: '🪪', name: 'Carte de visite', desc: 'Standard 8.5×5.5cm' },
+    { id: 'depliant', icon: '📰', name: 'Dépliant', desc: 'A5, A4, A3 plié' },
+    { id: 'entete', icon: '📝', name: 'Papier entête', desc: 'A4 personnalisé' },
+    { id: 'affiche', icon: '🖼️', name: 'Affiche', desc: 'A3, A2, A1 et plus' },
+    { id: 'brochure', icon: '📚', name: 'Brochure', desc: 'Multi-pages reliés' },
+    { id: 'livre', icon: '📖', name: 'Livre / Rapport', desc: 'Impression et reliure' },
+    { id: 'enveloppe', icon: '✉️', name: 'Enveloppe', desc: 'C5, C4, DL personnalisé' },
+    { id: 'autre', icon: '⚡', name: 'Autre produit', desc: 'Sur devis personnalisé' }
+];
+
+const OPTIONS_MAP = {
+    flyer: [
+        { id: 'impression', label: 'Impression', type: 'chips', values: ['Recto','Recto-Verso'], default: 'Recto', required: true },
+        { id: 'papier', label: 'Grammage', type: 'chips', values: ['90g','135g','170g','250g'], default: '135g' },
+        { id: 'finition', label: 'Finition', type: 'chips', values: ['Sans finition','Pelliculage brillant','Pelliculage mat'], default: 'Sans finition' }
+    ],
+    carte: [
+        { id: 'finition', label: 'Finition', type: 'chips', values: ['Sans pellicule','Pelliculage brillant','Pelliculage mat'], default: 'Sans pellicule', required: true },
+        { id: 'coins', label: 'Coins', type: 'chips', values: ['Droits','Arrondis'], default: 'Droits' }
+    ],
+    depliant: [
+        { id: 'plis', label: 'Type de pli', type: 'chips', values: ['2 volets','3 volets (accordéon)','3 volets (roulé)','4 volets'], default: '3 volets (accordéon)' },
+        { id: 'papier', label: 'Grammage', type: 'chips', values: ['90g','115g','135g','170g'], default: '115g' },
+        { id: 'finition', label: 'Finition', type: 'chips', values: ['Sans finition','Pelliculage brillant','Pelliculage mat'], default: 'Sans finition' }
+    ],
+    entete: [
+        { id: 'papier', label: 'Type de papier', type: 'chips', values: ['Standard 80g','Premium 90g','Couché brillant 120g'], default: 'Standard 80g' },
+        { id: 'numerotation', label: 'Numérotation', type: 'chips', values: ['Sans','Avec numérotation'], default: 'Sans' }
+    ],
+    affiche: [
+        { id: 'format', label: 'Format', type: 'chips', values: ['A3 (29×42cm)','A2 (42×59cm)','A1 (59×84cm)','40×60cm','60×80cm','70×100cm'], default: 'A3 (29×42cm)' },
+        { id: 'papier', label: 'Support', type: 'chips', values: ['Couché 135g','Couché 170g','Couché 250g','Bâche PVC'], default: 'Couché 135g' }
+    ],
+    brochure: [
+        { id: 'pages', label: 'Nombre de pages', type: 'chips', values: ['8p','12p','16p','20p','24p','32p','48p','64p'], default: '16p' },
+        { id: 'reliure', label: 'Reliure', type: 'chips', values: ['Agrafée dos carré','Collée (dos carré-collé)','Spirale'], default: 'Agrafée dos carré' },
+        { id: 'couverture', label: 'Couverture', type: 'chips', values: ['250g brillant','300g mat','Carton 350g'], default: '250g brillant' }
+    ],
+    livre: [
+        { id: 'pages', label: 'Nombre de pages', type: 'chips', values: ['50-100p','100-200p','200-400p','400p+'], default: '100-200p' },
+        { id: 'format', label: 'Format', type: 'chips', values: ['A5 (14.8×21cm)','A4 (21×29.7cm)','13.5×21cm'], default: 'A5 (14.8×21cm)' },
+        { id: 'reliure', label: 'Reliure', type: 'chips', values: ['Dos carré-collé','Spirale','Couture'], default: 'Dos carré-collé' }
+    ],
+    enveloppe: [
+        { id: 'format', label: 'Format', type: 'chips', values: ['DL (11×22cm)','C5 (16×22cm)','C4 (22×31cm)'], default: 'DL (11×22cm)' },
+        { id: 'impression', label: 'Impression', type: 'chips', values: ['1 couleur','4 couleurs CMJN'], default: '4 couleurs CMJN' }
+    ],
+    autre: []
+};
+
+const QTY_PRESETS = {
+    flyer:     [50,100,200,500,1000,2000,3000,5000],
+    carte:     [100,200,500,1000,2000,5000,10000],
+    depliant:  [25,50,100,200,500,1000,2000,5000],
+    entete:    [50,100,200,500,1000,2000,5000],
+    affiche:   [10,25,50,100,200,500],
+    brochure:  [25,50,100,200,500,1000],
+    livre:     [10,25,50,100,200,500],
+    enveloppe: [100,250,500,1000,2000,5000],
+    autre:     [1,5,10,25,50,100]
+};
+
+// ─── NAVIGATION ────────────────────────────────────
+const pageTitles = {
+    dashboard: 'Tableau de bord', devis: 'Nouveau devis',
+    commandes: 'Mes commandes', 'devis-list': 'Mes devis',
+    documents: 'Mes fichiers', messages: 'Messages',
+    analytics: 'Statistiques', profile: 'Mon profil'
+};
+
+function goTo(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+    const pageEl = document.getElementById('page-' + page);
+    if (pageEl) pageEl.classList.add('active');
+
+    const navItem = document.querySelector(`.nav-item[onclick="goTo('${page}')"]`);
+    if (navItem) navItem.classList.add('active');
+
+    document.getElementById('page-title').textContent = pageTitles[page] || '';
+
+    if (page === 'commandes') renderOrders();
+    if (page === 'devis-list') renderQuotes();
+    if (page === 'dashboard') renderDashboard();
+    if (page === 'documents') renderDocs();
+    if (page === 'messages') { renderMessages(); markMessagesRead(clientId); updateBadges(); }
+    if (page === 'analytics') renderAnalytics();
+    if (page === 'profile') renderProfile();
+    if (page === 'devis') resetConfigurator();
+
+    closeNotifPanel();
+}
+
+// ─── INIT ──────────────────────────────────────────
+async function init() {
+    await loadPrix();
+    buildSidebar();
+    renderDashboard();
+    buildProductGrid();
+    updateBadges();
+
+    // Refresh every 30 seconds
+    setInterval(updateBadges, 30000);
+}
+
+function buildSidebar() {
+    const u = getUsers().find(x => x.id === clientId);
+    const stats = getClientStats(clientId);
+    const lv = stats.loyaltyLevel;
+
+    const initials = clientName.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+    document.getElementById('sb-avatar').textContent = initials;
+    document.getElementById('sb-name').textContent = clientName;
+    document.getElementById('sb-level').textContent = lv.icon + ' ' + lv.name;
+    document.getElementById('dash-welcome').textContent = 'Bonjour, ' + clientName.split(' ')[0] + ' ! 👋';
+    document.getElementById('dash-date').textContent = new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+}
+
+function updateBadges() {
+    const pendingOrders = getClientHistory(clientId).filter(o => o.statusProd === 'En attente' || o.statusProd === 'En cours').length;
+    const nb = document.getElementById('badge-orders');
+    if (pendingOrders > 0) { nb.textContent = pendingOrders; nb.classList.add('show'); }
+    else nb.classList.remove('show');
+
+    const unreadMsgs = getUnreadMessages(clientId);
+    const mb = document.getElementById('badge-msgs');
+    const md = document.getElementById('msg-dot');
+    if (unreadMsgs > 0) { mb.textContent = unreadMsgs; mb.classList.add('show'); md.classList.add('show'); }
+    else { mb.classList.remove('show'); md.classList.remove('show'); }
+
+    const unreadNotifs = getUnreadCount(clientId);
+    const nd = document.getElementById('notif-dot');
+    if (unreadNotifs > 0) nd.classList.add('show');
+    else nd.classList.remove('show');
+}
+
+// ─── DASHBOARD ─────────────────────────────────────
+function renderDashboard() {
+    const stats = getClientStats(clientId);
+    const lv = stats.loyaltyLevel;
+
+    // KPIs
+    const kpiGrid = document.getElementById('kpi-grid');
+    kpiGrid.innerHTML = `
+        <div class="kpi-card kpi-gold">
+            <div class="kpi-label">Commandes totales</div>
+            <div class="kpi-value">${stats.count}</div>
+            <div class="kpi-sub">Depuis le début</div>
+        </div>
+        <div class="kpi-card kpi-blue">
+            <div class="kpi-label">CA Total HT</div>
+            <div class="kpi-value">${stats.totalCA.toFixed(0)}<span class="unit"> DT</span></div>
+            <div class="kpi-sub">Hors TVA</div>
+        </div>
+        <div class="kpi-card kpi-green">
+            <div class="kpi-label">Panier moyen</div>
+            <div class="kpi-value">${stats.avgBasket.toFixed(0)}<span class="unit"> DT</span></div>
+            <div class="kpi-sub">Par commande</div>
+        </div>
+    `;
+
+    // Loyalty
+    const nextCount = lv.next;
+    const remaining = Math.max(0, nextCount - stats.count);
+    document.getElementById('loyalty-card').innerHTML = `
+        <div class="loyalty-header">
+            <div>
+                <div style="font-size:0.75rem;color:rgba(201,168,76,0.6);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Votre niveau de fidélité</div>
+                <div class="loyalty-level-name">${lv.icon} ${lv.name}</div>
+            </div>
+            <div class="loyalty-icon" style="opacity:0.4;">${lv.icon}</div>
+        </div>
+        <div class="loyalty-progress-wrap">
+            <div class="loyalty-progress-label">
+                <span>${stats.count} commandes</span>
+                <span>${remaining > 0 ? remaining + ' avant le prochain niveau' : 'Niveau maximum'}</span>
+            </div>
+            <div class="loyalty-bar"><div class="loyalty-fill" id="loyalty-fill" style="width:0%"></div></div>
+        </div>
+        <div class="loyalty-perks">
+            <span class="perk-tag">✓ Prix préférentiels</span>
+            <span class="perk-tag">✓ Suivi prioritaire</span>
+            ${stats.count >= 10 ? '<span class="perk-tag">✓ Livraison express offerte</span>' : ''}
+            ${stats.count >= 20 ? '<span class="perk-tag">✓ Commercial dédié</span>' : ''}
+            ${stats.count >= 30 ? '<span class="perk-tag">✓ Accès Diamant — remises spéciales</span>' : ''}
+        </div>
+    `;
+    setTimeout(() => {
+        const el = document.getElementById('loyalty-fill');
+        if (el) el.style.width = lv.progress.toFixed(1) + '%';
+    }, 100);
+
+    // Recent orders
+    const orders = getClientHistory(clientId).slice(0, 5);
+    const ro = document.getElementById('recent-orders');
+    if (!orders.length) {
+        ro.innerHTML = `<div class="empty-state"><div class="empty-icon">📦</div><div class="empty-text">Aucune commande pour l'instant<br><small>Utilisez le configurateur pour démarrer</small></div></div>`;
+        return;
+    }
+    ro.innerHTML = `<table class="orders-table">
+        <thead><tr>
+            <th>Réf.</th><th>Produit</th><th>Date</th><th>Statut prod.</th><th>Paiement</th><th>Montant HT</th>
+        </tr></thead>
+        <tbody>
+            ${orders.map(o => `
+            <tr onclick="openOrderDetail('${o.ref}')" style="cursor:pointer;">
+                <td><span class="order-ref">${o.ref}</span></td>
+                <td><div class="order-prod">${o.prod}</div><div style="font-size:0.72rem;color:var(--text2);">×${o.qty}</div></td>
+                <td><span style="font-size:0.82rem;color:var(--text2);">${o.date}</span></td>
+                <td><span class="status-badge ${getStatusCls(o.statusProd)}">${o.statusProd}</span></td>
+                <td><span class="status-badge ${o.statusCompta==='Payé'?'s-paye':'s-non-paye'}">${o.statusCompta||'Non payé'}</span></td>
+                <td><span class="order-price">${parseFloat(o.price).toFixed(2)} DT</span></td>
+            </tr>`).join('')}
+        </tbody>
+    </table>`;
+}
+
+// ─── CONFIGURATEUR ─────────────────────────────────
+function buildProductGrid() {
+    document.getElementById('product-grid').innerHTML = PRODUCTS.map(p => `
+        <div class="product-card ${cfg.product === p.id ? 'selected' : ''}" onclick="selectProduct('${p.id}')">
+            <div class="prod-icon">${p.icon}</div>
+            <div class="prod-name">${p.name}</div>
+            <div class="prod-desc">${p.desc}</div>
+        </div>
+    `).join('');
+}
+
+function selectProduct(id) {
+    cfg.product = id; cfg.options = {}; cfg.qty = null;
+    document.querySelectorAll('.product-card').forEach(c => c.classList.remove('selected'));
+    event.currentTarget.classList.add('selected');
+    updateLivePrice();
+}
+
+function nextStep(from) {
+    if (from === 1) {
+        if (!cfg.product) { document.getElementById('step1-error').style.display='block'; return; }
+        document.getElementById('step1-error').style.display='none';
+        buildOptionsStep();
+    }
+    if (from === 2) buildQtyStep();
+    if (from === 3) { if (!cfg.qty) { showToast('⚠️ Sélectionnez une quantité', 'error'); return; } }
+    if (from === 4) buildFinalSummary();
+    goStep(from + 1);
+}
+
+function prevStep(from) { goStep(from - 1); }
+
+function goStep(n) {
+    currentStep = n;
+    document.querySelectorAll('.config-step').forEach(s => s.classList.remove('active'));
+    document.getElementById('cstep-' + n).classList.add('active');
+    for (let i = 1; i <= 5; i++) {
+        const el = document.getElementById('step-' + i);
+        el.classList.remove('active', 'done');
+        if (i < n) el.classList.add('done');
+        else if (i === n) el.classList.add('active');
+    }
+}
+
+function buildOptionsStep() {
+    const opts = OPTIONS_MAP[cfg.product] || [];
+    if (!opts.length) {
+        document.getElementById('options-content').innerHTML = `<p style="color:var(--text2);margin-bottom:1rem;">Ce produit sera configuré sur devis personnalisé. Décrivez vos besoins dans les instructions à l'étape suivante.</p>`;
+        buildQtyStep(); goStep(3); return;
+    }
+    document.getElementById('options-content').innerHTML = opts.map(opt => `
+        <div class="form-group">
+            <label class="input-label">${opt.label}</label>
+            <div class="option-chips">
+                ${opt.values.map(v => `
+                    <span class="chip ${(cfg.options[opt.id] || opt.default) === v ? 'selected' : ''}"
+                          onclick="selectOption('${opt.id}','${v}',this)">${v}</span>
+                `).join('')}
+            </div>
+        </div>
+    `).join('');
+    // Set defaults
+    opts.forEach(opt => { if (!cfg.options[opt.id]) cfg.options[opt.id] = opt.default; });
+    updateLivePrice();
+}
+
+function selectOption(key, val, el) {
+    cfg.options[key] = val;
+    el.closest('.option-chips').querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    updateLivePrice();
+}
+
+function buildQtyStep() {
+    const presets = QTY_PRESETS[cfg.product] || [50,100,250,500,1000];
+    document.getElementById('qty-grid').innerHTML = presets.map(q => `
+        <div class="qty-chip ${cfg.qty === q ? 'selected' : ''}" onclick="selectQty(${q},this)">${q.toLocaleString()}</div>
+    `).join('');
+}
+
+function selectQty(q, el) {
+    cfg.qty = q;
+    document.querySelectorAll('.qty-chip').forEach(c => c.classList.remove('selected'));
+    if (el) el.classList.add('selected');
+    document.getElementById('qty-custom').value = '';
+    updateLivePrice();
+}
+
+function onCustomQty() {
+    const v = parseInt(document.getElementById('qty-custom').value);
+    if (v > 0) {
+        cfg.qty = v;
+        document.querySelectorAll('.qty-chip').forEach(c => c.classList.remove('selected'));
+        updateLivePrice();
+    }
+}
+
+function selectDelay(el, delay, pct) {
+    cfg.delay = delay; cfg.delayPct = pct;
+    document.querySelectorAll('.delay-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    updateLivePrice();
+}
+
+function buildFinalSummary() {
+    const p = calcPrice();
+    const prod = PRODUCTS.find(x => x.id === cfg.product);
+    const optsStr = Object.entries(cfg.options).map(([k,v]) => v).join(', ');
+    document.getElementById('final-summary').innerHTML = `
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;font-size:0.85rem;">
+            <div><span style="color:var(--text2);">Produit</span><br><strong>${prod ? prod.name : cfg.product}</strong></div>
+            <div><span style="color:var(--text2);">Quantité</span><br><strong>${cfg.qty?.toLocaleString() || '—'}</strong></div>
+            <div><span style="color:var(--text2);">Options</span><br><strong>${optsStr || '—'}</strong></div>
+            <div><span style="color:var(--text2);">Délai</span><br><strong>${cfg.delay}</strong></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border);">
+            <span style="color:var(--text2);">Total HT</span>
+            <strong style="color:var(--gold);font-family:'DM Mono',monospace;font-size:1.2rem;">${p ? p.ht.toFixed(2) + ' DT' : '— DT'}</strong>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:0.82rem;color:var(--text2);">
+            <span>TVA 19%</span><span>${p ? p.tva.toFixed(2) + ' DT' : '—'}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-weight:700;">
+            <span>Total TTC</span><span>${p ? p.ttc.toFixed(2) + ' DT' : '—'}</span>
+        </div>
+    `;
+}
+
+function calcPrice() {
+    if (!prixConfig || !cfg.product || !cfg.qty) return null;
+    const tarifs = prixConfig.tarifs;
+    let baseHT = null;
+    const qty = cfg.qty;
+
+    function lookupTable(table) {
+        if (!table || !table.length) return null;
+        const sorted = [...table].sort((a,b) => a.qty - b.qty);
+        let found = sorted[0].price;
+        for (const t of sorted) { if (qty >= t.qty) found = t.price; }
+        return found;
+    }
+
+    if (cfg.product === 'flyer') {
+        const isRV = (cfg.options.impression || 'Recto').includes('Verso');
+        const table = isRV ? tarifs.flyer.rectoVerso : tarifs.flyer.recto;
+        baseHT = lookupTable(table);
+    } else if (cfg.product === 'carte') {
+        const hasPell = (cfg.options.finition || '').includes('Pellicul');
+        const table = hasPell ? tarifs.carte.pellicule : tarifs.carte.recto;
+        baseHT = lookupTable(table);
+    } else if (cfg.product === 'depliant') {
+        baseHT = lookupTable(tarifs.depliant);
+    } else if (cfg.product === 'entete') {
+        baseHT = lookupTable(tarifs.entete);
+    } else if (cfg.product === 'affiche') {
+        const up = lookupTable(tarifs.affiche);
+        if (up) baseHT = up * qty;
+    } else if (cfg.product === 'brochure') {
+        // Estimate: paliers_brochure
+        const pc = prixConfig.paliers_brochure?.couleur_recto_verso || [];
+        let unitP = 1.5;
+        for (const p of pc) { if (qty >= p.min && qty <= p.max) unitP = p.price; }
+        const pages = parseInt((cfg.options.pages||'16p')) || 16;
+        baseHT = unitP * qty * (pages / 4);
+    } else if (['livre','enveloppe','autre'].includes(cfg.product)) {
+        baseHT = null;
+    }
+
+    if (!baseHT) return null;
+
+    const delayMult = 1 + (cfg.delayPct / 100);
+    const ht = baseHT * delayMult;
+    const tva = ht * (prixConfig.tva_rate || 0.19);
+    const ttc = ht + tva;
+    const unitCost = ht / qty;
+    return { ht, tva, ttc, unitCost };
+}
+
+function updateLivePrice() {
+    const p = calcPrice();
+    const lpEl = document.getElementById('live-price');
+    const pbEl = document.getElementById('price-breakdown');
+    const lsEl = document.getElementById('live-summary');
+
+    if (!p) {
+        lpEl.innerHTML = '— <span class="unit">DT</span>';
+        pbEl.innerHTML = '';
+        lsEl.innerHTML = '<div style="color:var(--text3);font-size:0.8rem;text-align:center;padding:0.5rem;">Configurez votre commande pour voir le prix</div>';
+        return;
+    }
+
+    lpEl.innerHTML = p.ht.toFixed(2) + ' <span class="unit">DT</span>';
+    pbEl.innerHTML = `
+        <div class="price-tva-row"><span>TVA (19%)</span><span>+${p.tva.toFixed(2)} DT</span></div>
+        <div class="price-tva-row"><span class="price-ttc">Total TTC</span><span class="price-ttc">${p.ttc.toFixed(2)} DT</span></div>
+        <div class="price-unit-cost">Coût unitaire : ${p.unitCost.toFixed(4)} DT/ex.</div>
+    `;
+
+    const prod = PRODUCTS.find(x => x.id === cfg.product);
+    const opts = Object.entries(cfg.options).filter(([k,v]) => v).map(([k,v]) => v).join(' · ');
+    lsEl.innerHTML = `
+        <div class="summary-row"><span class="summary-key">Produit</span><span class="summary-val">${prod ? prod.name : cfg.product || '—'}</span></div>
+        <div class="summary-row"><span class="summary-key">Options</span><span class="summary-val">${opts || '—'}</span></div>
+        <div class="summary-row"><span class="summary-key">Quantité</span><span class="summary-val">${cfg.qty ? cfg.qty.toLocaleString() + ' ex.' : '—'}</span></div>
+        <div class="summary-row"><span class="summary-key">Délai</span><span class="summary-val">${cfg.delay}</span></div>
+    `;
+}
+
+function resetConfigurator() {
+    cfg = { product: null, options: {}, qty: null, delay: 'Standard', delayPct: 0 };
+    currentStep = 1;
+    goStep(1);
+    buildProductGrid();
+    updateLivePrice();
+    document.getElementById('desc-field').value = '';
+}
+
+async function submitDevis(type) {
+    if (!cfg.product || !cfg.qty) { showToast('⚠️ Configuration incomplète', 'error'); return; }
+    const p = calcPrice();
+    const prod = PRODUCTS.find(x => x.id === cfg.product);
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'});
+    const opts = Object.entries(cfg.options).filter(([k,v]) => v).map(([k,v]) => k + ': ' + v).join(', ');
+    const desc = document.getElementById('desc-field').value + (opts ? '\n\nOptions : ' + opts : '');
+
+    const ref = type === 'quote' ? 'DEV-' + Date.now().toString(36).toUpperCase() : 'CMD-' + Date.now().toString(36).toUpperCase();
+
+    const data = {
+        ref, date: dateStr, client: clientName, clientId,
+        prod: prod ? prod.name : cfg.product,
+        qty: cfg.qty, price: p ? p.ht.toFixed(2) : '0',
+        tva: p ? p.tva.toFixed(2) : '0',
+        priceTTC: p ? p.ttc.toFixed(2) : '0',
+        desc, delai: cfg.delay,
+        user: clientName, statusProd: 'À Valider (Web)', statusCompta: 'Non payé',
+        source: 'portail-client'
+    };
+
+    if (type === 'quote') {
+        data.status = 'En attente validation';
+        saveQuote(data);
+        showToast('✅ Devis enregistré ! Notre équipe vous contacte sous 24h.', 'success');
+        addNotification(clientId, { type: 'quote_sent', title: 'Devis envoyé', message: `Votre devis ${ref} a été transmis à l'équipe SIMPACT.`, ref });
+    } else {
+        saveOrder(data);
+        showToast('🚀 Commande lancée avec succès !', 'success');
+        addNotification(clientId, { type: 'order_created', title: 'Commande créée', message: `Votre commande ${ref} est en cours de traitement.`, ref });
+    }
+
+    resetConfigurator();
+    goTo('commandes');
+}
+
+// ─── COMMANDES ─────────────────────────────────────
+function renderOrders() {
+    const search = (document.getElementById('cmd-search')?.value || '').toLowerCase();
+    const statusF = document.getElementById('cmd-status')?.value || '';
+    const sortF = document.getElementById('cmd-sort')?.value || 'recent';
+
+    let orders = getClientHistory(clientId);
+    if (search) orders = orders.filter(o => o.prod.toLowerCase().includes(search) || o.ref.toLowerCase().includes(search));
+    if (statusF) orders = orders.filter(o => o.statusProd === statusF);
+    if (sortF === 'price_desc') orders.sort((a,b) => b.price - a.price);
+    else if (sortF === 'price_asc') orders.sort((a,b) => a.price - b.price);
+
+    const el = document.getElementById('orders-list');
+    if (!orders.length) {
+        el.innerHTML = `<div class="empty-state"><div class="empty-icon">📦</div><div class="empty-text">Aucune commande trouvée</div></div>`;
+        return;
+    }
+    el.innerHTML = orders.map(o => `
+        <div class="order-card ${o.delai && o.delai.includes('Urgence') ? 'urgent' : ''}" onclick="openOrderDetail('${o.ref}')">
+            <div>
+                <div class="order-num">${o.ref}</div>
+                <div style="font-size:0.7rem;color:var(--text3);">${o.date}</div>
+            </div>
+            <div>
+                <div class="order-name">${o.prod}</div>
+                <div class="order-meta">×${o.qty} · ${o.delai || 'Standard'}</div>
+            </div>
+            <div><span class="status-badge ${getStatusCls(o.statusProd)}">${o.statusProd}</span></div>
+            <div><span class="status-badge ${o.statusCompta==='Payé'?'s-paye':'s-non-paye'}">${o.statusCompta||'Non payé'}</span></div>
+            <div class="order-amount">${parseFloat(o.price).toFixed(2)} DT</div>
+        </div>
+    `).join('');
+}
+
+function openOrderDetail(ref) {
+    const o = getClientHistory(clientId).find(x => x.ref === ref);
+    if (!o) return;
+
+    const steps = [
+        { label: 'Commande reçue', done: true },
+        { label: 'En validation', done: o.statusProd !== 'À Valider (Web)' },
+        { label: 'En production', done: ['Terminé'].includes(o.statusProd) },
+        { label: 'Terminée', done: o.statusProd === 'Terminé' }
+    ];
+    let activeStep = 0;
+    for (let i = 0; i < steps.length; i++) if (steps[i].done) activeStep = i;
+
+    document.getElementById('modal-order-content').innerHTML = `
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;">
+            <div><div style="color:var(--text2);font-size:0.75rem;margin-bottom:3px;">Référence</div><code style="font-family:'DM Mono',monospace;font-size:0.9rem;">${o.ref}</code></div>
+            <div><div style="color:var(--text2);font-size:0.75rem;margin-bottom:3px;">Date</div><span>${o.date}</span></div>
+            <div><div style="color:var(--text2);font-size:0.75rem;margin-bottom:3px;">Produit</div><strong>${o.prod}</strong></div>
+            <div><div style="color:var(--text2);font-size:0.75rem;margin-bottom:3px;">Quantité</div><strong>${o.qty}</strong></div>
+            <div><div style="color:var(--text2);font-size:0.75rem;margin-bottom:3px;">Délai</div><span>${o.delai || 'Standard'}</span></div>
+            <div><div style="color:var(--text2);font-size:0.75rem;margin-bottom:3px;">Montant HT</div><strong style="color:var(--gold);">${parseFloat(o.price).toFixed(2)} DT</strong></div>
+        </div>
+
+        <div style="margin-bottom:1.5rem;">
+            <div style="font-size:0.75rem;color:var(--text2);margin-bottom:0.75rem;text-transform:uppercase;letter-spacing:0.5px;">Avancement</div>
+            <div class="timeline">
+                ${steps.map((s, i) => `
+                    <div class="timeline-item">
+                        <div class="timeline-dot ${i <= activeStep ? (i === activeStep ? 'active' : 'done') : ''}"></div>
+                        <div>
+                            <div class="timeline-label" style="color:${i <= activeStep ? 'var(--text)' : 'var(--text3)'};">${s.label}</div>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+
+        ${o.desc ? `<div style="margin-bottom:1.5rem;"><div style="font-size:0.75rem;color:var(--text2);margin-bottom:0.5rem;text-transform:uppercase;letter-spacing:0.5px;">Instructions</div><div style="background:var(--surface3);border:1px solid var(--border);border-radius:9px;padding:1rem;font-size:0.83rem;color:var(--text2);white-space:pre-line;">${o.desc}</div></div>` : ''}
+
+        <div style="display:flex;gap:8px;">
+            <button class="btn btn-secondary" onclick="reorder('${o.ref}')">🔄 Commander à nouveau</button>
+            <button class="btn btn-ghost" onclick="closeModal('modal-order')">Fermer</button>
+        </div>
+    `;
+    document.getElementById('modal-order').classList.add('show');
+}
+
+function reorder(ref) {
+    const o = getClientHistory(clientId).find(x => x.ref === ref);
+    if (!o) return;
+    closeModal('modal-order');
+    // Pre-fill configurator
+    const prod = PRODUCTS.find(p => p.name === o.prod || p.id === o.prod);
+    if (prod) { cfg.product = prod.id; cfg.qty = parseInt(o.qty); }
+    goTo('devis');
+    showToast('📋 Produit pré-rempli depuis votre historique', 'info');
+}
+
+// ─── DEVIS LIST ────────────────────────────────────
+function renderQuotes() {
+    const quotes = getQuotes().filter(q => q.clientId === clientId || q.client === clientName);
+    const el = document.getElementById('quotes-list');
+    if (!quotes.length) {
+        el.innerHTML = `<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-text">Aucun devis pour l'instant</div></div>`;
+        return;
+    }
+    el.innerHTML = `<table class="orders-table">
+        <thead><tr><th>Réf.</th><th>Produit</th><th>Date</th><th>Montant HT</th><th>Statut</th><th></th></tr></thead>
+        <tbody>${quotes.map(q => `
+        <tr>
+            <td><span class="order-ref">${q.ref}</span></td>
+            <td>${q.prod} ×${q.qty}</td>
+            <td><span style="font-size:0.82rem;color:var(--text2);">${q.date}</span></td>
+            <td><span class="order-price">${parseFloat(q.price||0).toFixed(2)} DT</span></td>
+            <td><span class="badge ${q.status==='Converti'?'badge-green':'badge-orange'}">${q.status||'En attente'}</span></td>
+            <td><button class="btn btn-ghost btn-sm" onclick="duplicateQuote('${q.ref}')">Dupliquer</button></td>
+        </tr>`).join('')}</tbody>
+    </table>`;
+}
+
+function duplicateQuote(ref) {
+    const q = getQuotes().find(x => x.ref === ref);
+    if (!q) return;
+    const prod = PRODUCTS.find(p => p.name === q.prod || p.id === q.prod);
+    if (prod) { cfg.product = prod.id; cfg.qty = parseInt(q.qty); }
+    goTo('devis');
+    showToast('📋 Devis dupliqué — ajustez vos options', 'info');
+}
+
+// ─── DOCUMENTS ─────────────────────────────────────
+function renderDocs() {
+    const docs = getClientDocuments(clientId);
+    const grid = document.getElementById('doc-grid');
+    if (!docs.length) {
+        grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">📁</div><div class="empty-text">Aucun fichier stocké<br><small>Uploadez vos fichiers de création pour les retrouver facilement</small></div></div>`;
+        return;
+    }
+    const icons = { pdf: '📄', ai: '🎨', eps: '🎨', jpg: '🖼️', jpeg: '🖼️', png: '🖼️', zip: '📦', psd: '🎨', indd: '📰' };
+    grid.innerHTML = docs.map(d => {
+        const ext = (d.name.split('.').pop() || '').toLowerCase();
+        const icon = icons[ext] || '📄';
+        return `
+        <div class="doc-card">
+            <div style="text-align:right;margin-bottom:-0.5rem;">
+                <button onclick="deleteDoc('${d.id}');event.stopPropagation();" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:0.8rem;" title="Supprimer">✕</button>
+            </div>
+            <div class="doc-icon">${icon}</div>
+            <div class="doc-name" title="${d.name}">${d.name}</div>
+            <div class="doc-meta">${d.size} · ${d.date}</div>
+        </div>`;
+    }).join('');
+}
+
+function handleFileUpload(input) {
+    const files = Array.from(input.files);
+    files.forEach(file => {
+        const size = file.size > 1024*1024 ? (file.size/(1024*1024)).toFixed(1)+'MB' : (file.size/1024).toFixed(0)+'KB';
+        saveClientDocument(clientId, {
+            id: Date.now().toString(36) + Math.random().toString(36).slice(2,5),
+            name: file.name,
+            size, type: file.type,
+            date: new Date().toLocaleDateString('fr-FR')
+        });
+    });
+    renderDocs();
+    showToast(`✅ ${files.length} fichier(s) ajouté(s)`, 'success');
+    input.value = '';
+}
+
+function handleDrop(e) {
+    e.preventDefault();
+    document.getElementById('upload-zone').classList.remove('dragging');
+    const files = e.dataTransfer.files;
+    if (files.length) {
+        Array.from(files).forEach(file => {
+            const size = file.size > 1024*1024 ? (file.size/(1024*1024)).toFixed(1)+'MB' : (file.size/1024).toFixed(0)+'KB';
+            saveClientDocument(clientId, {
+                id: Date.now().toString(36),
+                name: file.name, size, type: file.type,
+                date: new Date().toLocaleDateString('fr-FR')
+            });
+        });
+        renderDocs();
+        showToast(`✅ ${files.length} fichier(s) ajouté(s)`, 'success');
+    }
+}
+
+function deleteDoc(id) {
+    if (confirm('Supprimer ce fichier ?')) {
+        deleteClientDocument(clientId, id);
+        renderDocs();
+        showToast('Fichier supprimé', 'info');
+    }
+}
+
+// ─── MESSAGES ──────────────────────────────────────
+function renderMessages() {
+    const msgs = getMessages(clientId);
+    const container = document.getElementById('chat-msgs');
+    const extraMsgs = msgs.map(m => {
+        const isMe = m.from === clientId;
+        return `<div class="msg ${isMe ? 'msg-outgoing' : 'msg-incoming'}">
+            ${m.text}
+            <div class="msg-time">${isMe ? 'Moi' : 'SIMPACT'} · ${new Date(m.ts).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}</div>
+        </div>`;
+    }).join('');
+
+    // Reset to welcome + messages
+    container.innerHTML = `
+        <div class="msg msg-incoming">
+            Bonjour ! 👋 Bienvenue sur votre espace SIMPACT. Nous sommes à votre disposition pour tout renseignement.
+            <div class="msg-time">Service client SIMPACT</div>
+        </div>
+        ${extraMsgs}
+    `;
+    container.scrollTop = container.scrollHeight;
+}
+
+function sendMsg() {
+    const input = document.getElementById('chat-input');
+    const text = input.value.trim();
+    if (!text) return;
+    sendMessage(clientId, { from: clientId, text, read: false });
+    input.value = '';
+    renderMessages();
+    // Auto-reply
+    setTimeout(() => {
+        sendMessage(clientId, {
+            from: 'simpact',
+            text: 'Merci pour votre message ! Notre équipe vous répondra dans les plus brefs délais (généralement sous 2h en jours ouvrés). ✅',
+            read: false
+        });
+        renderMessages();
+        addNotification(clientId, { type: 'message', title: 'Nouveau message', message: 'L\'équipe SIMPACT vous a répondu.' });
+        updateBadges();
+    }, 1500);
+}
+
+// ─── ANALYTICS ─────────────────────────────────────
+function renderAnalytics() {
+    const orders = getClientHistory(clientId);
+    const stats = getClientStats(clientId);
+
+    // Products breakdown
+    const productCounts = {};
+    orders.forEach(o => productCounts[o.prod] = (productCounts[o.prod] || 0) + 1);
+    const topProds = Object.entries(productCounts).sort((a,b) => b[1]-a[1]).slice(0,5);
+    const maxCount = topProds[0]?.[1] || 1;
+
+    // Monthly CA
+    const monthly = {};
+    orders.forEach(o => {
+        const m = o.date?.split('/');
+        if (m && m.length >= 2) {
+            const k = m[2]?.slice(0,4) + '-' + m[1];
+            monthly[k] = (monthly[k] || 0) + parseFloat(o.price || 0);
+        }
+    });
+    const months = Object.entries(monthly).sort().slice(-6);
+    const maxCA = Math.max(...months.map(m => m[1]), 1);
+
+    document.getElementById('analytics-content').innerHTML = `
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem;">
+            <div class="card">
+                <div class="card-title">Produits commandés</div>
+                ${topProds.length ? topProds.map(([prod, count]) => `
+                    <div style="margin-bottom:0.75rem;">
+                        <div style="display:flex;justify-content:space-between;font-size:0.82rem;margin-bottom:4px;">
+                            <span>${prod}</span><span style="color:var(--gold);font-weight:600;">${count} cmd</span>
+                        </div>
+                        <div style="height:5px;background:var(--surface3);border-radius:3px;overflow:hidden;">
+                            <div style="height:100%;background:var(--gold);width:${(count/maxCount*100).toFixed(0)}%;border-radius:3px;"></div>
+                        </div>
+                    </div>
+                `).join('') : '<p style="color:var(--text3);">Aucune donnée</p>'}
+            </div>
+            <div class="card">
+                <div class="card-title">CA par mois</div>
+                ${months.length ? `<div style="display:flex;align-items:flex-end;gap:6px;height:120px;margin-bottom:8px;">
+                    ${months.map(([m, ca]) => `
+                        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
+                            <div style="width:100%;background:var(--gold);border-radius:4px 4px 0 0;opacity:0.8;" title="${ca.toFixed(0)} DT" style="height:${Math.max(8,(ca/maxCA*100)).toFixed(0)}px;"></div>
+                            <div style="font-size:0.6rem;color:var(--text3);">${m.split('-').reverse().join('/')}</div>
+                        </div>
+                    `).join('')}
+                </div><div style="text-align:right;font-size:0.75rem;color:var(--text2);">DT HT</div>` : '<p style="color:var(--text3);">Aucune donnée</p>'}
+            </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;">
+            <div class="kpi-card kpi-gold"><div class="kpi-label">Commandes</div><div class="kpi-value">${stats.count}</div></div>
+            <div class="kpi-card kpi-blue"><div class="kpi-label">CA Total HT</div><div class="kpi-value">${stats.totalCA.toFixed(0)}<span class="unit"> DT</span></div></div>
+            <div class="kpi-card kpi-green"><div class="kpi-label">Payé</div><div class="kpi-value">${stats.paidCA.toFixed(0)}<span class="unit"> DT</span></div></div>
+            <div class="kpi-card"><div class="kpi-label">Panier moyen</div><div class="kpi-value">${stats.avgBasket.toFixed(0)}<span class="unit"> DT</span></div></div>
+        </div>
+    `;
+}
+
+// ─── PROFILE ───────────────────────────────────────
+function renderProfile() {
+    const users = getUsers();
+    const u = users.find(x => x.id === clientId);
+    const stats = getClientStats(clientId);
+    const lv = stats.loyaltyLevel;
+    const initials = clientName.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+
+    document.getElementById('profile-header').innerHTML = `
+        <div class="profile-avatar-lg">${initials}</div>
+        <div>
+            <div class="profile-name">${u?.name || clientName}</div>
+            <div class="profile-sector">${u?.sector || ''}</div>
+            <div>${lv.icon} Niveau ${lv.name} · ${stats.count} commandes · ${stats.totalCA.toFixed(0)} DT HT</div>
+        </div>
+    `;
+
+    document.getElementById('profile-grid').innerHTML = `
+        <div class="card">
+            <div class="card-heading">Informations de contact</div>
+            <div class="form-group">
+                <label class="input-label">Identifiant</label>
+                <input class="input-field" value="${clientId}" disabled style="opacity:0.5;">
+            </div>
+            <div class="form-group">
+                <label class="input-label">Nom de l'entreprise</label>
+                <input class="input-field" id="pf-name" value="${u?.name || ''}">
+            </div>
+            <div class="form-group">
+                <label class="input-label">Secteur d'activité</label>
+                <input class="input-field" id="pf-sector" value="${u?.sector || ''}">
+            </div>
+            <div class="form-group">
+                <label class="input-label">Email</label>
+                <input class="input-field" id="pf-email" type="email" value="${u?.email || ''}">
+            </div>
+            <div class="form-group">
+                <label class="input-label">Téléphone</label>
+                <input class="input-field" id="pf-phone" type="tel" value="${u?.phone || ''}">
+            </div>
+            <div class="form-group">
+                <label class="input-label">Adresse</label>
+                <input class="input-field" id="pf-address" value="${u?.address || ''}">
+            </div>
+            <button class="btn btn-primary btn-full" onclick="saveProfile()">💾 Enregistrer</button>
+        </div>
+        <div class="card">
+            <div class="card-heading">Sécurité</div>
+            <div class="form-group">
+                <label class="input-label">Nouveau mot de passe</label>
+                <input class="input-field" id="pf-pass1" type="password" placeholder="Laissez vide pour ne pas changer">
+            </div>
+            <div class="form-group">
+                <label class="input-label">Confirmer le mot de passe</label>
+                <input class="input-field" id="pf-pass2" type="password" placeholder="Répétez le nouveau mot de passe">
+            </div>
+            <button class="btn btn-secondary btn-full" onclick="changePass()">🔑 Changer le mot de passe</button>
+            <div class="divider"></div>
+            <div class="card-heading">Votre activité</div>
+            <div style="font-size:0.85rem;color:var(--text2);line-height:2;">
+                📦 Total commandes : <strong>${stats.count}</strong><br>
+                💰 CA total HT : <strong>${stats.totalCA.toFixed(2)} DT</strong><br>
+                🛒 Panier moyen : <strong>${stats.avgBasket.toFixed(2)} DT</strong><br>
+                ⭐ Produit favori : <strong>${stats.topProduct}</strong><br>
+                ${lv.icon} Niveau fidélité : <strong>${lv.name}</strong>
+            </div>
+        </div>
+    `;
+}
+
+function saveProfile() {
+    const updates = {
+        name: document.getElementById('pf-name').value,
+        sector: document.getElementById('pf-sector').value,
+        email: document.getElementById('pf-email').value,
+        phone: document.getElementById('pf-phone').value,
+        address: document.getElementById('pf-address').value
+    };
+    if (updateUserProfile(clientId, updates)) {
+        showToast('✅ Profil mis à jour', 'success');
+        buildSidebar();
+    }
+}
+
+function changePass() {
+    const p1 = document.getElementById('pf-pass1').value;
+    const p2 = document.getElementById('pf-pass2').value;
+    if (!p1) { showToast('⚠️ Saisissez un nouveau mot de passe', 'error'); return; }
+    if (p1 !== p2) { showToast('❌ Les mots de passe ne correspondent pas', 'error'); return; }
+    if (p1.length < 4) { showToast('⚠️ Mot de passe trop court (min 4 caractères)', 'error'); return; }
+    updateUserProfile(clientId, { newPass: p1 });
+    showToast('✅ Mot de passe modifié', 'success');
+    document.getElementById('pf-pass1').value = '';
+    document.getElementById('pf-pass2').value = '';
+}
+
+// ─── NOTIFICATIONS ─────────────────────────────────
+function toggleNotifs() {
+    const panel = document.getElementById('notif-panel');
+    panel.classList.toggle('show');
+    if (panel.classList.contains('show')) renderNotifs();
+}
+
+function closeNotifPanel() {
+    document.getElementById('notif-panel').classList.remove('show');
+}
+
+function renderNotifs() {
+    const notifs = getNotifications(clientId);
+    const el = document.getElementById('notif-list');
+    if (!notifs.length) {
+        el.innerHTML = '<div style="padding:2rem;text-align:center;color:var(--text3);font-size:0.85rem;">Aucune notification</div>';
+        return;
+    }
+    el.innerHTML = notifs.slice(0,10).map(n => `
+        <div class="notif-item ${!n.read ? 'unread' : ''}">
+            <div class="notif-msg-title">${n.title}</div>
+            <div class="notif-msg-text">${n.message}</div>
+            <div class="notif-time">${new Date(n.ts).toLocaleString('fr-FR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}</div>
+        </div>
+    `).join('');
+}
+
+function markAllNotifsRead() {
+    markNotificationsRead(clientId);
+    document.getElementById('notif-dot').classList.remove('show');
+    renderNotifs();
+}
+
+// ─── UTILS ─────────────────────────────────────────
+function getStatusCls(status) {
+    const map = {
+        'En attente': 's-en-attente',
+        'En cours': 's-en-cours',
+        'Terminé': 's-termine',
+        'Annulée': 's-annulee',
+        'À Valider (Web)': 's-valider'
+    };
+    return map[status] || 's-en-attente';
+}
+
+function showToast(msg, type = 'info') {
+    const container = document.getElementById('toasts');
+    const t = document.createElement('div');
+    t.className = `toast toast-${type}`;
+    const icons = { success: '✅', error: '❌', info: 'ℹ️' };
+    t.innerHTML = `<span>${icons[type]||'ℹ️'}</span><span>${msg}</span>`;
+    container.appendChild(t);
+    setTimeout(() => {
+        t.style.opacity = '0'; t.style.transform = 'translateX(20px)'; t.style.transition = '0.3s';
+        setTimeout(() => t.remove(), 300);
+    }, 4000);
+}
+
+function closeModal(id) {
+    document.getElementById(id).classList.remove('show');
+}
+
+// Close modals on overlay click
+document.querySelectorAll('.modal-overlay').forEach(m => {
+    m.addEventListener('click', e => { if (e.target === m) m.classList.remove('show'); });
+});
+
+// Close notif panel on outside click
+document.addEventListener('click', e => {
+    const panel = document.getElementById('notif-panel');
+    const btn = e.target.closest('.notif-btn');
+    if (!btn && !panel.contains(e.target)) panel.classList.remove('show');
+});
+
+// ─── START ─────────────────────────────────────────
+init();
+</script>
+</body>
+</html>

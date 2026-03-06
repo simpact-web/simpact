@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIMPACT — Centre de Contrôle</title>
+    <script src="users.js?v=3"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg: #080c16; --card: #0d1421; --border: rgba(255,255,255,0.07);
+            --gold: #C9A84C; --blue: #3B6FFF; --text: #f0ede8; --muted: #6b7280;
+        }
+        body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+        .bg { position: fixed; inset: 0; background: radial-gradient(ellipse 80% 60% at 20% 40%, rgba(59,111,255,0.06), transparent 60%); pointer-events: none; }
+
+        .container { max-width: 960px; margin: 0 auto; padding: 3rem 2rem; position: relative; }
+        .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 3rem; }
+        .brand { font-size: 2.2rem; font-weight: 900; letter-spacing: -1px; }
+        .brand span { color: var(--gold); }
+        .brand-sub { font-size: 0.85rem; color: var(--muted); margin-top: 4px; }
+        .header-right { display: flex; align-items: center; gap: 12px; }
+        .user-pill { background: rgba(255,255,255,0.07); padding: 6px 14px; border-radius: 20px; font-size: 0.82rem; }
+        .btn-out { background: transparent; border: 1px solid rgba(255,255,255,0.12); color: var(--muted); padding: 8px 18px; border-radius: 8px; cursor: pointer; font-family: 'Outfit', sans-serif; font-size: 0.85rem; transition: 0.2s; }
+        .btn-out:hover { border-color: rgba(255,255,255,0.25); color: var(--text); }
+
+        /* STATS ROW */
+        .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2.5rem; }
+        .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; }
+        .stat-num { font-family: 'DM Mono', monospace; font-size: 2rem; font-weight: 500; }
+        .stat-num.gold { color: var(--gold); }
+        .stat-num.blue { color: var(--blue); }
+        .stat-num.green { color: #10b981; }
+        .stat-num.red { color: #ef4444; }
+        .stat-label { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
+
+        /* MODULE GRID */
+        .section-title { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); margin-bottom: 1rem; }
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 2.5rem; }
+        .mod {
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: 14px; padding: 1.75rem;
+            text-decoration: none; color: var(--text);
+            display: flex; flex-direction: column; gap: 10px;
+            transition: all 0.2s; cursor: pointer; position: relative; overflow: hidden;
+        }
+        .mod::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: transparent; transition: background 0.2s; }
+        .mod:hover { border-color: rgba(255,255,255,0.15); transform: translateY(-3px); background: #111827; }
+        .mod:hover::before { background: var(--gold); }
+        .mod-icon { font-size: 2rem; }
+        .mod-name { font-weight: 800; font-size: 1rem; }
+        .mod-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.5; }
+        .mod-link { color: var(--muted); font-size: 0.75rem; margin-top: auto; font-family: 'DM Mono', monospace; }
+        .mod-badge { position: absolute; top: 1rem; right: 1rem; background: #ef4444; color: white; font-size: 0.65rem; font-weight: 700; padding: 2px 6px; border-radius: 10px; display: none; }
+        .mod-badge.show { display: block; }
+
+        @media (max-width: 700px) { .grid { grid-template-columns: 1fr 1fr; } .stats-row { grid-template-columns: 1fr 1fr; } }
+    </style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="container">
+    <div class="header">
+        <div>
+            <div class="brand">SIMP<span>ACT</span></div>
+            <div class="brand-sub">Centre de Contrôle — Accès Super Admin</div>
+        </div>
+        <div class="header-right">
+            <span class="user-pill" id="user-display">—</span>
+            <button class="btn-out" onclick="logout()">Déconnexion</button>
+        </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-row" id="stats-row"></div>
+
+    <!-- MODULES MÉTIER -->
+    <div class="section-title">Modules métier</div>
+    <div class="grid">
+        <a href="commercial.html" class="mod">
+            <div class="mod-icon">💼</div>
+            <div class="mod-name">Commercial</div>
+            <div class="mod-desc">Devis, commandes, approbation clients, PDF factures</div>
+            <div class="mod-link">→ commercial.html</div>
+            <span class="mod-badge" id="badge-web">0</span>
+        </a>
+        <a href="production.html" class="mod">
+            <div class="mod-icon">🏭</div>
+            <div class="mod-name">Atelier Production</div>
+            <div class="mod-desc">Kanban de production, fiches de fabrication, urgences</div>
+            <div class="mod-link">→ production.html</div>
+            <span class="mod-badge" id="badge-prod">0</span>
+        </a>
+        <a href="compta.html" class="mod">
+            <div class="mod-icon">💰</div>
+            <div class="mod-name">Comptabilité</div>
+            <div class="mod-desc">CA, TVA, suivi des paiements, exports</div>
+            <div class="mod-link">→ compta.html</div>
+        </a>
+        <a href="stock.html" class="mod">
+            <div class="mod-icon">📦</div>
+            <div class="mod-name">Stock Papier</div>
+            <div class="mod-desc">Entrées/sorties, alertes seuil, inventaire</div>
+            <div class="mod-link">→ stock.html</div>
+        </a>
+        <a href="clients.html" class="mod">
+            <div class="mod-icon">👥</div>
+            <div class="mod-name">Clients</div>
+            <div class="mod-desc">Fiches clients, historique, programme fidélité</div>
+            <div class="mod-link">→ clients.html</div>
+        </a>
+        <a href="admin.html" class="mod">
+            <div class="mod-icon">⚙️</div>
+            <div class="mod-name">Administration</div>
+            <div class="mod-desc">Utilisateurs, prix, sauvegardes, paramètres</div>
+            <div class="mod-link">→ admin.html</div>
+        </a>
+    </div>
+
+    <!-- PORTAILS -->
+    <div class="section-title">Portails externes</div>
+    <div class="grid" style="grid-template-columns: 1fr 1fr;">
+        <a href="client.html" class="mod">
+            <div class="mod-icon">🌐</div>
+            <div class="mod-name">Espace Client VIP</div>
+            <div class="mod-desc">Tester le portail de commande et fidélisation client</div>
+            <div class="mod-link">→ client.html</div>
+        </a>
+        <a href="index.html" class="mod">
+            <div class="mod-icon">🔐</div>
+            <div class="mod-name">Page de connexion</div>
+            <div class="mod-desc">Accéder à la page de connexion principale</div>
+            <div class="mod-link">→ index.html</div>
+        </a>
+    </div>
+</div>
+
+<script>
+    const u = checkAuth('superadmin');
+    if (u) document.getElementById('user-display').textContent = u.name;
+
+    function renderStats() {
+        const orders = getOrders();
+        const today = new Date().toLocaleDateString('fr-FR');
+        const todayOrders = orders.filter(o => o.date && o.date.startsWith(today.split(' ')[0]));
+        const pending = orders.filter(o => o.statusProd !== 'Terminé' && o.statusProd !== 'Annulée' && o.statusProd !== 'À Valider (Web)');
+        const webPending = orders.filter(o => o.statusProd === 'À Valider (Web)');
+        const ca = orders.filter(o => o.statusProd !== 'Annulée').reduce((s,o) => s + parseFloat(o.price||0), 0);
+
+        document.getElementById('stats-row').innerHTML = `
+            <div class="stat-card">
+                <div class="stat-num gold">${orders.filter(o=>o.statusProd!=='Annulée').length}</div>
+                <div class="stat-label">Commandes totales</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num blue">${pending.length}</div>
+                <div class="stat-label">En production</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num green">${ca.toFixed(0)} DT</div>
+                <div class="stat-label">CA Total HT</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num red">${webPending.length}</div>
+                <div class="stat-label">En attente approbation</div>
+            </div>
+        `;
+
+        const bw = document.getElementById('badge-web');
+        if (webPending.length > 0) { bw.textContent = webPending.length; bw.classList.add('show'); }
+        const bp = document.getElementById('badge-prod');
+        if (pending.length > 0) { bp.textContent = pending.length; bp.classList.add('show'); }
+    }
+    renderStats();
+</script>
+</body>
+</html>

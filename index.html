@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIMPACT — Connexion</title>
+    <script src="users.js?v=3"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg: #080c16;
+            --card: #0d1421;
+            --border: rgba(255,255,255,0.07);
+            --gold: #C9A84C;
+            --gold-light: #e8c97a;
+            --blue: #3B6FFF;
+            --text: #f0ede8;
+            --muted: #6b7a8d;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* ── BACKGROUND ANIMATION ── */
+        .bg-canvas {
+            position: fixed; inset: 0; z-index: 0;
+            background: radial-gradient(ellipse 80% 60% at 20% 40%, rgba(59,111,255,0.08) 0%, transparent 60%),
+                        radial-gradient(ellipse 60% 80% at 80% 60%, rgba(201,168,76,0.06) 0%, transparent 60%),
+                        var(--bg);
+        }
+        .bg-grid {
+            position: fixed; inset: 0; z-index: 0;
+            background-image: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 60px 60px;
+        }
+
+        /* ── SPLIT LAYOUT ── */
+        .split {
+            position: relative; z-index: 1;
+            display: flex; width: 100%; min-height: 100vh;
+        }
+
+        /* ── LEFT PANEL ── */
+        .panel-left {
+            flex: 1;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: flex-start;
+            padding: 4rem 5rem;
+            position: relative;
+        }
+
+        .brand {
+            margin-bottom: 3rem;
+        }
+        .brand-name {
+            font-size: 2.8rem; font-weight: 900; letter-spacing: -1px;
+            color: var(--text);
+        }
+        .brand-name span { color: var(--gold); }
+        .brand-tagline {
+            font-family: 'Crimson Pro', serif;
+            font-style: italic;
+            font-size: 1.1rem;
+            color: var(--muted);
+            margin-top: 6px;
+        }
+
+        .features { display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 3rem; }
+        .feature-item {
+            display: flex; align-items: flex-start; gap: 1rem;
+            animation: fadeInLeft 0.6s ease both;
+        }
+        .feature-item:nth-child(1) { animation-delay: 0.1s; }
+        .feature-item:nth-child(2) { animation-delay: 0.2s; }
+        .feature-item:nth-child(3) { animation-delay: 0.3s; }
+        .feature-item:nth-child(4) { animation-delay: 0.4s; }
+
+        @keyframes fadeInLeft {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .feature-icon {
+            width: 40px; height: 40px; border-radius: 10px;
+            background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.2);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem; flex-shrink: 0;
+        }
+        .feature-text h3 { font-size: 0.95rem; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+        .feature-text p { font-size: 0.82rem; color: var(--muted); line-height: 1.5; }
+
+        .bottom-badge {
+            font-size: 0.78rem; color: var(--muted); padding-top: 2rem;
+            border-top: 1px solid var(--border);
+        }
+        .bottom-badge strong { color: var(--gold); }
+
+        /* ── RIGHT PANEL ── */
+        .panel-right {
+            width: 460px; flex-shrink: 0;
+            background: rgba(255,255,255,0.02);
+            border-left: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: center;
+            padding: 3rem;
+            backdrop-filter: blur(20px);
+        }
+
+        .login-box {
+            width: 100%;
+            animation: fadeInUp 0.5s ease both;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .login-title {
+            font-size: 1.6rem; font-weight: 800;
+            color: var(--text); margin-bottom: 0.5rem;
+        }
+        .login-sub { font-size: 0.88rem; color: var(--muted); margin-bottom: 2.5rem; }
+
+        .form-group { margin-bottom: 1.25rem; }
+        .form-label {
+            display: block; font-size: 0.75rem; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.8px;
+            color: var(--muted); margin-bottom: 0.5rem;
+        }
+        .form-input {
+            width: 100%; padding: 0.9rem 1.1rem;
+            background: rgba(255,255,255,0.04);
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem; color: var(--text);
+            outline: none; transition: all 0.2s;
+        }
+        .form-input::placeholder { color: var(--muted); }
+        .form-input:focus {
+            border-color: var(--gold);
+            background: rgba(201,168,76,0.04);
+            box-shadow: 0 0 0 3px rgba(201,168,76,0.1);
+        }
+
+        .btn-login {
+            width: 100%; padding: 1rem;
+            background: linear-gradient(135deg, var(--gold), #a8843a);
+            color: #080c16; border: none; border-radius: 10px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem; font-weight: 700;
+            cursor: pointer; transition: all 0.2s;
+            margin-top: 0.5rem;
+            position: relative; overflow: hidden;
+        }
+        .btn-login::before {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.2), transparent);
+            opacity: 0; transition: opacity 0.2s;
+        }
+        .btn-login:hover::before { opacity: 1; }
+        .btn-login:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(201,168,76,0.35); }
+        .btn-login:active { transform: translateY(0); }
+        .btn-login:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+        .error-msg {
+            background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3);
+            color: #f87171; border-radius: 8px; padding: 0.75rem 1rem;
+            font-size: 0.85rem; margin-top: 1rem; display: none;
+        }
+
+        .divider {
+            display: flex; align-items: center; gap: 1rem;
+            margin: 1.75rem 0; color: var(--muted); font-size: 0.78rem;
+        }
+        .divider::before, .divider::after {
+            content: ''; flex: 1; height: 1px; background: var(--border);
+        }
+
+        .quick-logins { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .quick-btn {
+            padding: 0.6rem 0.75rem;
+            background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+            border-radius: 8px; cursor: pointer; font-size: 0.78rem;
+            color: var(--muted); font-family: 'Outfit', sans-serif;
+            transition: all 0.15s; text-align: left; display: flex; align-items: center; gap: 6px;
+        }
+        .quick-btn:hover { border-color: rgba(255,255,255,0.15); color: var(--text); background: rgba(255,255,255,0.06); }
+        .quick-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+        .dot-gold { background: var(--gold); }
+        .dot-blue { background: var(--blue); }
+        .dot-green { background: #10b981; }
+        .dot-orange { background: #f59e0b; }
+
+        .version-tag {
+            text-align: center; margin-top: 2rem;
+            font-size: 0.72rem; color: rgba(107,122,141,0.6);
+        }
+
+        /* ── FLOATING ORBS ── */
+        .orb {
+            position: fixed; border-radius: 50%;
+            filter: blur(80px); pointer-events: none; z-index: 0;
+            animation: float 8s ease-in-out infinite;
+        }
+        .orb-1 { width: 300px; height: 300px; background: rgba(59,111,255,0.06); top: 10%; left: 5%; animation-delay: 0s; }
+        .orb-2 { width: 250px; height: 250px; background: rgba(201,168,76,0.06); bottom: 15%; right: 25%; animation-delay: 3s; }
+        .orb-3 { width: 200px; height: 200px; background: rgba(16,185,129,0.04); top: 50%; left: 40%; animation-delay: 5s; }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            33% { transform: translate(20px, -20px); }
+            66% { transform: translate(-15px, 15px); }
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 900px) {
+            .panel-left { display: none; }
+            .panel-right { width: 100%; border: none; padding: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-canvas"></div>
+    <div class="bg-grid"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <div class="split">
+        <!-- LEFT -->
+        <div class="panel-left">
+            <div class="brand">
+                <div class="brand-name">SIMP<span>ACT</span></div>
+                <div class="brand-tagline">Votre imprimerie numérique en ligne</div>
+            </div>
+
+            <div class="features">
+                <div class="feature-item">
+                    <div class="feature-icon">🎯</div>
+                    <div class="feature-text">
+                        <h3>Commandez en 2 minutes</h3>
+                        <p>Configurateur de produits intelligent avec calcul de prix en temps réel</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🔍</div>
+                    <div class="feature-text">
+                        <h3>Suivi en temps réel</h3>
+                        <p>Suivez l'avancement de vos commandes à chaque étape de production</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">📁</div>
+                    <div class="feature-text">
+                        <h3>Bibliothèque de fichiers</h3>
+                        <p>Stockez et gérez vos fichiers de création, templates et assets graphiques</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">💰</div>
+                    <div class="feature-text">
+                        <h3>Historique & Facturation</h3>
+                        <p>Accédez à l'intégralité de vos devis, commandes et factures</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bottom-badge">
+                <strong>SIMPACT</strong> — Impression Numérique Professionnelle · Tunis, Tunisie<br>
+                Plateforme sécurisée · Données chiffrées · RGPD
+            </div>
+        </div>
+
+        <!-- RIGHT -->
+        <div class="panel-right">
+            <div class="login-box">
+                <div class="login-title">Bon retour 👋</div>
+                <div class="login-sub">Connectez-vous à votre espace SIMPACT</div>
+
+                <div class="form-group">
+                    <label class="form-label">Identifiant</label>
+                    <input type="text" class="form-input" id="inp-user" placeholder="Votre identifiant" autocomplete="username">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Mot de passe</label>
+                    <input type="password" class="form-input" id="inp-pass" placeholder="••••••••" autocomplete="current-password">
+                </div>
+
+                <button class="btn-login" id="btn-login" onclick="doLogin()">
+                    Se connecter →
+                </button>
+
+                <div class="error-msg" id="error-msg">
+                    ❌ Identifiant ou mot de passe incorrect. Vérifiez vos informations.
+                </div>
+
+                <div class="divider">Accès rapide démo</div>
+
+                <div class="quick-logins">
+                    <button class="quick-btn" onclick="quickLogin('youssef','youssef123')">
+                        <span class="quick-dot dot-gold"></span> PDG (Super Admin)
+                    </button>
+                    <button class="quick-btn" onclick="quickLogin('comm01','vente')">
+                        <span class="quick-dot dot-blue"></span> Commercial
+                    </button>
+                    <button class="quick-btn" onclick="quickLogin('prod01','atelier')">
+                        <span class="quick-dot dot-orange"></span> Atelier
+                    </button>
+                    <button class="quick-btn" onclick="quickLogin('client01','client123')">
+                        <span class="quick-dot dot-green"></span> Client démo
+                    </button>
+                </div>
+
+                <div class="version-tag">SIMPACT ERP v3.0 · © 2026</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Redirect if already logged in
+        try {
+            const s = JSON.parse(localStorage.getItem('SIMPACT_USER'));
+            const u = getUsers().find(x => x.id === s?.id);
+            if (u) window.location.href = u.redirect;
+        } catch(e) {}
+
+        document.getElementById('inp-pass').addEventListener('keydown', e => {
+            if (e.key === 'Enter') doLogin();
+        });
+        document.getElementById('inp-user').addEventListener('keydown', e => {
+            if (e.key === 'Enter') document.getElementById('inp-pass').focus();
+        });
+
+        function doLogin() {
+            const userId = document.getElementById('inp-user').value.trim();
+            const pass = document.getElementById('inp-pass').value;
+            const btn = document.getElementById('btn-login');
+            const err = document.getElementById('error-msg');
+
+            err.style.display = 'none';
+            btn.disabled = true;
+            btn.textContent = 'Connexion...';
+
+            setTimeout(() => {
+                const found = login(userId, pass);
+                if (found) {
+                    btn.textContent = '✓ Accès autorisé';
+                    setTimeout(() => { window.location.href = found.redirect; }, 400);
+                } else {
+                    err.style.display = 'block';
+                    btn.disabled = false;
+                    btn.textContent = 'Se connecter →';
+                    document.getElementById('inp-pass').value = '';
+                    document.getElementById('inp-pass').focus();
+                }
+            }, 500);
+        }
+
+        function quickLogin(id, pass) {
+            document.getElementById('inp-user').value = id;
+            document.getElementById('inp-pass').value = pass;
+            doLogin();
+        }
+    </script>
+</body>
+</html>

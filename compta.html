@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIMPACT — Comptabilité</title>
+    <script src="users.js?v=3"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg: #0a0a0f; --card: #111118; --card2: #16161f;
+            --text: #f1f0ed; --green: #10b981; --blue: #3b82f6;
+            --amber: #f0a500; --red: #ef4444; --purple: #8b5cf6;
+            --border: #1e1e2a; --muted: #6b7280;
+        }
+        body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+        /* TOPBAR */
+        .topbar { background: var(--card); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 2rem; position: sticky; top: 0; z-index: 100; }
+        .topbar-brand { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; }
+        .topbar-brand span { background: var(--green); color: var(--bg); padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; }
+        .topbar-right { display: flex; align-items: center; gap: 12px; }
+        .user-chip { background: rgba(255,255,255,0.07); padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; color: #94a3b8; }
+        .btn-logout { background: transparent; border: 1px solid rgba(255,255,255,0.15); color: #94a3b8; padding: 5px 12px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; }
+        .btn-logout:hover { color: white; }
+
+        /* LAYOUT */
+        .page { max-width: 1400px; margin: 0 auto; padding: 2rem; }
+
+        /* KPI ROW */
+        .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5px; background: var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 2rem; }
+        .kpi { background: var(--card); padding: 1.5rem; }
+        .kpi-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 0.5rem; }
+        .kpi-value { font-family: 'DM Mono', monospace; font-size: 1.9rem; font-weight: 500; }
+        .kpi-sub { font-size: 0.78rem; color: var(--muted); margin-top: 4px; }
+        .kpi-green { color: var(--green); }
+        .kpi-amber { color: var(--amber); }
+        .kpi-blue { color: var(--blue); }
+        .kpi-red { color: var(--red); }
+
+        /* CHARTS AREA */
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem; }
+        .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; }
+        .card-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.9rem; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 8px; }
+
+        /* PRODUCT BARS */
+        .prod-bar-row { display: flex; align-items: center; gap: 12px; margin-bottom: 0.9rem; }
+        .prod-name { width: 120px; font-size: 0.82rem; color: #94a3b8; flex-shrink: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .prod-bar-wrap { flex: 1; background: rgba(255,255,255,0.05); border-radius: 3px; height: 6px; }
+        .prod-bar-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--green), #34d399); transition: width 0.6s ease; }
+        .prod-bar-val { font-family: 'DM Mono', monospace; font-size: 0.78rem; color: var(--green); width: 80px; text-align: right; flex-shrink: 0; }
+
+        /* PAYMENT STATUS */
+        .pay-stat-row { display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid var(--border); }
+        .pay-stat-row:last-child { border-bottom: none; }
+        .pay-label { font-size: 0.85rem; }
+        .pay-amount { font-family: 'DM Mono', monospace; font-size: 0.9rem; }
+
+        /* TABLE */
+        .table-section { background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 2rem; }
+        .table-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; border-bottom: 1px solid var(--border); }
+        .table-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.9rem; }
+        .filter-row { display: flex; gap: 8px; }
+        .filter-btn { padding: 4px 12px; border: 1px solid var(--border); border-radius: 6px; background: transparent; color: var(--muted); font-size: 0.8rem; cursor: pointer; transition: 0.2s; }
+        .filter-btn.active { background: var(--green); color: var(--bg); border-color: var(--green); font-weight: 600; }
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 0.75rem 1.25rem; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); border-bottom: 1px solid var(--border); }
+        td { padding: 0.9rem 1.25rem; border-bottom: 1px solid var(--border); font-size: 0.88rem; }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: rgba(255,255,255,0.02); }
+
+        .status-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 10px; font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .status-badge:hover { opacity: 0.8; }
+        .status-paid { background: rgba(16,185,129,0.15); color: var(--green); }
+        .status-partial { background: rgba(240,165,0,0.15); color: var(--amber); }
+        .status-unpaid { background: rgba(239,68,68,0.1); color: var(--red); }
+        .prod-tag { background: rgba(59,130,246,0.1); color: var(--blue); padding: 2px 8px; border-radius: 8px; font-size: 0.75rem; }
+        .mono { font-family: 'DM Mono', monospace; }
+
+        /* EMPTY */
+        .empty-row td { text-align: center; padding: 2.5rem; color: var(--muted); }
+    </style>
+</head>
+<body>
+
+<div class="topbar">
+    <div class="topbar-brand">SIMPACT <span>COMPTA</span></div>
+    <div class="topbar-right">
+        <span class="user-chip" id="user-display">—</span>
+        <button class="btn-logout" onclick="logout()">Déconnexion</button>
+    </div>
+</div>
+
+<div class="page">
+
+    <!-- KPI -->
+    <div class="kpi-row">
+        <div class="kpi">
+            <div class="kpi-label">Chiffre d'affaires HT</div>
+            <div class="kpi-value kpi-green" id="kpi-ca">—</div>
+            <div class="kpi-sub" id="kpi-ca-sub">Total commandes</div>
+        </div>
+        <div class="kpi">
+            <div class="kpi-label">TVA collectée (19%)</div>
+            <div class="kpi-value kpi-blue" id="kpi-tva">—</div>
+            <div class="kpi-sub">À reverser</div>
+        </div>
+        <div class="kpi">
+            <div class="kpi-label">Encaissé (Payé)</div>
+            <div class="kpi-value kpi-green" id="kpi-paid">—</div>
+            <div class="kpi-sub" id="kpi-paid-count">—</div>
+        </div>
+        <div class="kpi">
+            <div class="kpi-label">En attente paiement</div>
+            <div class="kpi-value kpi-red" id="kpi-unpaid">—</div>
+            <div class="kpi-sub" id="kpi-unpaid-count">—</div>
+        </div>
+    </div>
+
+    <!-- ANALYTICS -->
+    <div class="grid-2">
+        <div class="card">
+            <div class="card-title">📊 Revenus par produit</div>
+            <div id="prod-breakdown">—</div>
+        </div>
+        <div class="card">
+            <div class="card-title">💳 Statut des paiements</div>
+            <div id="payment-stats">—</div>
+        </div>
+    </div>
+
+    <!-- TABLE -->
+    <div class="table-section">
+        <div class="table-header">
+            <div class="table-title">📋 Historique des commandes</div>
+            <div class="filter-row">
+                <button class="filter-btn active" onclick="filterTable('all', this)">Toutes</button>
+                <button class="filter-btn" onclick="filterTable('Non payé', this)">Non payées</button>
+                <button class="filter-btn" onclick="filterTable('Payé', this)">Payées</button>
+            </div>
+        </div>
+        <div style="overflow-x:auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Réf</th>
+                        <th>Client</th>
+                        <th>Produit</th>
+                        <th>Qté</th>
+                        <th>Montant HT</th>
+                        <th>TVA</th>
+                        <th>TTC</th>
+                        <th>Statut</th>
+                    </tr>
+                </thead>
+                <tbody id="orders-tbody"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    const user = checkAuth(['compta', 'admin']);
+    if (user) document.getElementById('user-display').textContent = user.name;
+
+    const TVA = 0.19;
+    let allOrders = [];
+    let currentFilter = 'all';
+
+    function fmt(n) { return parseFloat(n).toLocaleString('fr-FR', { minimumFractionDigits: 2 }) + ' DT'; }
+
+    function loadStats() {
+        allOrders = getOrders().filter(o => o.statusProd !== 'Annulée' && o.statusProd !== 'À Valider (Web)');
+
+        let totalHT = 0, totalPaid = 0, totalUnpaid = 0, paidCount = 0, unpaidCount = 0;
+        const breakdown = {};
+        const payStats = { 'Payé': 0, 'Non payé': 0, 'Acompte': 0 };
+
+        allOrders.forEach(o => {
+            const ht = parseFloat(o.price || 0);
+            totalHT += ht;
+            breakdown[o.prod] = (breakdown[o.prod] || 0) + ht;
+            payStats[o.statusCompta] = (payStats[o.statusCompta] || 0) + ht;
+
+            if (o.statusCompta === 'Payé') { totalPaid += ht; paidCount++; }
+            else { totalUnpaid += ht; unpaidCount++; }
+        });
+
+        const totalTVA = totalHT * TVA;
+        document.getElementById('kpi-ca').textContent = fmt(totalHT);
+        document.getElementById('kpi-ca-sub').textContent = allOrders.length + ' commandes';
+        document.getElementById('kpi-tva').textContent = fmt(totalTVA);
+        document.getElementById('kpi-paid').textContent = fmt(totalPaid);
+        document.getElementById('kpi-paid-count').textContent = paidCount + ' commandes payées';
+        document.getElementById('kpi-unpaid').textContent = fmt(totalUnpaid);
+        document.getElementById('kpi-unpaid-count').textContent = unpaidCount + ' à encaisser';
+
+        // Product breakdown
+        const maxVal = Math.max(...Object.values(breakdown), 1);
+        const sortedProds = Object.keys(breakdown).sort((a,b) => breakdown[b]-breakdown[a]);
+        document.getElementById('prod-breakdown').innerHTML = sortedProds.length
+            ? sortedProds.map(p => `
+                <div class="prod-bar-row">
+                    <span class="prod-name">${p}</span>
+                    <div class="prod-bar-wrap"><div class="prod-bar-fill" style="width:${(breakdown[p]/maxVal*100).toFixed(1)}%"></div></div>
+                    <span class="prod-bar-val">${fmt(breakdown[p])}</span>
+                </div>
+            `).join('')
+            : '<p style="text-align:center;color:var(--muted);padding:1rem;">Aucune donnée.</p>';
+
+        // Payment stats
+        const payTotal = Object.values(payStats).reduce((s,v) => s+v, 0) || 1;
+        document.getElementById('payment-stats').innerHTML = `
+            <div class="pay-stat-row">
+                <span class="pay-label"><span style="color:var(--green);">●</span> Payé</span>
+                <span class="pay-amount kpi-green">${fmt(payStats['Payé'] || 0)}</span>
+            </div>
+            <div class="pay-stat-row">
+                <span class="pay-label"><span style="color:var(--amber);">●</span> Acompte versé</span>
+                <span class="pay-amount kpi-amber">${fmt(payStats['Acompte'] || 0)}</span>
+            </div>
+            <div class="pay-stat-row">
+                <span class="pay-label"><span style="color:var(--red);">●</span> Non payé</span>
+                <span class="pay-amount kpi-red">${fmt(payStats['Non payé'] || 0)}</span>
+            </div>
+            <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border);">
+                <div style="height:8px;background:rgba(255,255,255,0.05);border-radius:4px;overflow:hidden;">
+                    <div style="height:100%;width:${((payStats['Payé']||0)/payTotal*100).toFixed(1)}%;background:var(--green);border-radius:4px;"></div>
+                </div>
+                <div style="font-size:0.78rem;color:var(--muted);margin-top:6px;">
+                    Taux d'encaissement: <strong style="color:var(--green)">${((payStats['Payé']||0)/payTotal*100).toFixed(1)}%</strong>
+                </div>
+            </div>
+        `;
+
+        renderTable();
+    }
+
+    function renderTable() {
+        const tbody = document.getElementById('orders-tbody');
+        const filtered = currentFilter === 'all' ? allOrders : allOrders.filter(o => o.statusCompta === currentFilter);
+
+        if (!filtered.length) {
+            tbody.innerHTML = '<tr class="empty-row"><td colspan="9">Aucune commande.</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = filtered.map(o => {
+            const ht = parseFloat(o.price || 0);
+            const tva = o.tva ? parseFloat(o.tva) : ht * TVA;
+            const ttc = o.priceTTC ? parseFloat(o.priceTTC) : ht + tva;
+            const sc = o.statusCompta || 'Non payé';
+            const scClass = sc === 'Payé' ? 'status-paid' : sc === 'Acompte' ? 'status-partial' : 'status-unpaid';
+
+            return `<tr>
+                <td style="color:var(--muted);font-size:0.8rem;">${o.date}</td>
+                <td><span class="mono" style="font-size:0.8rem;">${o.ref}</span></td>
+                <td><strong>${o.client}</strong></td>
+                <td><span class="prod-tag">${o.prod}</span></td>
+                <td class="mono">${o.qty}</td>
+                <td class="mono" style="color:var(--green);">${ht.toFixed(2)} DT</td>
+                <td class="mono" style="color:var(--muted);">${tva.toFixed(2)} DT</td>
+                <td class="mono" style="font-weight:600;">${ttc.toFixed(2)} DT</td>
+                <td>
+                    <select class="status-badge ${scClass}" onchange="changePayStatus('${o.ref}', this.value, this)" style="background:transparent;border:none;cursor:pointer;font-family:inherit;font-size:0.75rem;font-weight:600;padding:3px 8px;border-radius:10px;">
+                        <option value="Non payé" ${sc === 'Non payé' ? 'selected' : ''}>❌ Non payé</option>
+                        <option value="Acompte" ${sc === 'Acompte' ? 'selected' : ''}>🔶 Acompte</option>
+                        <option value="Payé" ${sc === 'Payé' ? 'selected' : ''}>✅ Payé</option>
+                    </select>
+                </td>
+            </tr>`;
+        }).join('');
+    }
+
+    function changePayStatus(ref, newStatus, selectEl) {
+        updateOrderStatus(ref, newStatus, 'compta');
+        const scClass = newStatus === 'Payé' ? 'status-paid' : newStatus === 'Acompte' ? 'status-partial' : 'status-unpaid';
+        selectEl.className = `status-badge ${scClass}`;
+        loadStats();
+    }
+
+    function filterTable(filter, btn) {
+        currentFilter = filter;
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderTable();
+    }
+
+    loadStats();
+    setInterval(loadStats, 8000);
+</script>
+</body>
+</html>
