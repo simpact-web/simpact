@@ -1106,13 +1106,13 @@ let cfg = { product: null, options: {}, qty: null, delay: 'Standard', delayPct: 
 let currentStep = 1;
 
 const PRODUCTS = [
-    { id: 'flyer', icon: '📄', name: 'Flyer', desc: 'A5/A6 recto ou recto-verso' },
+    { id: 'flyer', icon: '📄', name: 'Flyer A5', desc: 'Recto ou recto-verso' },
     { id: 'carte', icon: '🪪', name: 'Carte de visite', desc: 'Standard 8.5×5.5cm' },
     { id: 'depliant', icon: '📰', name: 'Dépliant', desc: 'A5, A4, A3 plié' },
     { id: 'entete', icon: '📝', name: 'Papier entête', desc: 'A4 personnalisé' },
-    { id: 'affiche', icon: '🖼️', name: 'Affiche', desc: 'A3, A2, A1 et plus' },
+    { id: 'affiche', icon: '🖼️', name: 'Affiche', desc: '29×42cm ou 32×48cm' },
     { id: 'brochure', icon: '📚', name: 'Brochure', desc: 'Multi-pages reliés' },
-    { id: 'livre', icon: '📖', name: 'Livre / Rapport', desc: 'Impression et reliure' },
+    { id: 'livre', icon: '📖', name: 'Livres édition', desc: 'Impression dos carré-collé' },
     { id: 'enveloppe', icon: '✉️', name: 'Enveloppe', desc: 'C5, C4, DL personnalisé' },
     { id: 'autre', icon: '⚡', name: 'Autre produit', desc: 'Sur devis personnalisé' }
 ];
@@ -1120,11 +1120,12 @@ const PRODUCTS = [
 const OPTIONS_MAP = {
     flyer: [
         { id: 'impression', label: 'Impression', type: 'chips', values: ['Recto','Recto-Verso'], default: 'Recto', required: true },
-        { id: 'papier', label: 'Grammage', type: 'chips', values: ['90g','135g','170g','250g'], default: '135g' },
+        { id: 'papier', label: 'Grammage', type: 'chips', values: ['90g','115g','135g','170g','200g'], default: '135g' },
         { id: 'finition', label: 'Finition', type: 'chips', values: ['Sans finition','Pelliculage brillant','Pelliculage mat'], default: 'Sans finition' }
     ],
     carte: [
-        { id: 'finition', label: 'Finition', type: 'chips', values: ['Sans pellicule','Pelliculage brillant','Pelliculage mat'], default: 'Sans pellicule', required: true },
+        { id: 'papier', label: 'Papier', type: 'chips', values: ['300g mat','300g brillant','350g mat','350g brillant'], default: '300g mat', required: true },
+        { id: 'finition', label: 'Finition pelliculage', type: 'chips', values: ['Sans pellicule','Pelliculage brillant','Pelliculage mat'], default: 'Sans pellicule' },
         { id: 'coins', label: 'Coins', type: 'chips', values: ['Droits','Arrondis'], default: 'Droits' }
     ],
     depliant: [
@@ -1133,22 +1134,24 @@ const OPTIONS_MAP = {
         { id: 'finition', label: 'Finition', type: 'chips', values: ['Sans finition','Pelliculage brillant','Pelliculage mat'], default: 'Sans finition' }
     ],
     entete: [
-        { id: 'papier', label: 'Type de papier', type: 'chips', values: ['Standard 80g','Premium 90g','Couché brillant 120g'], default: 'Standard 80g' },
-        { id: 'numerotation', label: 'Numérotation', type: 'chips', values: ['Sans','Avec numérotation'], default: 'Sans' }
+        { id: 'papier', label: 'Type de papier', type: 'chips', values: ['Standard 80g','Premium 90g','Premium 100g'], default: 'Standard 80g' }
     ],
     affiche: [
-        { id: 'format', label: 'Format', type: 'chips', values: ['A3 (29×42cm)','A2 (42×59cm)','A1 (59×84cm)','40×60cm','60×80cm','70×100cm'], default: 'A3 (29×42cm)' },
-        { id: 'papier', label: 'Support', type: 'chips', values: ['Couché 135g','Couché 170g','Couché 250g','Bâche PVC'], default: 'Couché 135g' }
+        { id: 'format', label: 'Format', type: 'chips', values: ['29×42cm','32×48cm'], default: '29×42cm' },
+        { id: 'papier', label: 'Support', type: 'chips', values: ['Couché 135g brillant','Couché 170g brillant'], default: 'Couché 135g brillant' }
     ],
     brochure: [
-        { id: 'pages', label: 'Nombre de pages', type: 'chips', values: ['8p','12p','16p','20p','24p','32p','48p','64p'], default: '16p' },
-        { id: 'reliure', label: 'Reliure', type: 'chips', values: ['Agrafée dos carré','Collée (dos carré-collé)','Spirale'], default: 'Agrafée dos carré' },
-        { id: 'couverture', label: 'Couverture', type: 'chips', values: ['250g brillant','300g mat','Carton 350g'], default: '250g brillant' }
+        { id: 'format', label: 'Format', type: 'chips', values: ['A5 (14.8×21cm)','A4 (21×29.7cm)','13.5×21cm'], default: 'A5 (14.8×21cm)' },
+        { id: 'reliure', label: 'Reliure', type: 'chips', values: ['Agrafé','Collée (dos carré-collé)','Spirale'], default: 'Agrafé', required: true },
+        { id: 'pages', label: 'Nombre de pages', type: 'pages_brochure',
+          chips_values: ['8p','12p','16p','20p','24p','28p','32p','36p','40p','44p','48p'], default_chips: '16p',
+          note_number: 'Saisissez le nombre de pages (multiple de 4 recommandé)' },
+        { id: 'papier_interieur', label: 'Papier intérieur', type: 'chips', values: ['90g blanc','115g couché','135g couché'], default: '90g blanc' },
+        { id: 'couverture', label: 'Couverture', type: 'chips', values: ['250g brillant','250g mat','300g brillant','300g mat','350g brillant','350g mat'], default: '250g brillant' }
     ],
     livre: [
-        { id: 'pages', label: 'Nombre de pages', type: 'chips', values: ['50-100p','100-200p','200-400p','400p+'], default: '100-200p' },
         { id: 'format', label: 'Format', type: 'chips', values: ['A5 (14.8×21cm)','A4 (21×29.7cm)','13.5×21cm'], default: 'A5 (14.8×21cm)' },
-        { id: 'reliure', label: 'Reliure', type: 'chips', values: ['Dos carré-collé','Spirale','Couture'], default: 'Dos carré-collé' }
+        { id: 'pages', label: 'Nombre de pages', type: 'number', placeholder: 'Ex : 120', min: 1, note: 'Reliure : dos carré-collé' }
     ],
     enveloppe: [
         { id: 'format', label: 'Format', type: 'chips', values: ['DL (11×22cm)','C5 (16×22cm)','C4 (22×31cm)'], default: 'DL (11×22cm)' },
@@ -1375,26 +1378,88 @@ function buildOptionsStep() {
         document.getElementById('options-content').innerHTML = `<p style="color:var(--text2);margin-bottom:1rem;">Ce produit sera configuré sur devis personnalisé. Décrivez vos besoins dans les instructions à l'étape suivante.</p>`;
         buildQtyStep(); goStep(3); return;
     }
-    document.getElementById('options-content').innerHTML = opts.map(opt => `
-        <div class="form-group">
-            <label class="input-label">${opt.label}</label>
-            <div class="option-chips">
-                ${opt.values.map(v => `
-                    <span class="chip ${(cfg.options[opt.id] || opt.default) === v ? 'selected' : ''}"
-                          onclick="selectOption('${opt.id}','${v}',this)">${v}</span>
-                `).join('')}
-            </div>
-        </div>
-    `).join('');
-    // Set defaults
-    opts.forEach(opt => { if (!cfg.options[opt.id]) cfg.options[opt.id] = opt.default; });
+
+    // Set defaults first
+    opts.forEach(opt => {
+        if (!cfg.options[opt.id]) {
+            if (opt.type === 'chips') cfg.options[opt.id] = opt.default;
+            else if (opt.type === 'pages_brochure') cfg.options[opt.id] = opt.default_chips;
+        }
+    });
+
+    document.getElementById('options-content').innerHTML = opts.map(opt => {
+        if (opt.type === 'chips') {
+            return `
+            <div class="form-group" id="opt-group-${opt.id}">
+                <label class="input-label">${opt.label}</label>
+                <div class="option-chips">
+                    ${opt.values.map(v => `
+                        <span class="chip ${(cfg.options[opt.id] || opt.default) === v ? 'selected' : ''}"
+                              onclick="selectOption('${opt.id}','${v}',this)">${v}</span>
+                    `).join('')}
+                </div>
+            </div>`;
+        }
+        if (opt.type === 'pages_brochure') {
+            const isAgrafé = (cfg.options['reliure'] || 'Agrafé') === 'Agrafé';
+            return `
+            <div class="form-group" id="opt-group-${opt.id}">
+                <label class="input-label">${opt.label}</label>
+                <div id="pages-chips-wrap" style="display:${isAgrafé ? 'flex' : 'none'};flex-wrap:wrap;gap:8px;">
+                    ${opt.chips_values.map(v => `
+                        <span class="chip ${(cfg.options[opt.id] || opt.default_chips) === v ? 'selected' : ''}"
+                              onclick="selectOption('pages','${v}',this)">${v}</span>
+                    `).join('')}
+                </div>
+                <div id="pages-number-wrap" style="display:${isAgrafé ? 'none' : 'block'};">
+                    <input type="number" class="input-field" id="pages-number-input"
+                           placeholder="${opt.note_number}" min="4" step="4"
+                           value="${isAgrafé ? '' : (cfg.options[opt.id] && !cfg.options[opt.id].endsWith('p') ? cfg.options[opt.id] : '')}"
+                           oninput="cfg.options.pages=this.value;updateLivePrice();">
+                    <div style="font-size:0.72rem;color:var(--text3);margin-top:4px;">Nombre de pages intérieures (multiple de 4 recommandé)</div>
+                </div>
+            </div>`;
+        }
+        if (opt.type === 'number') {
+            return `
+            <div class="form-group" id="opt-group-${opt.id}">
+                <label class="input-label">${opt.label}${opt.note ? ' <span style="color:var(--text3);font-weight:400;text-transform:none;letter-spacing:0;">— '+opt.note+'</span>' : ''}</label>
+                <input type="number" class="input-field" id="opt-number-${opt.id}"
+                       placeholder="${opt.placeholder || ''}" min="${opt.min || 1}"
+                       value="${cfg.options[opt.id] || ''}"
+                       oninput="cfg.options['${opt.id}']=this.value;updateLivePrice();">
+            </div>`;
+        }
+        return '';
+    }).join('');
+
     updateLivePrice();
 }
 
 function selectOption(key, val, el) {
     cfg.options[key] = val;
-    el.closest('.option-chips').querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+    el.closest('.option-chips, div').querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
     el.classList.add('selected');
+    // Si on change la reliure sur une brochure, basculer pages chips ↔ number
+    if (key === 'reliure' && cfg.product === 'brochure') {
+        const isAgrafé = val === 'Agrafé';
+        const chipsWrap = document.getElementById('pages-chips-wrap');
+        const numberWrap = document.getElementById('pages-number-wrap');
+        if (chipsWrap && numberWrap) {
+            chipsWrap.style.display = isAgrafé ? 'flex' : 'none';
+            numberWrap.style.display = isAgrafé ? 'none' : 'block';
+            // Reset pages value
+            cfg.options.pages = isAgrafé ? '16p' : '';
+            if (isAgrafé) {
+                chipsWrap.querySelectorAll('.chip').forEach(c => {
+                    c.classList.toggle('selected', c.textContent === '16p');
+                });
+            } else {
+                const inp = document.getElementById('pages-number-input');
+                if (inp) inp.value = '';
+            }
+        }
+    }
     updateLivePrice();
 }
 
@@ -1483,13 +1548,16 @@ function calcPrice() {
         const up = lookupTable(tarifs.affiche);
         if (up) baseHT = up * qty;
     } else if (cfg.product === 'brochure') {
-        // Estimate: paliers_brochure
+        // paliers_brochure
         const pc = prixConfig.paliers_brochure?.couleur_recto_verso || [];
         let unitP = 1.5;
         for (const p of pc) { if (qty >= p.min && qty <= p.max) unitP = p.price; }
-        const pages = parseInt((cfg.options.pages||'16p')) || 16;
+        // pages: either '16p' (chips) or a plain number (free input)
+        const pagesRaw = cfg.options.pages || '16p';
+        const pages = parseInt(String(pagesRaw).replace('p','')) || 16;
         baseHT = unitP * qty * (pages / 4);
     } else if (['livre','enveloppe','autre'].includes(cfg.product)) {
+        // livre/enveloppe : sur devis, pas de calcul automatique
         baseHT = null;
     }
 
