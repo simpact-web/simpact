@@ -130,11 +130,15 @@ function checkAuth(allowedRoles) {
         if (!session) { window.location.href = 'index.html'; return null; }
         const user = JSON.parse(session);
         if (!user || !user.id) { window.location.href = 'index.html'; return null; }
+        // superadmin a accès à tout
+        if (user.role === 'superadmin') return user;
+        // Page réservée superadmin uniquement
         const roles = Array.isArray(allowedRoles) ? allowedRoles : [allowedRoles];
-        if (roles.includes('superadmin') && user.role !== 'superadmin') {
+        if (roles.length === 1 && roles[0] === 'superadmin') {
             window.location.href = 'index.html'; return null;
         }
-        if (!roles.includes('superadmin') && !roles.includes(user.role)) {
+        // Vérification du rôle
+        if (!roles.includes(user.role)) {
             window.location.href = 'index.html'; return null;
         }
         return user;
