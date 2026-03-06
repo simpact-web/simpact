@@ -1169,7 +1169,9 @@ const OPTIONS_MAP = {
             { label: 'Couché 350g Brillant',  code: 'couche-350-brillant' }
           ], default: 'couche-250-mat' },
         { id: 'couverture_impression', label: 'Impression couverture', type: 'chips',
-          values: ['Recto','Recto-Verso'], default: 'Recto' }
+          values: ['Recto','Recto-Verso'], default: 'Recto' },
+        { id: 'pelliculage', label: 'Pelliculage couverture', type: 'chips',
+          values: ['Sans pelliculage','Pelliculage mat','Pelliculage brillant'], default: 'Sans pelliculage' }
     ],
     livre: [
         { id: 'format', label: 'Format', type: 'chips', values: ['A5 (14.8×21cm)','A4 (21×29.7cm)','13.5×21cm'], default: 'A5 (14.8×21cm)' },
@@ -1178,7 +1180,20 @@ const OPTIONS_MAP = {
           values: [
             { label: 'Offset 80g',  code: 'offset-80' },
             { label: 'Offset 100g', code: 'offset-100' }
-          ], default: 'offset-80' }
+          ], default: 'offset-80' },
+        { id: 'couverture', label: 'Papier couverture couleur', type: 'select',
+          values: [
+            { label: 'Couché 250g Mat',      code: 'couche-250-mat' },
+            { label: 'Couché 250g Brillant', code: 'couche-250-brillant' },
+            { label: 'Couché 300g Mat',      code: 'couche-300-mat' },
+            { label: 'Couché 300g Brillant', code: 'couche-300-brillant' },
+            { label: 'Couché 350g Mat',      code: 'couche-350-mat' },
+            { label: 'Couché 350g Brillant', code: 'couche-350-brillant' }
+          ], default: 'couche-250-mat' },
+        { id: 'couverture_impression', label: 'Impression couverture', type: 'chips',
+          values: ['Recto','Recto-Verso'], default: 'Recto' },
+        { id: 'pelliculage', label: 'Pelliculage couverture', type: 'chips',
+          values: ['Sans pelliculage','Pelliculage mat','Pelliculage brillant'], default: 'Sans pelliculage' }
     ],
     enveloppe: [
         { id: 'format', label: 'Format', type: 'chips', values: ['DL (11×22cm)','C5 (16×22cm)','C4 (22×31cm)'], default: 'DL (11×22cm)' },
@@ -1464,9 +1479,9 @@ function buildOptionsStep() {
             return `
             <div class="form-group" id="opt-group-${opt.id}">
                 <label class="input-label">${opt.label}</label>
-                <select class="input-field" style="background:var(--bg2);color:var(--text1);border:1px solid var(--border);border-radius:8px;padding:0.6rem 1rem;width:100%;cursor:pointer;"
+                <select style="width:100%;padding:0.65rem 1rem;border-radius:8px;border:1px solid #3a3f4e;background:#1e2235;color:#e2e8f0;font-size:0.95rem;cursor:pointer;outline:none;appearance:auto;"
                         onchange="cfg.options['${opt.id}']=this.value;updateLivePrice();">
-                    ${opt.values.map(v => `<option value="${v.code}" ${selVal === v.code ? 'selected' : ''}>${v.label}</option>`).join('')}
+                    ${opt.values.map(v => `<option value="${v.code}" ${selVal === v.code ? 'selected' : ''} style="background:#1e2235;color:#e2e8f0;">${v.label}</option>`).join('')}
                 </select>
             </div>`;
         }
@@ -1685,10 +1700,12 @@ function calcPrice() {
         const intCode = cfg.options.papier_interieur || 'offset-80';
         const covCode = cfg.options.couverture || 'couche-250-mat';
 
+        const pellBrochure = (cfg.options.pelliculage || 'Sans pelliculage') !== 'Sans pelliculage';
         baseHT = (intSh * ppi)
                + (covSh * ppc)
                + (intCode ? paperSurcharge(intCode, intSh) : 0)
-               + (covCode ? paperSurcharge(covCode, covSh) : 0);
+               + (covCode ? paperSurcharge(covCode, covSh) : 0)
+               + (pellBrochure ? qty * 0.1 : 0);
         baseHT = Math.max(baseHT, MIN_PRICE);
 
     // ─── Livres édition — N&B intérieur + couverture couleur ─────────────────
@@ -1707,9 +1724,16 @@ function calcPrice() {
 
         // Couverture couleur : tarif fixe par exemplaire (fichier référence exact)
         const PRIX_COUV = { a4: { recto: 1.3, rv: 1.5 }, a5: { recto: 0.65, rv: 0.75 } };
-        const covPrice = PRIX_COUV[fmtKey].recto * qty;
+        const livreIsRV = (cfg.options.couverture_impression || 'Recto') === 'Recto-Verso';
+        const covPrice = (livreIsRV ? PRIX_COUV[fmtKey].rv : PRIX_COUV[fmtKey].recto) * qty;
+        // Supplément papier couverture
+        const covCode2 = cfg.options.couverture || 'couche-250-mat';
+        const covShLivre = Math.ceil((isA4 ? 1 : 0.5) * qty);
+        const covSurchargeLivre = paperSurcharge(covCode2, covShLivre);
+        // Pelliculage
+        const pellLivre = (cfg.options.pelliculage || 'Sans pelliculage') !== 'Sans pelliculage';
 
-        baseHT = intPrice + intSurcharge + covPrice;
+        baseHT = intPrice + intSurcharge + covPrice + covSurchargeLivre + (pellLivre ? qty * 0.1 : 0);
         baseHT = Math.max(baseHT, MIN_PRICE);
 
     } else if (['enveloppe', 'autre'].includes(cfg.product)) {
