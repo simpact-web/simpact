@@ -212,7 +212,7 @@
 
                         <div class="form-group">
                             <label>Rôle *</label>
-                            <select id="user-role" required>
+                            <select id="user-role" required onchange="autoSetRedirect(this.value)">
                                 <option value="">-- Sélectionner --</option>
                                 <option value="superadmin">🔴 Super Admin (accès total)</option>
                                 <option value="admin">🟠 Admin (prix, stock, utilisateurs)</option>
@@ -226,6 +226,7 @@
                         <div class="form-group form-group-full">
                             <label>Page de redirection *</label>
                             <select id="user-redirect" required>
+                                <option value="hub.html">Hub (Super Admin)</option>
                                 <option value="admin.html">Admin (prix, config)</option>
                                 <option value="stock.html">Stock (gestion papier)</option>
                                 <option value="production.html">Production (atelier)</option>
@@ -467,6 +468,19 @@
         }
 
         // Sauvegarde un utilisateur (ajout ou modification)
+        // Auto-sélectionne la redirection selon le rôle
+        function autoSetRedirect(role) {
+            const map = {
+                'superadmin': 'hub.html',
+                'admin':      'admin.html',
+                'commercial': 'commercial.html',
+                'production': 'production.html',
+                'compta':     'compta.html',
+                'client':     'client.html'
+            };
+            if (map[role]) document.getElementById('user-redirect').value = map[role];
+        }
+
         function saveUser(userData) {
             const users = getUsers();
             const idx = users.findIndex(u => u.id === userData.id);
