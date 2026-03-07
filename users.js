@@ -83,21 +83,30 @@ function hashPass(password) {
 function getUsers() {
     try {
         const stored = localStorage.getItem('SIMPACT_USERS');
-        if (stored) {
-            const localUsers = JSON.parse(stored);
-            const merged = [...localUsers];
-            DEFAULT_USERS.forEach(def => {
-                if (!merged.find(u => u.id === def.id)) merged.push(def);
-                else {
-                    // Merge extra fields (sector, phone, email) from defaults if not set locally
-                    const li = merged.findIndex(u => u.id === def.id);
-                    if (def.sector && !merged[li].sector) merged[li].sector = def.sector;
-                    if (def.phone && !merged[li].phone) merged[li].phone = def.phone;
-                    if (def.email && !merged[li].email) merged[li].email = def.email;
-                }
-            });
-            return merged;
-        }
+        const localUsers = stored ? JSON.parse(stored) : [];
+        const merged = [...localUsers];
+
+        DEFAULT_USERS.forEach(def => {
+            const li = merged.findIndex(u => u.id === def.id);
+            if (li === -1) {
+                // Utilisateur absent du localStorage → on l'ajoute
+                merged.push(def);
+            } else {
+                // Toujours synchroniser le rôle et le mot de passe depuis DEFAULT_USERS
+                // (évite les décalages entre appareils après une mise à jour)
+                merged[li].pass     = def.pass;
+                merged[li].role     = def.role;
+                merged[li].redirect = def.redirect;
+                // Compléter les champs manquants
+                if (def.sector && !merged[li].sector) merged[li].sector = def.sector;
+                if (def.phone  && !merged[li].phone)  merged[li].phone  = def.phone;
+                if (def.email  && !merged[li].email)  merged[li].email  = def.email;
+            }
+        });
+
+        // Resauvegarder pour que le localStorage soit à jour
+        localStorage.setItem('SIMPACT_USERS', JSON.stringify(merged));
+        return merged;
     } catch(e) {}
     const initial = JSON.parse(JSON.stringify(DEFAULT_USERS));
     localStorage.setItem('SIMPACT_USERS', JSON.stringify(initial));
