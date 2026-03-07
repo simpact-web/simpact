@@ -284,37 +284,6 @@
         .kpi-sub { font-size: 0.75rem; color: var(--text3); margin-top: 4px; }
 
         /* LOYALTY CARD */
-        .loyalty-card {
-            background: linear-gradient(135deg, #1a1428 0%, #0f1629 50%, #1a2235 100%);
-            border: 1px solid rgba(201,168,76,0.2);
-            border-radius: var(--radius);
-            padding: 1.75rem;
-            position: relative; overflow: hidden;
-            margin-bottom: 1.5rem;
-        }
-        .loyalty-card::before {
-            content: ''; position: absolute;
-            top: -50%; right: -20%;
-            width: 300px; height: 300px;
-            background: radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 70%);
-        }
-        .loyalty-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem; }
-        .loyalty-level-name { font-family: 'Outfit', sans-serif; font-size: 1.5rem; font-weight: 800; color: var(--gold); }
-        .loyalty-icon { font-size: 2.5rem; }
-        .loyalty-progress-wrap { margin-bottom: 0.75rem; }
-        .loyalty-progress-label { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text2); margin-bottom: 6px; }
-        .loyalty-bar { height: 6px; background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden; }
-        .loyalty-fill {
-            height: 100%; border-radius: 3px;
-            background: linear-gradient(90deg, var(--gold), #f0c870);
-            transition: width 1s ease;
-        }
-        .loyalty-perks { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 1rem; }
-        .perk-tag {
-            padding: 3px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 600;
-            background: var(--gold-dim); color: var(--gold);
-            border: 1px solid rgba(201,168,76,0.2);
-        }
 
         /* ORDERS RECENT */
         .orders-table { width: 100%; border-collapse: collapse; }
@@ -794,8 +763,7 @@
             <div class="dash-grid" id="kpi-grid"></div>
 
             <!-- LOYALTY -->
-            <div class="loyalty-card" id="loyalty-card"></div>
-
+            
             <!-- QUICK ACTIONS -->
             <div class="quick-actions">
                 <div class="quick-action" onclick="goTo('devis')">
@@ -1317,33 +1285,7 @@ function renderDashboard() {
     // Loyalty
     const nextCount = lv.next;
     const remaining = Math.max(0, nextCount - stats.count);
-    document.getElementById('loyalty-card').innerHTML = `
-        <div class="loyalty-header">
-            <div>
-                <div style="font-size:0.75rem;color:rgba(201,168,76,0.6);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Votre niveau de fidélité</div>
-                <div class="loyalty-level-name">${lv.icon} ${lv.name}</div>
-            </div>
-            <div class="loyalty-icon" style="opacity:0.4;">${lv.icon}</div>
-        </div>
-        <div class="loyalty-progress-wrap">
-            <div class="loyalty-progress-label">
-                <span>${stats.count} commandes</span>
-                <span>${remaining > 0 ? remaining + ' avant le prochain niveau' : 'Niveau maximum'}</span>
-            </div>
-            <div class="loyalty-bar"><div class="loyalty-fill" id="loyalty-fill" style="width:0%"></div></div>
-        </div>
-        <div class="loyalty-perks">
-            <span class="perk-tag">✓ Prix préférentiels</span>
-            <span class="perk-tag">✓ Suivi prioritaire</span>
-            ${stats.count >= 10 ? '<span class="perk-tag">✓ Livraison express offerte</span>' : ''}
-            ${stats.count >= 20 ? '<span class="perk-tag">✓ Commercial dédié</span>' : ''}
-            ${stats.count >= 30 ? '<span class="perk-tag">✓ Accès Diamant — remises spéciales</span>' : ''}
-        </div>
-    `;
-    setTimeout(() => {
-        const el = document.getElementById('loyalty-fill');
-        if (el) el.style.width = lv.progress.toFixed(1) + '%';
-    }, 100);
+
 
     // Recent orders
     const orders = getClientHistory(clientId).slice(0, 5);
