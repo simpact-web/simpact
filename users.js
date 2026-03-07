@@ -18,7 +18,7 @@ function syncToCloud(type, data) {
 const DEFAULT_USERS = [
     // ── ÉQUIPE INTERNE ──
     { id: 'youssef',   pass: 'h_fmbfji',  role: 'superadmin', name: 'Youssef (PDG)',      redirect: 'hub.html'        },
-    { id: 'talel',     pass: 'h_vea454',  role: 'superadmin', name: 'Talel',               redirect: 'hub.html'        },
+    { id: 'talel',     pass: 'h_a6esyc',  role: 'superadmin', name: 'Talel',               redirect: 'hub.html'        },
     { id: 'admin01',   pass: 'h_riha7v',  role: 'admin',      name: 'Admin Simpact',      redirect: 'admin.html'      },
     { id: 'prod01',    pass: 'h_be518k',  role: 'production', name: 'Chef Atelier',       redirect: 'production.html' },
     { id: 'compta01',  pass: 'h_i22pok',  role: 'compta',     name: 'Service Compta',     redirect: 'compta.html'     },
@@ -57,7 +57,7 @@ const DEFAULT_USERS = [
 ];
 
 // Mots de passe :
-// youssef→youssef123 | talel→talel2026 | admin01→simpact2026 | prod01→atelier | compta01→facture | comm01→vente
+// youssef→youssef123 | talel→talel123 | admin01→simpact2026 | prod01→atelier | compta01→facture | comm01→vente
 // client01→client123 | client02→1234 | uib→uib2026
 // ubci→ubci2026 | attijari→attijari2026 | atb→atb2026 | amen→amen2026
 // biat→biat2026 | zitouna→zitouna2026 | BTK→btk2026 | QNB→qnb2026
