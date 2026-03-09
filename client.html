@@ -9,24 +9,25 @@
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         :root {
-            --bg: #080c16;
-            --surface: #0d1421;
-            --surface2: #111827;
-            --surface3: #1a2235;
-            --border: rgba(255,255,255,0.07);
-            --border2: rgba(255,255,255,0.12);
-            --gold: #C9A84C;
-            --gold-dim: rgba(201,168,76,0.15);
-            --gold-glow: rgba(201,168,76,0.3);
-            --blue: #3B6FFF;
-            --blue-dim: rgba(59,111,255,0.15);
-            --green: #10b981;
-            --green-dim: rgba(16,185,129,0.15);
-            --red: #ef4444;
-            --orange: #f59e0b;
-            --text: #f0ede8;
-            --text2: #9ca3af;
-            --text3: #4b5563;
+            --bg: #f4f2ee;
+            --surface: #ffffff;
+            --surface2: #f9f7f4;
+            --surface3: #eeece8;
+            --border: rgba(0,0,0,0.09);
+            --border2: rgba(0,0,0,0.16);
+            --gold: #b07d28;
+            --gold-dark: #8b6015;
+            --gold-dim: rgba(176,125,40,0.1);
+            --gold-glow: rgba(176,125,40,0.2);
+            --blue: #2d5cff;
+            --blue-dim: rgba(45,92,255,0.09);
+            --green: #059669;
+            --green-dim: rgba(5,150,105,0.1);
+            --red: #dc2626;
+            --orange: #d97706;
+            --text: #1c1a17;
+            --text2: #6b6458;
+            --text3: #a89f94;
             --radius: 14px;
             --sidebar: 240px;
         }
@@ -71,9 +72,9 @@
         }
         .user-avatar {
             width: 36px; height: 36px; border-radius: 50%;
-            background: linear-gradient(135deg, var(--gold), #8b6520);
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
             display: flex; align-items: center; justify-content: center;
-            font-weight: 800; font-size: 0.8rem; color: #080c16;
+            font-weight: 800; font-size: 0.8rem; color: #fff;
             margin-bottom: 8px; flex-shrink: 0;
         }
         .user-name { font-size: 0.82rem; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -122,13 +123,13 @@
         /* ── MAIN ── */
         .main {
             flex: 1; overflow-y: auto;
-            background: radial-gradient(ellipse 100% 80% at 80% 20%, rgba(59,111,255,0.04) 0%, transparent 60%), var(--bg);
+            background: var(--bg);
         }
 
         /* ── TOP BAR ── */
         .topbar {
             position: sticky; top: 0; z-index: 50;
-            background: rgba(8,12,22,0.85); backdrop-filter: blur(20px);
+            background: rgba(244,242,238,0.92); backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border);
             padding: 0 2rem; height: 60px;
             display: flex; align-items: center; justify-content: space-between;
@@ -148,7 +149,7 @@
         .notif-dot {
             position: absolute; top: 6px; right: 6px;
             width: 8px; height: 8px; border-radius: 50%;
-            background: var(--red); border: 1.5px solid var(--bg);
+            background: var(--red); border: 2px solid var(--surface);
             display: none;
         }
         .notif-dot.show { display: block; }
@@ -162,7 +163,7 @@
         .msg-dot {
             position: absolute; top: 6px; right: 6px;
             width: 8px; height: 8px; border-radius: 50%;
-            background: var(--blue); border: 1.5px solid var(--bg);
+            background: var(--blue); border: 2px solid var(--surface);
             display: none;
         }
         .msg-dot.show { display: block; }
@@ -198,8 +199,8 @@
             cursor: pointer; border: none; transition: all 0.2s;
         }
         .btn-primary {
-            background: linear-gradient(135deg, var(--gold), #a87e32);
-            color: #080c16;
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            color: #fff;
         }
         .btn-primary:hover { box-shadow: 0 4px 20px var(--gold-glow); transform: translateY(-1px); }
         .btn-secondary {
@@ -245,7 +246,7 @@
             outline: none; transition: all 0.2s;
         }
         .input-field::placeholder { color: var(--text3); }
-        .input-field:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201,168,76,0.08); }
+        .input-field:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(176,125,40,0.1); }
         .input-label {
             display: block; font-size: 0.75rem; font-weight: 600;
             color: var(--text2); margin-bottom: 0.4rem;
@@ -298,7 +299,7 @@
             font-size: 0.85rem; vertical-align: middle;
         }
         .orders-table tr:last-child td { border-bottom: none; }
-        .orders-table tr:hover td { background: rgba(255,255,255,0.02); }
+        .orders-table tr:hover td { background: rgba(0,0,0,0.02); }
         .order-ref { font-family: 'DM Mono', monospace; font-size: 0.78rem; color: var(--text2); }
         .order-prod { font-weight: 600; color: var(--text); }
         .order-price { font-family: 'DM Mono', monospace; color: var(--gold); }
@@ -335,7 +336,7 @@
             position: fixed; top: 65px; right: 1rem; width: 340px;
             background: var(--surface); border: 1px solid var(--border);
             border-radius: var(--radius); z-index: 200;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.12);
             display: none; max-height: 500px; overflow-y: auto;
         }
         .notif-panel.show { display: block; }
@@ -352,48 +353,21 @@
         /* ════════════════════════════════
            PAGE: DEVIS (CONFIGURATOR)
         ════════════════════════════════ */
-        .config-layout { display: grid; grid-template-columns: 1fr 340px; gap: 1.5rem; }
-
-        .step-indicator {
-            display: flex; gap: 0; margin-bottom: 2rem;
-        }
-        .step {
-            flex: 1; display: flex; align-items: center; gap: 8px;
-            padding: 0.75rem 1rem;
-            background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
-            position: relative;
-        }
-        .step:first-child { border-left: 1px solid var(--border); border-radius: 10px 0 0 10px; }
-        .step:last-child { border-right: 1px solid var(--border); border-radius: 0 10px 10px 0; }
-        .step + .step { border-left: 1px solid var(--border); }
-        .step.active { background: var(--gold-dim); border-color: rgba(201,168,76,0.3); }
-        .step.done { background: rgba(16,185,129,0.08); border-color: rgba(16,185,129,0.2); }
-        .step-num {
-            width: 26px; height: 26px; border-radius: 50%;
-            background: var(--surface3); color: var(--text2);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 0.75rem; font-weight: 700; flex-shrink: 0;
-        }
-        .step.active .step-num { background: var(--gold); color: #080c16; }
-        .step.done .step-num { background: var(--green); color: white; }
-        .step-label { font-size: 0.82rem; font-weight: 600; color: var(--text2); }
-        .step.active .step-label { color: var(--gold); }
-        .step.done .step-label { color: var(--green); }
+        .config-layout { display: grid; grid-template-columns: 1fr 300px; gap: 1.5rem; align-items: start; }
 
         .config-step { display: none; }
-        .config-step.active { display: block; animation: fadeIn 0.2s ease; }
+        .config-step.active { display: block; }
+        .product-grid { display: none; }
+        .product-card { display: none; }
 
-        .product-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 1.5rem; }
-        .product-card {
-            background: var(--surface3); border: 2px solid var(--border);
-            border-radius: 12px; padding: 1.25rem;
-            cursor: pointer; transition: all 0.2s; text-align: center;
+        /* delay buttons */
+        .delay-btn {
+            border: 2px solid var(--border); border-radius: 12px;
+            padding: 1rem 0.75rem; cursor: pointer; transition: all 0.2s;
+            text-align: center; background: var(--surface2);
         }
-        .product-card:hover { border-color: rgba(201,168,76,0.4); background: var(--gold-dim); }
-        .product-card.selected { border-color: var(--gold); background: var(--gold-dim); }
-        .prod-icon { font-size: 2rem; margin-bottom: 8px; }
-        .prod-name { font-size: 0.85rem; font-weight: 700; color: var(--text); }
-        .prod-desc { font-size: 0.72rem; color: var(--text2); margin-top: 3px; }
+        .delay-btn:hover { border-color: rgba(176,125,40,0.4); background: var(--gold-dim); }
+        .delay-btn.selected { border-color: var(--gold); background: var(--gold-dim); }
 
         .option-chips { display: flex; flex-wrap: wrap; gap: 8px; }
         .chip {
@@ -404,7 +378,7 @@
             cursor: pointer; transition: all 0.15s;
         }
         .chip:hover { border-color: rgba(201,168,76,0.4); color: var(--text); }
-        .chip.selected { border-color: var(--gold); background: var(--gold-dim); color: var(--gold); font-weight: 600; }
+        .chip.selected { border-color: var(--gold); background: var(--gold-dim); color: var(--gold-dark, var(--gold)); font-weight: 600; }
 
         .qty-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
         .qty-chip {
@@ -415,7 +389,7 @@
             cursor: pointer; text-align: center; transition: all 0.15s;
         }
         .qty-chip:hover { border-color: rgba(201,168,76,0.4); }
-        .qty-chip.selected { border-color: var(--gold); background: var(--gold-dim); color: var(--gold); font-weight: 600; }
+        .qty-chip.selected { border-color: var(--gold); background: var(--gold-dim); color: var(--gold-dark, var(--gold)); font-weight: 600; }
 
         .delay-card {
             border: 2px solid var(--border); border-radius: 12px;
@@ -433,6 +407,15 @@
         .price-sticky {
             position: sticky; top: 80px;
         }
+
+        /* DELAY BUTTONS */
+        .delay-btn {
+            border: 2px solid var(--border); border-radius: 12px;
+            padding: 1rem 0.75rem; cursor: pointer; transition: all 0.2s;
+            text-align: center; background: var(--surface2);
+        }
+        .delay-btn:hover { border-color: rgba(176,125,40,0.4); background: var(--gold-dim); }
+        .delay-btn.selected { border-color: var(--gold); background: var(--gold-dim); }
         .price-hero {
             text-align: center; padding: 1.5rem 1rem;
             border-bottom: 1px solid var(--border); margin-bottom: 1rem;
@@ -596,7 +579,7 @@
         }
         .profile-avatar-lg {
             width: 72px; height: 72px; border-radius: 50%;
-            background: linear-gradient(135deg, var(--gold), #8b6520);
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
             display: flex; align-items: center; justify-content: center;
             font-weight: 900; font-size: 1.6rem; color: #080c16;
             flex-shrink: 0;
@@ -796,115 +779,99 @@
 
         <!-- ────── NOUVEAU DEVIS ────── -->
         <div class="page" id="page-devis">
-            <div style="margin-bottom:1.5rem;">
+            <div style="margin-bottom:1.75rem;">
                 <h1 style="font-size:1.5rem;font-weight:800;">Configurer un devis</h1>
-                <p style="color:var(--text2);font-size:0.85rem;margin-top:3px;">Prix calculé en temps réel selon votre configuration</p>
-            </div>
-
-            <div class="step-indicator" id="step-indicator">
-                <div class="step active" id="step-1"><span class="step-num">1</span><span class="step-label">Produit</span></div>
-                <div class="step" id="step-2"><span class="step-num">2</span><span class="step-label">Options</span></div>
-                <div class="step" id="step-3"><span class="step-num">3</span><span class="step-label">Quantité</span></div>
-                <div class="step" id="step-4"><span class="step-num">4</span><span class="step-label">Délai</span></div>
-                <div class="step" id="step-5"><span class="step-num">5</span><span class="step-label">Validation</span></div>
+                <p style="color:var(--text2);font-size:0.85rem;margin-top:3px;">Prix calculé en temps réel selon votre sélection</p>
             </div>
 
             <div class="config-layout">
+                <!-- ── COLONNE GAUCHE : FORMULAIRE ── -->
                 <div>
-                    <!-- Step 1: Product -->
-                    <div class="config-step active" id="cstep-1">
-                        <div class="card">
-                            <div class="card-heading">Quel produit souhaitez-vous imprimer ?</div>
-                            <div class="product-grid" id="product-grid"></div>
-                            <div id="step1-error" style="color:var(--red);font-size:0.82rem;display:none;">⚠️ Sélectionnez un produit pour continuer.</div>
-                            <button class="btn btn-primary" onclick="nextStep(1)" style="margin-top:1rem;">Continuer →</button>
+
+                    <!-- PRODUIT -->
+                    <div class="card" style="margin-bottom:1rem;">
+                        <div class="card-title">Produit</div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <select class="input-field" id="product-select" onchange="onProductChange(this.value)" style="font-size:0.95rem;cursor:pointer;">
+                                <option value="">— Sélectionnez un produit —</option>
+                                <option value="flyer">Flyer A5</option>
+                                <option value="carte">Carte de visite</option>
+                                <option value="depliant">Dépliant</option>
+                                <option value="entete">Papier en-tête</option>
+                                <option value="affiche">Affiche</option>
+                                <option value="brochure">Brochure couleur</option>
+                                <option value="livre">Livre / Édition N&amp;B</option>
+                                <option value="enveloppe">Enveloppe</option>
+                                <option value="autre">Autre produit (sur devis)</option>
+                            </select>
                         </div>
                     </div>
 
-                    <!-- Step 2: Options -->
-                    <div class="config-step" id="cstep-2">
-                        <div class="card" id="options-card">
-                            <div class="card-heading">Options d'impression</div>
-                            <div id="options-content"></div>
-                            <div style="display:flex;gap:10px;margin-top:1.5rem;">
-                                <button class="btn btn-ghost" onclick="prevStep(2)">← Retour</button>
-                                <button class="btn btn-primary" onclick="nextStep(2)">Continuer →</button>
-                            </div>
+                    <!-- OPTIONS DYNAMIQUES -->
+                    <div class="card" id="options-card" style="margin-bottom:1rem;display:none;">
+                        <div class="card-title">Options d'impression</div>
+                        <div id="options-content"></div>
+                    </div>
+
+                    <!-- QUANTITÉ -->
+                    <div class="card" id="qty-card" style="margin-bottom:1rem;display:none;">
+                        <div class="card-title">Quantité</div>
+                        <div class="qty-grid" id="qty-grid" style="margin-bottom:0.75rem;"></div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label class="input-label">Quantité personnalisée</label>
+                            <input type="number" class="input-field" id="qty-custom" placeholder="Ex: 750" min="1" oninput="onCustomQty()">
                         </div>
                     </div>
 
-                    <!-- Step 3: Quantity -->
-                    <div class="config-step" id="cstep-3">
-                        <div class="card">
-                            <div class="card-heading">Choisissez votre quantité</div>
-                            <div class="qty-grid" id="qty-grid"></div>
-                            <div class="form-group" style="margin-top:1rem;">
-                                <label class="input-label">Ou saisissez une quantité personnalisée</label>
-                                <input type="number" class="input-field" id="qty-custom" placeholder="Ex: 750" min="1" oninput="onCustomQty()">
+                    <!-- DÉLAI -->
+                    <div class="card" id="delay-card" style="margin-bottom:1rem;display:none;">
+                        <div class="card-title">Délai souhaité</div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+                            <div class="delay-btn selected" onclick="selectDelay(this,'Standard',0)">
+                                <div style="font-size:1.3rem;margin-bottom:4px;">📅</div>
+                                <div style="font-weight:700;font-size:0.85rem;">Standard</div>
+                                <div style="font-size:0.72rem;color:var(--text2);margin-top:2px;">3–5 jours</div>
+                                <div style="font-size:0.72rem;color:var(--green);margin-top:3px;font-weight:600;">Inclus</div>
                             </div>
-                            <div style="display:flex;gap:10px;margin-top:1.5rem;">
-                                <button class="btn btn-ghost" onclick="prevStep(3)">← Retour</button>
-                                <button class="btn btn-primary" onclick="nextStep(3)">Continuer →</button>
+                            <div class="delay-btn" onclick="selectDelay(this,'Express',20)">
+                                <div style="font-size:1.3rem;margin-bottom:4px;">⚡</div>
+                                <div style="font-weight:700;font-size:0.85rem;">Express</div>
+                                <div style="font-size:0.72rem;color:var(--text2);margin-top:2px;">24–48h</div>
+                                <div style="font-size:0.72rem;color:var(--orange);margin-top:3px;font-weight:600;">+20%</div>
                             </div>
-                        </div>
-                    </div>
-
-                    <!-- Step 4: Delay -->
-                    <div class="config-step" id="cstep-4">
-                        <div class="card">
-                            <div class="card-heading">Choisissez votre délai</div>
-                            <div id="delay-cards">
-                                <div class="delay-card selected" data-delay="Standard" onclick="selectDelay(this,'Standard',0)">
-                                    <span style="font-size:1.5rem;">📅</span>
-                                    <div>
-                                        <div class="delay-name">Standard</div>
-                                        <div class="delay-desc">Délai normal de production (3-5 jours ouvrés)</div>
-                                        <div class="delay-price" style="color:var(--green);">Inclus dans le prix</div>
-                                    </div>
-                                </div>
-                                <div class="delay-card" data-delay="Express" onclick="selectDelay(this,'Express',20)">
-                                    <span style="font-size:1.5rem;">⚡</span>
-                                    <div>
-                                        <div class="delay-name">Express</div>
-                                        <div class="delay-desc">Livraison sous 24-48h</div>
-                                        <div class="delay-price" style="color:var(--orange);">+ 20% sur le prix HT</div>
-                                    </div>
-                                </div>
-                                <div class="delay-card" data-delay="Urgence" onclick="selectDelay(this,'Urgence',40)">
-                                    <span style="font-size:1.5rem;">🚨</span>
-                                    <div>
-                                        <div class="delay-name" style="color:var(--red);">Urgence</div>
-                                        <div class="delay-desc">Même jour — priorité absolue en atelier</div>
-                                        <div class="delay-price" style="color:var(--red);">+ 40% sur le prix HT</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div style="display:flex;gap:10px;margin-top:1.5rem;">
-                                <button class="btn btn-ghost" onclick="prevStep(4)">← Retour</button>
-                                <button class="btn btn-primary" onclick="nextStep(4)">Continuer →</button>
+                            <div class="delay-btn" onclick="selectDelay(this,'Urgence',40)">
+                                <div style="font-size:1.3rem;margin-bottom:4px;">🚨</div>
+                                <div style="font-weight:700;font-size:0.85rem;color:var(--red);">Urgence</div>
+                                <div style="font-size:0.72rem;color:var(--text2);margin-top:2px;">Même jour</div>
+                                <div style="font-size:0.72rem;color:var(--red);margin-top:3px;font-weight:600;">+40%</div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Step 5: Confirm -->
-                    <div class="config-step" id="cstep-5">
-                        <div class="card">
-                            <div class="card-heading">✅ Confirmer votre devis</div>
-                            <div id="final-summary" style="background:var(--surface3);border:1px solid var(--border);border-radius:10px;padding:1.25rem;margin-bottom:1.25rem;"></div>
-                            <div class="form-group">
-                                <label class="input-label">Instructions spéciales / fichiers attendus</label>
-                                <textarea class="input-field" id="desc-field" rows="3" placeholder="Ex: Fichier AI à envoyer par email. Couleurs : bleu marine + or. Recto uniquement."></textarea>
-                            </div>
-                            <div style="display:flex;gap:10px;margin-top:1.5rem;flex-wrap:wrap;">
-                                <button class="btn btn-ghost" onclick="prevStep(5)">← Retour</button>
-                                <button class="btn btn-secondary" onclick="submitDevis('quote')" style="flex:1;">💾 Enregistrer comme devis</button>
-                                <button class="btn btn-primary" onclick="submitDevis('order')" style="flex:1;">🚀 Lancer la commande</button>
-                            </div>
-                        </div>
+                    <!-- REMARQUES -->
+                    <div class="card" id="remarks-card" style="display:none;">
+                        <div class="card-title">Instructions / Remarques</div>
+                        <textarea class="input-field" id="desc-field" rows="3" placeholder="Couleurs Pantone, découpe spéciale, fichier joint..."></textarea>
                     </div>
+
+                    <!-- HIDDEN for compat -->
+                    <div style="display:none">
+                        <div id="product-grid"></div>
+                        <div class="config-step active" id="cstep-1"></div>
+                        <div class="config-step" id="cstep-2"></div>
+                        <div class="config-step" id="cstep-3"></div>
+                        <div class="config-step" id="cstep-4"></div>
+                        <div class="config-step" id="cstep-5"></div>
+                        <div id="step-indicator"></div>
+                        <div id="final-summary"></div>
+                        <input type="number" id="qty-custom-hidden" style="display:none">
+                    </div>
+
                 </div>
 
-                <!-- PRICE PANEL -->
+                <!-- ── COLONNE DROITE : PRIX STICKY ── -->
+
+                <!-- ── PRIX STICKY ── -->
                 <div class="price-sticky">
                     <div class="card">
                         <div class="price-hero">
@@ -915,10 +882,15 @@
                         <div class="config-summary" id="live-summary">
                             <div style="color:var(--text3);font-size:0.8rem;text-align:center;padding:0.5rem;">Configurez votre commande pour voir le prix</div>
                         </div>
+                        <div style="display:flex;flex-direction:column;gap:8px;margin-top:0.5rem;" id="submit-btns" style="display:none;">
+                            <button class="btn btn-primary btn-full btn-lg" onclick="submitDevis('quote')">💾 Enregistrer comme devis</button>
+                            <button class="btn btn-blue btn-full" onclick="submitDevis('order')">🚀 Commander maintenant</button>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
+
+            </div><!-- /.config-layout -->
+        </div><!-- /#page-devis -->
 
         <!-- ────── COMMANDES ────── -->
         <div class="page" id="page-commandes">
@@ -1219,10 +1191,7 @@ async function init() {
     await loadPrix();
     buildSidebar();
     renderDashboard();
-    buildProductGrid();
     updateBadges();
-
-    // Refresh every 30 seconds
     setInterval(updateBadges, 30000);
 }
 
@@ -1325,8 +1294,6 @@ function buildProductGrid() {
 
 function selectProduct(id) {
     cfg.product = id; cfg.options = {}; cfg.qty = null;
-    document.querySelectorAll('.product-card').forEach(c => c.classList.remove('selected'));
-    event.currentTarget.classList.add('selected');
     updateLivePrice();
 }
 
@@ -1359,8 +1326,8 @@ function goStep(n) {
 function buildOptionsStep() {
     const opts = OPTIONS_MAP[cfg.product] || [];
     if (!opts.length) {
-        document.getElementById('options-content').innerHTML = `<p style="color:var(--text2);margin-bottom:1rem;">Ce produit sera configuré sur devis personnalisé. Décrivez vos besoins dans les instructions à l'étape suivante.</p>`;
-        buildQtyStep(); goStep(3); return;
+        document.getElementById('options-content').innerHTML = '';
+        return;
     }
 
     // Set defaults first
@@ -1423,7 +1390,7 @@ function buildOptionsStep() {
                 <label class="input-label">${opt.label}</label>
                 <select style="width:100%;padding:0.65rem 1rem;border-radius:8px;border:1px solid #3a3f4e;background:#1e2235;color:#e2e8f0;font-size:0.95rem;cursor:pointer;outline:none;appearance:auto;"
                         onchange="cfg.options['${opt.id}']=this.value;updateLivePrice();">
-                    ${opt.values.map(v => `<option value="${v.code}" ${selVal === v.code ? 'selected' : ''} style="background:#1e2235;color:#e2e8f0;">${v.label}</option>`).join('')}
+                    ${opt.values.map(v => `<option value="${v.code}" ${selVal === v.code ? 'selected' : ''} style="background:#f9f7f4;color:#1c1a17;">${v.label}</option>`).join('')}
                 </select>
             </div>`;
         }
@@ -1702,6 +1669,8 @@ function updateLivePrice() {
         lpEl.innerHTML = '— <span class="unit">DT</span>';
         pbEl.innerHTML = '';
         lsEl.innerHTML = '<div style="color:var(--text3);font-size:0.8rem;text-align:center;padding:0.5rem;">Configurez votre commande pour voir le prix</div>';
+        const sbEl = document.getElementById('submit-btns');
+        if (sbEl) sbEl.style.display = 'none';
         return;
     }
 
@@ -1720,15 +1689,64 @@ function updateLivePrice() {
         <div class="summary-row"><span class="summary-key">Quantité</span><span class="summary-val">${cfg.qty ? cfg.qty.toLocaleString() + ' ex.' : '—'}</span></div>
         <div class="summary-row"><span class="summary-key">Délai</span><span class="summary-val">${cfg.delay}</span></div>
     `;
+    // Show/hide submit buttons
+    const sbEl = document.getElementById('submit-btns');
+    if (sbEl) sbEl.style.display = (cfg.product && cfg.qty) ? 'flex' : 'none';
 }
 
 function resetConfigurator() {
     cfg = { product: null, options: {}, qty: null, delay: 'Standard', delayPct: 0 };
     currentStep = 1;
-    goStep(1);
-    buildProductGrid();
+    // Reset UI — single page mode
+    const sel = document.getElementById('product-select');
+    if (sel) sel.value = '';
+    const df = document.getElementById('desc-field');
+    if (df) df.value = '';
+    ['options-card','qty-card','delay-card','remarks-card'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = 'none';
+    });
+    // Reset delay buttons
+    document.querySelectorAll('.delay-btn').forEach((b,i) => {
+        b.classList.toggle('selected', i === 0);
+    });
     updateLivePrice();
-    document.getElementById('desc-field').value = '';
+}
+
+function onProductChange(productId) {
+    cfg.product = productId;
+    cfg.options = {};
+    cfg.qty = null;
+
+    if (!productId) {
+        ['options-card','qty-card','delay-card','remarks-card'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.style.display = 'none';
+        });
+        updateLivePrice();
+        return;
+    }
+
+    // Build options
+    buildOptionsStep();
+    const opts = OPTIONS_MAP[productId] || [];
+    document.getElementById('options-card').style.display = opts.length ? 'block' : 'none';
+
+    // Build qty
+    buildQtyContent();
+    document.getElementById('qty-card').style.display = 'block';
+    document.getElementById('delay-card').style.display = 'block';
+    document.getElementById('remarks-card').style.display = 'block';
+    updateLivePrice();
+}
+
+function buildQtyContent() {
+    const presets = QTY_PRESETS[cfg.product] || [50,100,250,500,1000];
+    document.getElementById('qty-grid').innerHTML = presets.map(q => `
+        <div class="qty-chip ${cfg.qty === q ? 'selected' : ''}" onclick="selectQty(${q},this)">${q.toLocaleString()}</div>
+    `).join('');
+    const customField = document.getElementById('qty-custom');
+    if (customField) customField.value = '';
 }
 
 async function submitDevis(type) {
@@ -1839,7 +1857,7 @@ function openOrderDetail(ref) {
             </div>
         </div>
 
-        ${o.desc ? `<div style="margin-bottom:1.5rem;"><div style="font-size:0.75rem;color:var(--text2);margin-bottom:0.5rem;text-transform:uppercase;letter-spacing:0.5px;">Instructions</div><div style="background:var(--surface3);border:1px solid var(--border);border-radius:9px;padding:1rem;font-size:0.83rem;color:var(--text2);white-space:pre-line;">${o.desc}</div></div>` : ''}
+        ${o.desc ? `<div style="margin-bottom:1.5rem;"><div style="font-size:0.75rem;color:var(--text2);margin-bottom:0.5rem;text-transform:uppercase;letter-spacing:0.5px;">Instructions</div><div style="background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:1rem;font-size:0.83rem;color:var(--text2);white-space:pre-line;">${o.desc}</div></div>` : ''}
 
         <div style="display:flex;gap:8px;">
             <button class="btn btn-secondary" onclick="reorder('${o.ref}')">🔄 Commander à nouveau</button>
@@ -1853,10 +1871,15 @@ function reorder(ref) {
     const o = getClientHistory(clientId).find(x => x.ref === ref);
     if (!o) return;
     closeModal('modal-order');
-    // Pre-fill configurator
     const prod = PRODUCTS.find(p => p.name === o.prod || p.id === o.prod);
-    if (prod) { cfg.product = prod.id; cfg.qty = parseInt(o.qty); }
     goTo('devis');
+    if (prod) {
+        const sel = document.getElementById('product-select');
+        if (sel) { sel.value = prod.id; onProductChange(prod.id); }
+        cfg.qty = parseInt(o.qty);
+        buildQtyContent();
+        updateLivePrice();
+    }
     showToast('📋 Produit pré-rempli depuis votre historique', 'info');
 }
 
@@ -1886,8 +1909,14 @@ function duplicateQuote(ref) {
     const q = getQuotes().find(x => x.ref === ref);
     if (!q) return;
     const prod = PRODUCTS.find(p => p.name === q.prod || p.id === q.prod);
-    if (prod) { cfg.product = prod.id; cfg.qty = parseInt(q.qty); }
     goTo('devis');
+    if (prod) {
+        const sel = document.getElementById('product-select');
+        if (sel) { sel.value = prod.id; onProductChange(prod.id); }
+        cfg.qty = parseInt(q.qty);
+        buildQtyContent();
+        updateLivePrice();
+    }
     showToast('📋 Devis dupliqué — ajustez vos options', 'info');
 }
 
