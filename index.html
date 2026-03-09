@@ -332,7 +332,9 @@
             btn.disabled = true;
             btn.textContent = 'Connexion...';
 
-            setTimeout(() => {
+            // 🌐 Synchroniser les utilisateurs cloud avant de vérifier le mot de passe
+            (async () => {
+                await cloudSyncUsers();
                 const found = login(userId, pass);
                 if (found) {
                     btn.textContent = '✓ Accès autorisé';
@@ -344,7 +346,9 @@
                     document.getElementById('inp-pass').value = '';
                     document.getElementById('inp-pass').focus();
                 }
-            }, 500);
+            })();
+            return; // empêche le setTimeout vide
+            if(false) setTimeout(() => {, 500);
         }
 
         function quickLogin(id, pass) {

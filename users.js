@@ -2,15 +2,94 @@
 // SIMPACT ERP - CORE ENGINE v3.0
 // ============================================================
 
-const CLOUD_API_URL = ""; // ← Collez ici votre URL Google Apps Script
+const CLOUD_API_URL = "https://script.google.com/macros/s/AKfycbwGrUl_KQhLQMFW-PcRcu1FbFbkorpHEiAYOTWQAtPev9Ai40DUj_ne7Jh0R7CGmNwi/exec"; // Google Apps Script SIMPACT
+const CLOUD_SECRET  = "simpact2026secure"; // ← Même valeur que dans le script Google
 
-function syncToCloud(type, data) {
-    if (!CLOUD_API_URL || !CLOUD_API_URL.startsWith('http')) return;
-    const fd = new FormData();
-    fd.append('type', type);
-    Object.entries(data).forEach(([k, v]) => fd.append(k, v == null ? '' : v));
-    fetch(CLOUD_API_URL, { method: 'POST', body: fd, mode: 'no-cors' }).catch(() => {});
+// ─── CLOUD SYNC ──────────────────────────────────────────────
+function cloudEnabled() {
+    return CLOUD_API_URL && CLOUD_API_URL.startsWith('http');
 }
+
+// Envoyer un utilisateur vers Google Sheets (ajout ou modification)
+async function cloudSaveUser(userObj) {
+    if (!cloudEnabled()) return;
+    try {
+        const body = JSON.stringify({ action: 'save_user', key: CLOUD_SECRET, ...userObj });
+        await fetch(CLOUD_API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body
+        });
+    } catch(e) { console.warn('[SIMPACT Cloud] Erreur sauvegarde:', e); }
+}
+
+// Supprimer un utilisateur de Google Sheets
+async function cloudDeleteUser(userId) {
+    if (!cloudEnabled()) return;
+    try {
+        const body = JSON.stringify({ action: 'delete_user', key: CLOUD_SECRET, id: userId });
+        await fetch(CLOUD_API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body
+        });
+    } catch(e) { console.warn('[SIMPACT Cloud] Erreur suppression:', e); }
+}
+
+// Charger tous les utilisateurs depuis Google Sheets et les fusionner dans le localStorage
+// Retourne true si la sync a réussi
+async function cloudSyncUsers() {
+    if (!cloudEnabled()) return false;
+    try {
+        const body = JSON.stringify({ action: 'get_users', key: CLOUD_SECRET });
+        const resp = await fetch(CLOUD_API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body
+        });
+        if (!resp.ok) return false;
+        const json = await resp.json();
+        if (!json.ok || !Array.isArray(json.users)) return false;
+
+        // Fusionner les utilisateurs cloud avec le localStorage
+        const stored = localStorage.getItem('SIMPACT_USERS');
+        const localUsers = stored ? JSON.parse(stored) : [];
+
+        json.users.forEach(cloudUser => {
+            if (!cloudUser.id) return;
+            // Ignorer les utilisateurs déjà dans DEFAULT_USERS (ils sont gérés par le code)
+            const isDefault = DEFAULT_USERS.some(d => d.id.toLowerCase() === cloudUser.id.toLowerCase());
+            if (isDefault) return;
+
+            const idx = localUsers.findIndex(u => u.id.toLowerCase() === cloudUser.id.toLowerCase());
+            if (idx === -1) {
+                localUsers.push(cloudUser);
+            } else {
+                // Mise à jour depuis le cloud (le cloud a priorité pour les users ajoutés via admin)
+                Object.assign(localUsers[idx], cloudUser);
+            }
+        });
+
+        // Supprimer du localStorage les users cloud qui ont été supprimés sur le cloud
+        // (uniquement les non-DEFAULT)
+        const cloudIds = json.users.map(u => u.id.toLowerCase());
+        const cleaned = localUsers.filter(u => {
+            const isDefault = DEFAULT_USERS.some(d => d.id.toLowerCase() === u.id.toLowerCase());
+            if (isDefault) return true; // Toujours garder les DEFAULT
+            return cloudIds.includes(u.id.toLowerCase()); // Garder uniquement si présent dans cloud
+        });
+
+        localStorage.setItem('SIMPACT_USERS', JSON.stringify(cleaned));
+        console.log('[SIMPACT Cloud] ✅ Sync réussie —', json.users.length, 'utilisateurs cloud');
+        return true;
+    } catch(e) {
+        console.warn('[SIMPACT Cloud] Sync impossible (mode hors ligne):', e);
+        return false;
+    }
+}
+
+// Compatibilité ancienne fonction (non utilisée mais gardée)
+function syncToCloud(type, data) {}
 
 // ─────────────────────────────────────────────────────────────
 //  UTILISATEURS
@@ -56,7 +135,15 @@ const DEFAULT_USERS = [
     { id: 'takafulia', pass: 'h_qn1ewk',  role: 'client',     name: 'At-Takafulia',        redirect: 'client.html', sector: 'Assurance' }
 ];
 
-// ⚠️ Les mots de passe sont stockés hashés. Pour les modifier, utilisez Admin → Utilisateurs.
+// Mots de passe :
+// youssef→youssef123 | talel→talel123 | admin01→simpact2026 | prod01→atelier | compta01→facture | comm01→vente
+// client01→client123 | client02→1234 | uib→uib2026
+// ubci→ubci2026 | attijari→attijari2026 | atb→atb2026 | amen→amen2026
+// biat→biat2026 | zitouna→zitouna2026 | BTK→btk2026 | QNB→qnb2026
+// TSB→tsb2026 | BTE→bte2026 | BT→bt2026
+// star→star2026 | astree→astree2026 | comar→comar2026 | carte→carte2026
+// gat→gat2026 | maghrebia→maghrebia2026 | biatassur→biatassur2026 | lloyd→lloyd2026
+// mae→mae2026 | takaful→takaful2026 | takafulia→takafulia2026
 
 // ════════════════════════════════════════════════════════════
 //  NE MODIFIEZ RIEN EN DESSOUS DE CETTE LIGNE
@@ -210,6 +297,8 @@ function addOrUpdateUser(userData) {
         users.push(newUser);
     }
     saveUsers(users);
+    // 🌐 Synchronisation cloud (ne bloque pas l'interface)
+    cloudSaveUser(newUser);
     return true;
 }
 
@@ -218,6 +307,8 @@ function deleteUser(userId) {
     const user = users.find(u => u.id === userId);
     if (user && user.role === 'superadmin') { alert('Impossible de supprimer le Super Admin.'); return false; }
     saveUsers(users.filter(u => u.id !== userId));
+    // 🌐 Synchronisation cloud
+    cloudDeleteUser(userId);
     return true;
 }
 
