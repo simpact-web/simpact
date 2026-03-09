@@ -9,53 +9,72 @@
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         :root {
-            --bg: #080c16; --card: #0d1421; --border: rgba(255,255,255,0.07);
+            --bg: #080c16; --card: #0d1421; --card2: #111827; --border: rgba(255,255,255,0.07);
             --gold: #C9A84C; --blue: #3B6FFF; --text: #f0ede8; --muted: #6b7280;
+            --green: #10b981; --red: #ef4444; --orange: #f59e0b; --amber: #f0a500;
         }
         body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
-        .bg { position: fixed; inset: 0; background: radial-gradient(ellipse 80% 60% at 20% 40%, rgba(59,111,255,0.06), transparent 60%); pointer-events: none; }
-
-        .container { max-width: 960px; margin: 0 auto; padding: 3rem 2rem; position: relative; }
-        .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 3rem; }
-        .brand { font-size: 2.2rem; font-weight: 900; letter-spacing: -1px; }
+        .bg { position: fixed; inset: 0; background: radial-gradient(ellipse 80% 60% at 20% 40%, rgba(59,111,255,0.05), transparent 60%); pointer-events: none; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 2.5rem 2rem; position: relative; }
+        .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem; }
+        .brand { font-size: 2rem; font-weight: 900; letter-spacing: -1px; }
         .brand span { color: var(--gold); }
-        .brand-sub { font-size: 0.85rem; color: var(--muted); margin-top: 4px; }
+        .brand-sub { font-size: 0.82rem; color: var(--muted); margin-top: 4px; }
         .header-right { display: flex; align-items: center; gap: 12px; }
         .user-pill { background: rgba(255,255,255,0.07); padding: 6px 14px; border-radius: 20px; font-size: 0.82rem; }
         .btn-out { background: transparent; border: 1px solid rgba(255,255,255,0.12); color: var(--muted); padding: 8px 18px; border-radius: 8px; cursor: pointer; font-family: 'Outfit', sans-serif; font-size: 0.85rem; transition: 0.2s; }
         .btn-out:hover { border-color: rgba(255,255,255,0.25); color: var(--text); }
-
-        /* STATS ROW */
-        .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2.5rem; }
-        .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; }
-        .stat-num { font-family: 'DM Mono', monospace; font-size: 2rem; font-weight: 500; }
-        .stat-num.gold { color: var(--gold); }
-        .stat-num.blue { color: var(--blue); }
-        .stat-num.green { color: #10b981; }
-        .stat-num.red { color: #ef4444; }
-        .stat-label { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
-
-        /* MODULE GRID */
-        .section-title { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); margin-bottom: 1rem; }
-        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 2.5rem; }
-        .mod {
-            background: var(--card); border: 1px solid var(--border);
-            border-radius: 14px; padding: 1.75rem;
-            text-decoration: none; color: var(--text);
-            display: flex; flex-direction: column; gap: 10px;
-            transition: all 0.2s; cursor: pointer; position: relative; overflow: hidden;
-        }
+        .kpi-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 2rem; }
+        .kpi { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.1rem 1rem; }
+        .kpi-num { font-family: 'DM Mono', monospace; font-size: 1.8rem; font-weight: 500; }
+        .kpi-num.gold { color: var(--gold); }
+        .kpi-num.blue { color: var(--blue); }
+        .kpi-num.green { color: var(--green); }
+        .kpi-num.red { color: var(--red); }
+        .kpi-num.orange { color: var(--orange); }
+        .kpi-label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
+        .section-title { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); margin-bottom: 0.9rem; }
+        .prod-layout { display: grid; grid-template-columns: 1.6fr 1fr; gap: 1.5rem; margin-bottom: 2rem; }
+        .prod-panel { background: var(--card); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+        .prod-panel-header { padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .prod-panel-title { font-weight: 700; font-size: 0.92rem; display: flex; align-items: center; gap: 8px; }
+        .live-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); animation: blink 2s infinite; flex-shrink: 0; }
+        @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+        .prod-list { padding: 0.75rem; display: flex; flex-direction: column; gap: 6px; max-height: 360px; overflow-y: auto; }
+        .prod-item { background: var(--card2); border: 1px solid var(--border); border-left: 3px solid var(--amber); border-radius: 8px; padding: 0.75rem 0.9rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+        .prod-item.urgent { border-left-color: var(--red); }
+        .prod-item.express { border-left-color: var(--orange); }
+        .prod-item-left { flex: 1; min-width: 0; }
+        .prod-item-product { font-weight: 700; font-size: 0.88rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .prod-item-client { font-size: 0.77rem; color: var(--amber); margin-top: 1px; }
+        .prod-item-ref { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--muted); }
+        .prod-item-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
+        .prod-item-qty { font-family: 'DM Mono', monospace; font-size: 0.78rem; }
+        .badge-urgence { background: rgba(239,68,68,0.15); color: #f87171; font-size: 0.65rem; font-weight: 700; padding: 2px 7px; border-radius: 8px; }
+        .badge-express { background: rgba(245,158,11,0.15); color: var(--orange); font-size: 0.65rem; font-weight: 700; padding: 2px 7px; border-radius: 8px; }
+        .prod-empty { text-align: center; padding: 2.5rem 1rem; color: var(--muted); font-size: 0.85rem; line-height: 1.7; }
+        .appro-panel { background: var(--card); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+        .appro-list { padding: 0.75rem; display: flex; flex-direction: column; gap: 6px; max-height: 360px; overflow-y: auto; }
+        .appro-item { background: var(--card2); border: 1px solid var(--border); border-left: 3px solid #7c3aed; border-radius: 8px; padding: 0.75rem; }
+        .appro-client { font-weight: 700; font-size: 0.85rem; }
+        .appro-prod { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
+        .appro-price { font-family: 'DM Mono', monospace; font-size: 0.85rem; color: var(--gold); margin-top: 4px; }
+        .btn-appro { display: inline-block; margin-top: 6px; background: var(--blue); color: white; border: none; padding: 4px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; cursor: pointer; text-decoration: none; font-family: 'Outfit', sans-serif; }
+        .panel-link { color: var(--muted); font-size: 0.75rem; text-decoration: none; }
+        .panel-link:hover { color: var(--text); }
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 2rem; }
+        .mod { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem 1.25rem; text-decoration: none; color: var(--text); display: flex; flex-direction: column; gap: 8px; transition: all 0.2s; cursor: pointer; position: relative; overflow: hidden; }
         .mod::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: transparent; transition: background 0.2s; }
-        .mod:hover { border-color: rgba(255,255,255,0.15); transform: translateY(-3px); background: #111827; }
+        .mod:hover { border-color: rgba(255,255,255,0.15); transform: translateY(-2px); background: var(--card2); }
         .mod:hover::before { background: var(--gold); }
-        .mod-icon { font-size: 2rem; }
-        .mod-name { font-weight: 800; font-size: 1rem; }
-        .mod-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.5; }
-        .mod-link { color: var(--muted); font-size: 0.75rem; margin-top: auto; font-family: 'DM Mono', monospace; }
-        .mod-badge { position: absolute; top: 1rem; right: 1rem; background: #ef4444; color: white; font-size: 0.65rem; font-weight: 700; padding: 2px 6px; border-radius: 10px; display: none; }
+        .mod-icon { font-size: 1.6rem; }
+        .mod-name { font-weight: 800; font-size: 0.95rem; }
+        .mod-desc { font-size: 0.78rem; color: var(--muted); line-height: 1.5; }
+        .mod-link { color: var(--muted); font-size: 0.72rem; margin-top: auto; font-family: 'DM Mono', monospace; }
+        .mod-badge { position: absolute; top: 0.9rem; right: 0.9rem; background: var(--red); color: white; font-size: 0.62rem; font-weight: 700; padding: 2px 7px; border-radius: 10px; display: none; }
         .mod-badge.show { display: block; }
-
-        @media (max-width: 700px) { .grid { grid-template-columns: 1fr 1fr; } .stats-row { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 900px) { .kpi-row { grid-template-columns: repeat(3,1fr); } .prod-layout { grid-template-columns: 1fr; } .grid { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 600px) { .kpi-row { grid-template-columns: 1fr 1fr; } }
     </style>
 </head>
 <body>
@@ -64,7 +83,7 @@
     <div class="header">
         <div>
             <div class="brand">SIMP<span>ACT</span></div>
-            <div class="brand-sub">Centre de Contrôle — Accès Super Admin</div>
+            <div class="brand-sub">Centre de Contrôle — Super Admin</div>
         </div>
         <div class="header-right">
             <span class="user-pill" id="user-display">—</span>
@@ -72,10 +91,25 @@
         </div>
     </div>
 
-    <!-- STATS -->
-    <div class="stats-row" id="stats-row"></div>
+    <div class="kpi-row" id="kpi-row"></div>
 
-    <!-- MODULES MÉTIER -->
+    <div class="prod-layout">
+        <div class="prod-panel">
+            <div class="prod-panel-header">
+                <div class="prod-panel-title"><div class="live-dot"></div> Atelier — Commandes en cours</div>
+                <a href="production.html" class="panel-link">→ Ouvrir l'atelier</a>
+            </div>
+            <div class="prod-list" id="prod-live-list"><div class="prod-empty">Chargement…</div></div>
+        </div>
+        <div class="appro-panel">
+            <div class="prod-panel-header">
+                <div class="prod-panel-title">🔔 À approuver (Web)</div>
+                <a href="commercial.html" class="panel-link">→ Commercial</a>
+            </div>
+            <div class="appro-list" id="appro-list"><div class="prod-empty">Aucune commande en attente</div></div>
+        </div>
+    </div>
+
     <div class="section-title">Modules métier</div>
     <div class="grid">
         <a href="commercial.html" class="mod">
@@ -118,7 +152,6 @@
         </a>
     </div>
 
-    <!-- PORTAILS -->
     <div class="section-title">Portails externes</div>
     <div class="grid" style="grid-template-columns: 1fr 1fr;">
         <a href="client.html" class="mod">
@@ -140,39 +173,74 @@
     const u = checkAuth('superadmin');
     if (u) document.getElementById('user-display').textContent = u.name;
 
-    function renderStats() {
+    function renderAll() {
         const orders = getOrders();
-        const today = new Date().toLocaleDateString('fr-FR');
-        const todayOrders = orders.filter(o => o.date && o.date.startsWith(today.split(' ')[0]));
-        const pending = orders.filter(o => o.statusProd !== 'Terminé' && o.statusProd !== 'Annulée' && o.statusProd !== 'À Valider (Web)');
+        const active = orders.filter(o => o.statusProd !== 'Terminé' && o.statusProd !== 'Annulée' && o.statusProd !== 'À Valider (Web)');
         const webPending = orders.filter(o => o.statusProd === 'À Valider (Web)');
-        const ca = orders.filter(o => o.statusProd !== 'Annulée').reduce((s,o) => s + parseFloat(o.price||0), 0);
+        const urgent = active.filter(o => o.delai && (o.delai.includes('Express') || o.delai.includes('Urgence')));
+        const ca = orders.filter(o => o.statusProd !== 'Annulée').reduce((s, o) => s + parseFloat(o.price || 0), 0);
 
-        document.getElementById('stats-row').innerHTML = `
-            <div class="stat-card">
-                <div class="stat-num gold">${orders.filter(o=>o.statusProd!=='Annulée').length}</div>
-                <div class="stat-label">Commandes totales</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-num blue">${pending.length}</div>
-                <div class="stat-label">En production</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-num green">${ca.toFixed(0)} DT</div>
-                <div class="stat-label">CA Total HT</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-num red">${webPending.length}</div>
-                <div class="stat-label">En attente approbation</div>
-            </div>
+        document.getElementById('kpi-row').innerHTML = `
+            <div class="kpi"><div class="kpi-num gold">${orders.filter(o=>o.statusProd!=='Annulée').length}</div><div class="kpi-label">Commandes totales</div></div>
+            <div class="kpi"><div class="kpi-num blue">${active.length}</div><div class="kpi-label">En production</div></div>
+            <div class="kpi"><div class="kpi-num red">${urgent.length}</div><div class="kpi-label">Urgentes 🔴</div></div>
+            <div class="kpi"><div class="kpi-num orange">${webPending.length}</div><div class="kpi-label">À approuver ⏳</div></div>
+            <div class="kpi"><div class="kpi-num green">${ca.toFixed(0)} DT</div><div class="kpi-label">CA Total HT</div></div>
         `;
 
+        // Badges
         const bw = document.getElementById('badge-web');
-        if (webPending.length > 0) { bw.textContent = webPending.length; bw.classList.add('show'); }
+        if (webPending.length > 0) { bw.textContent = webPending.length; bw.classList.add('show'); } else { bw.classList.remove('show'); }
         const bp = document.getElementById('badge-prod');
-        if (pending.length > 0) { bp.textContent = pending.length; bp.classList.add('show'); }
+        if (urgent.length > 0) { bp.textContent = urgent.length; bp.classList.add('show'); } else { bp.classList.remove('show'); }
+
+        // Production live — urgences en premier
+        const sorted = [...active].sort((a, b) => {
+            const urgA = a.delai && a.delai.includes('Urgence') ? 0 : a.delai && a.delai.includes('Express') ? 1 : 2;
+            const urgB = b.delai && b.delai.includes('Urgence') ? 0 : b.delai && b.delai.includes('Express') ? 1 : 2;
+            return urgA - urgB;
+        });
+
+        const prodList = document.getElementById('prod-live-list');
+        if (!sorted.length) {
+            prodList.innerHTML = '<div class="prod-empty">🎉 Aucune commande en cours<br><small style="color:var(--muted)">L\'atelier est libre</small></div>';
+        } else {
+            prodList.innerHTML = sorted.map(o => {
+                const isUrgent = o.delai && o.delai.includes('Urgence');
+                const isExpress = o.delai && o.delai.includes('Express');
+                const badge = isUrgent ? '<span class="badge-urgence">🔴 URGENCE</span>' : isExpress ? '<span class="badge-express">🟠 EXPRESS</span>' : '';
+                return `<div class="prod-item ${isUrgent?'urgent':''} ${isExpress&&!isUrgent?'express':''}">
+                    <div class="prod-item-left">
+                        <div class="prod-item-product">${o.prod}</div>
+                        <div class="prod-item-client">${o.client}</div>
+                        <div class="prod-item-ref">#${o.ref} · ${o.date||''}</div>
+                    </div>
+                    <div class="prod-item-right">
+                        <span class="prod-item-qty">Qté: ${o.qty}</span>
+                        ${badge}
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        // Approbations web
+        const approList = document.getElementById('appro-list');
+        if (!webPending.length) {
+            approList.innerHTML = '<div class="prod-empty">✅ Aucune commande<br><small style="color:var(--muted)">à approuver pour le moment</small></div>';
+        } else {
+            approList.innerHTML = webPending.map(o => `
+                <div class="appro-item">
+                    <div class="appro-client">${o.client}</div>
+                    <div class="appro-prod">${o.prod} — Qté: ${o.qty}</div>
+                    <div class="appro-price">${parseFloat(o.price||0).toFixed(2)} DT HT</div>
+                    <a href="commercial.html" class="btn-appro">Traiter →</a>
+                </div>
+            `).join('');
+        }
     }
-    renderStats();
+
+    renderAll();
+    setInterval(renderAll, 8000);
 </script>
 </body>
 </html>

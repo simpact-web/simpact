@@ -56,15 +56,7 @@ const DEFAULT_USERS = [
     { id: 'takafulia', pass: 'h_qn1ewk',  role: 'client',     name: 'At-Takafulia',        redirect: 'client.html', sector: 'Assurance' }
 ];
 
-// Mots de passe :
-// youssef→youssef123 | talel→talel123 | admin01→simpact2026 | prod01→atelier | compta01→facture | comm01→vente
-// client01→client123 | client02→1234 | uib→uib2026
-// ubci→ubci2026 | attijari→attijari2026 | atb→atb2026 | amen→amen2026
-// biat→biat2026 | zitouna→zitouna2026 | BTK→btk2026 | QNB→qnb2026
-// TSB→tsb2026 | BTE→bte2026 | BT→bt2026
-// star→star2026 | astree→astree2026 | comar→comar2026 | carte→carte2026
-// gat→gat2026 | maghrebia→maghrebia2026 | biatassur→biatassur2026 | lloyd→lloyd2026
-// mae→mae2026 | takaful→takaful2026 | takafulia→takafulia2026
+// ⚠️ Les mots de passe sont stockés hashés. Pour les modifier, utilisez Admin → Utilisateurs.
 
 // ════════════════════════════════════════════════════════════
 //  NE MODIFIEZ RIEN EN DESSOUS DE CETTE LIGNE
