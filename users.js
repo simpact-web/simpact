@@ -41,12 +41,7 @@ async function cloudDeleteUser(userId) {
 async function cloudSyncUsers() {
     if (!cloudEnabled()) return false;
     try {
-        const body = JSON.stringify({ action: 'get_users', key: CLOUD_SECRET });
-        const resp = await fetch(CLOUD_API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body
-        });
+            const resp = await fetch(CLOUD_API_URL + '?key=' + CLOUD_SECRET);
         if (!resp.ok) return false;
         const json = await resp.json();
         if (!json.ok || !Array.isArray(json.users)) return false;
