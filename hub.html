@@ -150,6 +150,13 @@
             <div class="mod-desc">Utilisateurs, prix, sauvegardes, paramètres</div>
             <div class="mod-link">→ admin.html</div>
         </a>
+        <a href="messagerie.html" class="mod" style="position:relative;">
+            <div class="mod-icon">&#x1F4AC;</div>
+            <div class="mod-name">Messagerie</div>
+            <div class="mod-desc">Chat temps réel avec les clients</div>
+            <div class="mod-link">→ messagerie.html</div>
+            <span id="msg-badge" style="display:none;position:absolute;top:8px;right:8px;background:#ef4444;color:#fff;font-size:11px;font-weight:700;padding:1px 7px;border-radius:10px;"></span>
+        </a>
     </div>
 
     <div class="section-title">Portails externes</div>
@@ -186,6 +193,7 @@
             <div class="kpi"><div class="kpi-num red">${urgent.length}</div><div class="kpi-label">Urgentes 🔴</div></div>
             <div class="kpi"><div class="kpi-num orange">${webPending.length}</div><div class="kpi-label">À approuver ⏳</div></div>
             <div class="kpi"><div class="kpi-num green">${ca.toFixed(0)} DT</div><div class="kpi-label">CA Total HT</div></div>
+            <div class="kpi" onclick="window.location='messagerie.html'" style="cursor:pointer;"><div class="kpi-num gold" id="kpi-msgs">0</div><div class="kpi-label">Messages non lus</div></div>
         `;
 
         // Badges
@@ -237,6 +245,7 @@
                 </div>
             `).join('');
         }
+        try{const _am=JSON.parse(localStorage.getItem('SIMPACT_MSGS')||'{}')+'';let _ur=0;const _amo=JSON.parse(localStorage.getItem('SIMPACT_MSGS')||'{}')||{};Object.keys(_amo).forEach(cid=>{_ur+=(_amo[cid]||[]).filter(m=>!m.read&&m.from===cid).length;});const _km=document.getElementById('kpi-msgs');if(_km)_km.textContent=_ur;const _mb=document.getElementById('msg-badge');if(_mb){_mb.textContent=_ur;_mb.style.display=_ur>0?'inline-block':'none';}}catch(e){}
     }
 
     renderAll();
