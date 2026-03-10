@@ -17,18 +17,26 @@
         body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
 
         /* TOPBAR */
-        .topbar { background: var(--card); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 2rem; position: sticky; top: 0; z-index: 100; }
+        .topbar { background: var(--card); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 2rem; position: sticky; top: 0; z-index: 200; }
         .topbar-brand { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; }
         .topbar-brand span { background: var(--green); color: var(--bg); padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; }
-        .topbar-right { display: flex; align-items: center; gap: 12px; }
+        .topbar-right { display: flex; align-items: center; gap: 10px; }
         .user-chip { background: rgba(255,255,255,0.07); padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; color: #94a3b8; }
+        .btn-hub { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); color: #94a3b8; padding: 5px 12px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; text-decoration: none; transition: 0.2s; }
+        .btn-hub:hover { color: var(--amber); border-color: rgba(240,165,0,0.4); }
         .btn-logout { background: transparent; border: 1px solid rgba(255,255,255,0.15); color: #94a3b8; padding: 5px 12px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; }
         .btn-logout:hover { color: white; }
-        .btn-hub { background: transparent; border: 1px solid rgba(255,255,255,0.12); color: var(--muted,#6b7280); padding: 5px 12px; border-radius: 6px; font-size: 0.82rem; text-decoration: none; transition: 0.2s; display: inline-flex; align-items: center; }
-        .btn-hub:hover { color: #f0ede8; border-color: rgba(255,255,255,0.3); }
+
+        /* TABS */
+        .tabs-bar { background: var(--card); border-bottom: 1px solid var(--border); display: flex; padding: 0 2rem; }
+        .tab-btn { padding: 0.85rem 1.5rem; font-size: 0.88rem; font-weight: 500; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; transition: 0.2s; white-space: nowrap; }
+        .tab-btn:hover { color: var(--text); }
+        .tab-btn.active { color: var(--green); border-bottom-color: var(--green); font-weight: 600; }
 
         /* LAYOUT */
         .page { max-width: 1400px; margin: 0 auto; padding: 2rem; }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
 
         /* KPI ROW */
         .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5px; background: var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 2rem; }
@@ -36,52 +44,151 @@
         .kpi-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 0.5rem; }
         .kpi-value { font-family: 'DM Mono', monospace; font-size: 1.9rem; font-weight: 500; }
         .kpi-sub { font-size: 0.78rem; color: var(--muted); margin-top: 4px; }
-        .kpi-green { color: var(--green); }
-        .kpi-amber { color: var(--amber); }
-        .kpi-blue { color: var(--blue); }
-        .kpi-red { color: var(--red); }
+        .c-green { color: var(--green); } .c-amber { color: var(--amber); }
+        .c-blue { color: var(--blue); }   .c-red { color: var(--red); }
 
-        /* CHARTS AREA */
+        /* GRID */
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem; }
+        .grid-3 { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem; }
         .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; }
         .card-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.9rem; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 8px; }
 
         /* PRODUCT BARS */
         .prod-bar-row { display: flex; align-items: center; gap: 12px; margin-bottom: 0.9rem; }
-        .prod-name { width: 120px; font-size: 0.82rem; color: #94a3b8; flex-shrink: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .prod-name { width: 130px; font-size: 0.82rem; color: #94a3b8; flex-shrink: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .prod-bar-wrap { flex: 1; background: rgba(255,255,255,0.05); border-radius: 3px; height: 6px; }
         .prod-bar-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--green), #34d399); transition: width 0.6s ease; }
-        .prod-bar-val { font-family: 'DM Mono', monospace; font-size: 0.78rem; color: var(--green); width: 80px; text-align: right; flex-shrink: 0; }
+        .prod-bar-val { font-family: 'DM Mono', monospace; font-size: 0.78rem; color: var(--green); width: 90px; text-align: right; flex-shrink: 0; }
 
-        /* PAYMENT STATUS */
+        /* PAYMENT STATS */
         .pay-stat-row { display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid var(--border); }
         .pay-stat-row:last-child { border-bottom: none; }
-        .pay-label { font-size: 0.85rem; }
         .pay-amount { font-family: 'DM Mono', monospace; font-size: 0.9rem; }
 
         /* TABLE */
         .table-section { background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 2rem; }
-        .table-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; border-bottom: 1px solid var(--border); }
+        .table-head { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 10px; }
         .table-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.9rem; }
-        .filter-row { display: flex; gap: 8px; }
-        .filter-btn { padding: 4px 12px; border: 1px solid var(--border); border-radius: 6px; background: transparent; color: var(--muted); font-size: 0.8rem; cursor: pointer; transition: 0.2s; }
-        .filter-btn.active { background: var(--green); color: var(--bg); border-color: var(--green); font-weight: 600; }
+        .table-controls { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+        .filter-btn { padding: 4px 12px; border: 1px solid var(--border); border-radius: 6px; background: transparent; color: var(--muted); font-size: 0.8rem; cursor: pointer; transition: 0.2s; font-family: inherit; }
+        .filter-btn.active { background: var(--green); color: #000; border-color: var(--green); font-weight: 600; }
+        .input-sm { background: var(--card2); border: 1px solid var(--border); color: var(--text); padding: 5px 10px; border-radius: 6px; font-size: 0.82rem; font-family: inherit; outline: none; }
+        .input-sm:focus { border-color: rgba(16,185,129,0.5); }
+        .input-sm::placeholder { color: var(--muted); }
+        .btn-export { background: var(--card2); border: 1px solid var(--border); color: var(--muted); padding: 5px 12px; border-radius: 6px; font-size: 0.8rem; cursor: pointer; font-family: inherit; transition: 0.2s; }
+        .btn-export:hover { border-color: var(--amber); color: var(--amber); }
         table { width: 100%; border-collapse: collapse; }
-        th { text-align: left; padding: 0.75rem 1.25rem; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); border-bottom: 1px solid var(--border); }
-        td { padding: 0.9rem 1.25rem; border-bottom: 1px solid var(--border); font-size: 0.88rem; }
+        th { text-align: left; padding: 0.75rem 1.25rem; font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); border-bottom: 1px solid var(--border); }
+        td { padding: 0.85rem 1.25rem; border-bottom: 1px solid var(--border); font-size: 0.87rem; }
         tr:last-child td { border-bottom: none; }
-        tr:hover td { background: rgba(255,255,255,0.02); }
+        tr.row-link { cursor: pointer; }
+        tr.row-link:hover td { background: rgba(16,185,129,0.04); }
+        tr.row-link:hover .ref-mono { color: var(--green); }
+        .empty-msg td { text-align: center; padding: 2.5rem; color: var(--muted); }
+        .table-foot { padding: 0.85rem 1.5rem; border-top: 1px solid var(--border); font-size: 0.8rem; color: var(--muted); display: flex; justify-content: space-between; }
 
-        .status-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 10px; font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
-        .status-badge:hover { opacity: 0.8; }
-        .status-paid { background: rgba(16,185,129,0.15); color: var(--green); }
-        .status-partial { background: rgba(240,165,0,0.15); color: var(--amber); }
-        .status-unpaid { background: rgba(239,68,68,0.1); color: var(--red); }
-        .prod-tag { background: rgba(59,130,246,0.1); color: var(--blue); padding: 2px 8px; border-radius: 8px; font-size: 0.75rem; }
+        .ref-mono { font-family: 'DM Mono', monospace; font-size: 0.78rem; color: #94a3b8; transition: color 0.2s; }
+        .prod-tag { background: rgba(59,130,246,0.12); color: var(--blue); padding: 2px 8px; border-radius: 8px; font-size: 0.75rem; }
+        .badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; border-radius: 10px; font-size: 0.74rem; font-weight: 600; white-space: nowrap; }
+        .b-paid { background: rgba(16,185,129,0.15); color: var(--green); }
+        .b-partial { background: rgba(240,165,0,0.15); color: var(--amber); }
+        .b-unpaid { background: rgba(239,68,68,0.12); color: var(--red); }
+        .b-prod { font-size: 0.72rem; font-weight: 600; padding: 2px 7px; border-radius: 6px; display: inline-block; }
+        .bp-att { background: rgba(240,165,0,0.12); color: var(--amber); }
+        .bp-cours { background: rgba(59,130,246,0.12); color: var(--blue); }
+        .bp-term { background: rgba(16,185,129,0.12); color: var(--green); }
+        .bp-ann { background: rgba(239,68,68,0.12); color: var(--red); }
         .mono { font-family: 'DM Mono', monospace; }
 
-        /* EMPTY */
-        .empty-row td { text-align: center; padding: 2.5rem; color: var(--muted); }
+        /* ── MODAL DETAIL ── */
+        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.78); z-index: 500; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.22s; }
+        .overlay.open { opacity: 1; pointer-events: all; }
+        .modal { background: #13131c; border: 1px solid #2a2a3a; border-radius: 18px; width: 700px; max-width: 96vw; max-height: 92vh; overflow-y: auto; position: relative; transform: translateY(24px); transition: transform 0.22s; }
+        .overlay.open .modal { transform: translateY(0); }
+        .modal-hd { padding: 1.6rem 1.8rem 1rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+        .modal-hd-left .m-ref { font-family: 'DM Mono', monospace; font-size: 0.88rem; color: var(--green); margin-bottom: 4px; }
+        .modal-hd-left .m-name { font-family: 'Syne', sans-serif; font-size: 1.3rem; font-weight: 800; }
+        .modal-hd-left .m-date { font-size: 0.78rem; color: var(--muted); margin-top: 4px; }
+        .modal-close { background: rgba(255,255,255,0.07); border: none; color: var(--muted); width: 30px; height: 30px; border-radius: 8px; cursor: pointer; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: 0.15s; }
+        .modal-close:hover { background: rgba(239,68,68,0.2); color: var(--red); }
+        .modal-bd { padding: 1.5rem 1.8rem; }
+        .m-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+        .m-field .m-label { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); margin-bottom: 4px; }
+        .m-field .m-val { font-size: 0.9rem; }
+        .m-sep { height: 1px; background: var(--border); margin: 1.25rem 0; }
+        .m-price-row { display: flex; justify-content: space-between; padding: 0.55rem 0; border-bottom: 1px solid var(--border); }
+        .m-price-row:last-child { border-bottom: none; font-weight: 700; font-size: 1.05rem; }
+        .m-price-row .pl { font-size: 0.87rem; color: var(--muted); }
+        .m-price-row.total .pl { color: var(--text); font-size: 0.95rem; }
+        .m-price-row .pv { font-family: 'DM Mono', monospace; font-size: 0.9rem; }
+        .m-desc-box { background: var(--card2); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; font-size: 0.84rem; color: #94a3b8; line-height: 1.65; white-space: pre-wrap; }
+        .modal-ft { padding: 1.2rem 1.8rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+        .pay-row { display: flex; align-items: center; gap: 10px; }
+        .pay-row label { font-size: 0.82rem; color: var(--muted); }
+        .pay-sel { background: var(--card2); border: 1px solid var(--border); color: var(--text); padding: 6px 10px; border-radius: 8px; font-family: inherit; font-size: 0.85rem; cursor: pointer; outline: none; }
+        .btn-save { background: var(--green); color: #000; border: none; padding: 7px 18px; border-radius: 8px; font-family: inherit; font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: 0.2s; }
+        .btn-save:hover { background: #0ca270; }
+        .btn-cancel { background: transparent; border: 1px solid var(--border); color: var(--muted); padding: 6px 14px; border-radius: 8px; font-family: inherit; font-size: 0.84rem; cursor: pointer; transition: 0.2s; }
+        .btn-cancel:hover { color: var(--text); }
+
+        /* ── REPORTING ── */
+        .rep-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.75rem; flex-wrap: wrap; gap: 12px; }
+        .rep-title { font-family: 'Syne', sans-serif; font-size: 1.05rem; font-weight: 800; }
+        .period-row { display: flex; gap: 6px; }
+        .period-btn { padding: 5px 14px; border: 1px solid var(--border); border-radius: 6px; background: transparent; color: var(--muted); font-size: 0.82rem; cursor: pointer; transition: 0.2s; font-family: inherit; }
+        .period-btn.active { background: var(--amber); color: #000; border-color: var(--amber); font-weight: 700; }
+
+        .rep-kpi { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem; margin-bottom: 2rem; }
+        .rk { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 1.2rem; }
+        .rk-label { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 6px; }
+        .rk-value { font-family: 'DM Mono', monospace; font-size: 1.35rem; font-weight: 500; }
+        .rk-sub { font-size: 0.72rem; margin-top: 4px; }
+
+        /* BAR CHART */
+        .chart-wrap { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; }
+        .chart-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.9rem; margin-bottom: 1.5rem; }
+        .bar-chart { display: flex; align-items: flex-end; gap: 4px; height: 160px; padding-left: 44px; position: relative; }
+        .y-axis { position: absolute; left: 0; top: 0; bottom: 0; width: 42px; display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end; padding-right: 6px; }
+        .y-label { font-family: 'DM Mono', monospace; font-size: 0.62rem; color: var(--muted); }
+        .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; gap: 0; }
+        .bar-fill { width: 100%; border-radius: 4px 4px 0 0; min-height: 2px; transition: height 0.5s ease; position: relative; }
+        .bar-fill.has { background: linear-gradient(180deg, #10b981, #059669); cursor: pointer; }
+        .bar-fill.empty { background: rgba(255,255,255,0.04); }
+        .bar-fill.has:hover::after { content: attr(data-tip); position: absolute; bottom: 105%; left: 50%; transform: translateX(-50%); background: #1e1e2a; border: 1px solid var(--border); border-radius: 6px; padding: 4px 9px; font-size: 0.7rem; color: var(--text); white-space: nowrap; z-index: 10; font-family: 'DM Mono', monospace; pointer-events: none; }
+        .bar-label { font-size: 0.65rem; color: var(--muted); margin-top: 6px; text-align: center; }
+        .chart-labels { display: flex; justify-content: space-around; padding-left: 44px; margin-top: 2px; }
+
+        /* TOP CLIENTS */
+        .tc-row { display: flex; align-items: center; gap: 10px; padding: 0.65rem 0; border-bottom: 1px solid var(--border); }
+        .tc-row:last-child { border-bottom: none; }
+        .tc-rank { font-family: 'DM Mono', monospace; font-size: 0.72rem; color: var(--muted); width: 18px; }
+        .tc-name { flex: 1; font-size: 0.87rem; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .tc-bar { width: 80px; height: 4px; background: rgba(255,255,255,0.05); border-radius: 2px; }
+        .tc-bar-fill { height: 100%; border-radius: 2px; background: var(--green); }
+        .tc-amt { font-family: 'DM Mono', monospace; font-size: 0.82rem; color: var(--green); text-align: right; min-width: 90px; }
+        .tc-cnt { font-size: 0.72rem; color: var(--muted); min-width: 48px; text-align: right; }
+
+        /* DELAY */
+        .dl-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+        .dl-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+        .dl-name { font-size: 0.84rem; flex: 1; }
+        .dl-bar { width: 90px; height: 5px; background: rgba(255,255,255,0.05); border-radius: 2px; }
+        .dl-bar-fill { height: 100%; border-radius: 2px; }
+        .dl-val { font-family: 'DM Mono', monospace; font-size: 0.75rem; color: var(--muted); min-width: 55px; text-align: right; }
+
+        /* MONTHLY TABLE */
+        .month-badge { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
+
+        /* TOAST */
+        .toast { position: fixed; bottom: 1.5rem; right: 1.5rem; background: var(--card2); border: 1px solid rgba(16,185,129,0.35); border-radius: 10px; padding: 0.85rem 1.2rem; font-size: 0.87rem; z-index: 9999; opacity: 0; transform: translateY(8px); transition: 0.3s; pointer-events: none; }
+        .toast.show { opacity: 1; transform: translateY(0); }
+
+        @media (max-width: 960px) {
+            .grid-2, .grid-3 { grid-template-columns: 1fr; }
+            .rep-kpi { grid-template-columns: repeat(2, 1fr); }
+            .kpi-row { grid-template-columns: 1fr 1fr; }
+            .m-grid { grid-template-columns: 1fr 1fr; }
+        }
     </style>
 </head>
 <body>
@@ -89,210 +196,614 @@
 <div class="topbar">
     <div class="topbar-brand">SIMPACT <span>COMPTA</span></div>
     <div class="topbar-right">
-        <a href="hub.html" class="btn-hub">← Hub</a>
         <span class="user-chip" id="user-display">—</span>
+        <a href="hub.html" class="btn-hub">← Hub</a>
         <button class="btn-logout" onclick="logout()">Déconnexion</button>
     </div>
 </div>
 
+<div class="tabs-bar">
+    <div class="tab-btn active" onclick="openTab('dashboard',this)">📊 Tableau de bord</div>
+    <div class="tab-btn" onclick="openTab('commandes',this)">📋 Commandes</div>
+    <div class="tab-btn" onclick="openTab('reporting',this)">📈 Reporting</div>
+</div>
+
 <div class="page">
 
-    <!-- KPI -->
-    <div class="kpi-row">
-        <div class="kpi">
-            <div class="kpi-label">Chiffre d'affaires HT</div>
-            <div class="kpi-value kpi-green" id="kpi-ca">—</div>
-            <div class="kpi-sub" id="kpi-ca-sub">Total commandes</div>
+    <!-- ═══════════════ DASHBOARD ═══════════════ -->
+    <div class="tab-panel active" id="tab-dashboard">
+
+        <div class="kpi-row">
+            <div class="kpi"><div class="kpi-label">Chiffre d'affaires HT</div><div class="kpi-value c-green" id="kpi-ca">—</div><div class="kpi-sub" id="kpi-ca-sub">—</div></div>
+            <div class="kpi"><div class="kpi-label">TVA collectée (19%)</div><div class="kpi-value c-blue" id="kpi-tva">—</div><div class="kpi-sub">À reverser</div></div>
+            <div class="kpi"><div class="kpi-label">Encaissé (Payé)</div><div class="kpi-value c-green" id="kpi-paid">—</div><div class="kpi-sub" id="kpi-paid-sub">—</div></div>
+            <div class="kpi"><div class="kpi-label">En attente paiement</div><div class="kpi-value c-red" id="kpi-unpaid">—</div><div class="kpi-sub" id="kpi-unpaid-sub">—</div></div>
         </div>
-        <div class="kpi">
-            <div class="kpi-label">TVA collectée (19%)</div>
-            <div class="kpi-value kpi-blue" id="kpi-tva">—</div>
-            <div class="kpi-sub">À reverser</div>
+
+        <div class="grid-2">
+            <div class="card"><div class="card-title">📊 Revenus par produit</div><div id="prod-breakdown">—</div></div>
+            <div class="card"><div class="card-title">💳 Statut des paiements</div><div id="payment-stats">—</div></div>
         </div>
-        <div class="kpi">
-            <div class="kpi-label">Encaissé (Payé)</div>
-            <div class="kpi-value kpi-green" id="kpi-paid">—</div>
-            <div class="kpi-sub" id="kpi-paid-count">—</div>
-        </div>
-        <div class="kpi">
-            <div class="kpi-label">En attente paiement</div>
-            <div class="kpi-value kpi-red" id="kpi-unpaid">—</div>
-            <div class="kpi-sub" id="kpi-unpaid-count">—</div>
+
+        <!-- 5 dernières commandes -->
+        <div class="table-section">
+            <div class="table-head">
+                <div class="table-title">🕐 Dernières commandes <span style="font-size:0.78rem;font-weight:400;color:var(--muted);">(cliquez pour le détail)</span></div>
+                <button class="filter-btn" onclick="openTab('commandes',document.querySelectorAll('.tab-btn')[1])">Voir tout →</button>
+            </div>
+            <div style="overflow-x:auto;"><table>
+                <thead><tr><th>Date</th><th>Réf</th><th>Client</th><th>Produit</th><th>Qté</th><th>HT</th><th>TTC</th><th>Prod.</th><th>Paiement</th></tr></thead>
+                <tbody id="recent-tbody"></tbody>
+            </table></div>
         </div>
     </div>
 
-    <!-- ANALYTICS -->
-    <div class="grid-2">
-        <div class="card">
-            <div class="card-title">📊 Revenus par produit</div>
-            <div id="prod-breakdown">—</div>
-        </div>
-        <div class="card">
-            <div class="card-title">💳 Statut des paiements</div>
-            <div id="payment-stats">—</div>
+    <!-- ═══════════════ COMMANDES ═══════════════ -->
+    <div class="tab-panel" id="tab-commandes">
+        <div class="table-section">
+            <div class="table-head">
+                <div class="table-title">📋 Toutes les commandes <span style="font-size:0.78rem;font-weight:400;color:var(--muted);">(cliquez sur une ligne pour les détails)</span></div>
+                <div class="table-controls">
+                    <input class="input-sm" id="s-search" type="text" placeholder="🔍 Client, réf, produit…" oninput="renderTable()" style="width:190px;">
+                    <select class="input-sm" id="s-month" onchange="renderTable()" style="cursor:pointer;"></select>
+                    <div style="display:flex;gap:5px;">
+                        <button class="filter-btn active" onclick="setFilter('all',this)">Toutes</button>
+                        <button class="filter-btn" onclick="setFilter('Non payé',this)">Non payées</button>
+                        <button class="filter-btn" onclick="setFilter('Acompte',this)">Acompte</button>
+                        <button class="filter-btn" onclick="setFilter('Payé',this)">Payées</button>
+                    </div>
+                    <button class="btn-export" onclick="exportCSV()">⬇ CSV</button>
+                </div>
+            </div>
+            <div style="overflow-x:auto;"><table>
+                <thead><tr><th>Date</th><th>Réf</th><th>Client</th><th>Produit</th><th>Qté</th><th>HT</th><th>TVA</th><th>TTC</th><th>Prod.</th><th>Paiement</th></tr></thead>
+                <tbody id="orders-tbody"></tbody>
+            </table></div>
+            <div class="table-foot" id="table-foot"></div>
         </div>
     </div>
 
-    <!-- TABLE -->
-    <div class="table-section">
-        <div class="table-header">
-            <div class="table-title">📋 Historique des commandes</div>
-            <div class="filter-row">
-                <button class="filter-btn active" onclick="filterTable('all', this)">Toutes</button>
-                <button class="filter-btn" onclick="filterTable('Non payé', this)">Non payées</button>
-                <button class="filter-btn" onclick="filterTable('Payé', this)">Payées</button>
+    <!-- ═══════════════ REPORTING ═══════════════ -->
+    <div class="tab-panel" id="tab-reporting">
+
+        <div class="rep-header">
+            <div class="rep-title">📈 Reporting financier</div>
+            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+                <div class="period-row">
+                    <button class="period-btn active" onclick="setPeriod(3,this)">3 mois</button>
+                    <button class="period-btn" onclick="setPeriod(6,this)">6 mois</button>
+                    <button class="period-btn" onclick="setPeriod(12,this)">12 mois</button>
+                </div>
+                <button class="btn-export" onclick="exportReport()">⬇ Rapport CSV</button>
             </div>
         </div>
-        <div style="overflow-x:auto;">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Réf</th>
-                        <th>Client</th>
-                        <th>Produit</th>
-                        <th>Qté</th>
-                        <th>Montant HT</th>
-                        <th>TVA</th>
-                        <th>TTC</th>
-                        <th>Statut</th>
-                    </tr>
-                </thead>
-                <tbody id="orders-tbody"></tbody>
-            </table>
+
+        <div class="rep-kpi">
+            <div class="rk"><div class="rk-label">CA HT période</div><div class="rk-value c-green" id="rk-ca">—</div><div class="rk-sub" id="rk-ca-s" style="color:var(--muted);">—</div></div>
+            <div class="rk"><div class="rk-label">TVA collectée</div><div class="rk-value c-blue" id="rk-tva">—</div><div class="rk-sub" style="color:var(--muted);">19% du CA</div></div>
+            <div class="rk"><div class="rk-label">Encaissé</div><div class="rk-value c-green" id="rk-enc">—</div><div class="rk-sub" id="rk-enc-s">—</div></div>
+            <div class="rk"><div class="rk-label">Restant à encaisser</div><div class="rk-value c-red" id="rk-rest">—</div><div class="rk-sub" id="rk-rest-s" style="color:var(--muted);">—</div></div>
+            <div class="rk"><div class="rk-label">Panier moyen</div><div class="rk-value c-amber" id="rk-avg">—</div><div class="rk-sub" style="color:var(--muted);">par commande</div></div>
+        </div>
+
+        <div class="chart-wrap">
+            <div class="chart-title">📅 CA mensuel HT</div>
+            <div class="bar-chart" id="bar-chart"><div class="y-axis" id="y-axis"></div></div>
+            <div class="chart-labels" id="chart-labels"></div>
+        </div>
+
+        <div class="grid-3">
+            <div class="card"><div class="card-title">🏆 Top clients</div><div id="top-clients">—</div></div>
+            <div class="card"><div class="card-title">⏱ Répartition délais</div><div id="delay-stats">—</div></div>
+            <div class="card"><div class="card-title">🏷 Répartition produits</div><div id="prod-stats">—</div></div>
+        </div>
+
+        <div class="table-section">
+            <div class="table-head"><div class="table-title">📆 Détail mensuel</div></div>
+            <div style="overflow-x:auto;"><table>
+                <thead><tr><th>Mois</th><th>Commandes</th><th>CA HT</th><th>TVA</th><th>CA TTC</th><th>Encaissé</th><th>Taux</th></tr></thead>
+                <tbody id="monthly-tbody"></tbody>
+            </table></div>
         </div>
     </div>
 </div>
 
+<!-- ═══════ MODAL DÉTAIL COMMANDE ═══════ -->
+<div class="overlay" id="overlay" onclick="if(event.target===this)closeModal()">
+    <div class="modal">
+        <div class="modal-hd">
+            <div class="modal-hd-left">
+                <div class="m-ref" id="m-ref">—</div>
+                <div class="m-name" id="m-name">—</div>
+                <div class="m-date" id="m-date">—</div>
+            </div>
+            <button class="modal-close" onclick="closeModal()">✕</button>
+        </div>
+        <div class="modal-bd">
+            <div class="m-grid">
+                <div class="m-field"><div class="m-label">Produit</div><div class="m-val" id="m-prod">—</div></div>
+                <div class="m-field"><div class="m-label">Quantité</div><div class="m-val mono" id="m-qty">—</div></div>
+                <div class="m-field"><div class="m-label">Délai</div><div class="m-val" id="m-delai">—</div></div>
+                <div class="m-field"><div class="m-label">Commercial</div><div class="m-val" id="m-user">—</div></div>
+                <div class="m-field"><div class="m-label">Statut production</div><div class="m-val" id="m-sprod">—</div></div>
+                <div class="m-field"><div class="m-label">Source</div><div class="m-val" id="m-source">—</div></div>
+            </div>
+            <div class="m-sep"></div>
+            <div style="margin-bottom:1.25rem;">
+                <div style="font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);margin-bottom:0.75rem;">Détail financier</div>
+                <div class="m-price-row"><span class="pl">Montant HT</span><span class="pv c-green" id="m-ht">—</span></div>
+                <div class="m-price-row"><span class="pl">TVA (19%)</span><span class="pv" style="color:var(--muted)" id="m-tva-val">—</span></div>
+                <div class="m-price-row total"><span class="pl">Total TTC</span><span class="pv" id="m-ttc">—</span></div>
+            </div>
+            <div id="m-desc-wrap" style="display:none;">
+                <div class="m-sep"></div>
+                <div style="font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);margin-bottom:0.5rem;">Instructions / Options</div>
+                <div class="m-desc-box" id="m-desc">—</div>
+            </div>
+        </div>
+        <div class="modal-ft">
+            <div class="pay-row">
+                <label>Statut paiement :</label>
+                <select class="pay-sel" id="m-pay-sel">
+                    <option value="Non payé">❌ Non payé</option>
+                    <option value="Acompte">🔶 Acompte versé</option>
+                    <option value="Payé">✅ Payé</option>
+                </select>
+            </div>
+            <div style="display:flex;gap:8px;">
+                <button class="btn-save" onclick="savePayModal()">✓ Enregistrer</button>
+                <button class="btn-cancel" onclick="closeModal()">Fermer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
 <script>
-    const user = checkAuth(['compta', 'admin']);
-    if (user) document.getElementById('user-display').textContent = user.name;
+/* ── AUTH ─────────────────────────────────────────────── */
+const usr = checkAuth(['compta', 'admin', 'superadmin']);
+if (usr) document.getElementById('user-display').textContent = usr.name;
 
-    const TVA = 0.19;
-    let allOrders = [];
-    let currentFilter = 'all';
+const TVA_RATE = 0.19;
+let ALL = [];          // toutes commandes filtrées (pas annulées)
+let SHOWN = [];        // commandes affichées dans le tableau
+let curFilter = 'all';
+let curPeriod = 3;
+let curModalRef = null;
 
-    function fmt(n) { return parseFloat(n).toLocaleString('fr-FR', { minimumFractionDigits: 2 }) + ' DT'; }
+/* ── HELPERS ──────────────────────────────────────────── */
+const fmt  = n => (+n||0).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})+' DT';
+const fmt0 = n => (+n||0).toLocaleString('fr-FR',{minimumFractionDigits:0,maximumFractionDigits:0});
+const fmtK = n => { const v=+n||0; return v>=1000?(v/1000).toFixed(1)+'k':v.toFixed(0); };
 
-    function loadStats() {
-        allOrders = getOrders().filter(o => o.statusProd !== 'Annulée' && o.statusProd !== 'À Valider (Web)');
+function scBadge(sc) {
+    const cls = sc==='Payé'?'b-paid':sc==='Acompte'?'b-partial':'b-unpaid';
+    const ico = sc==='Payé'?'✅':sc==='Acompte'?'🔶':'❌';
+    return `<span class="badge ${cls}">${ico} ${sc}</span>`;
+}
+function spBadge(sp) {
+    const cls = !sp?'bp-att':sp.includes('cours')?'bp-cours':sp==='Terminé'?'bp-term':sp.includes('Annul')?'bp-ann':'bp-att';
+    return `<span class="b-prod ${cls}">${sp||'—'}</span>`;
+}
+function delaiLabel(d) {
+    if (d==='Urgence') return '🚨 Urgence';
+    if (d==='Express') return '⚡ Express';
+    return '📅 Standard';
+}
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(t._t);
+    t._t = setTimeout(() => t.classList.remove('show'), 2600);
+}
 
-        let totalHT = 0, totalPaid = 0, totalUnpaid = 0, paidCount = 0, unpaidCount = 0;
-        const breakdown = {};
-        const payStats = { 'Payé': 0, 'Non payé': 0, 'Acompte': 0 };
+/* ── TABS ─────────────────────────────────────────────── */
+function openTab(name, el) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-'+name).classList.add('active');
+    if (el) el.classList.add('active');
+    if (name === 'commandes') { buildMonthFilter(); renderTable(); }
+    if (name === 'reporting')  renderReporting();
+}
 
-        allOrders.forEach(o => {
-            const ht = parseFloat(o.price || 0);
-            totalHT += ht;
-            breakdown[o.prod] = (breakdown[o.prod] || 0) + ht;
-            payStats[o.statusCompta] = (payStats[o.statusCompta] || 0) + ht;
+/* ── LOAD ─────────────────────────────────────────────── */
+function loadAll() {
+    ALL = getOrders().filter(o => o.statusProd !== 'Annulée' && o.statusProd !== 'À Valider (Web)');
 
-            if (o.statusCompta === 'Payé') { totalPaid += ht; paidCount++; }
-            else { totalUnpaid += ht; unpaidCount++; }
-        });
+    let ht=0, paid=0, unpaid=0, nPaid=0, nUnpaid=0;
+    const byProd={}, payS={'Payé':0,'Acompte':0,'Non payé':0};
 
-        const totalTVA = totalHT * TVA;
-        document.getElementById('kpi-ca').textContent = fmt(totalHT);
-        document.getElementById('kpi-ca-sub').textContent = allOrders.length + ' commandes';
-        document.getElementById('kpi-tva').textContent = fmt(totalTVA);
-        document.getElementById('kpi-paid').textContent = fmt(totalPaid);
-        document.getElementById('kpi-paid-count').textContent = paidCount + ' commandes payées';
-        document.getElementById('kpi-unpaid').textContent = fmt(totalUnpaid);
-        document.getElementById('kpi-unpaid-count').textContent = unpaidCount + ' à encaisser';
+    ALL.forEach(o => {
+        const v = +o.price||0;
+        ht += v;
+        const sc = o.statusCompta||'Non payé';
+        byProd[o.prod] = (byProd[o.prod]||0)+v;
+        if (sc==='Payé') payS['Payé']+=v;
+        else if (sc==='Acompte') payS['Acompte']+=v;
+        else payS['Non payé']+=v;
+        if (sc==='Payé') { paid+=v; nPaid++; } else { unpaid+=v; nUnpaid++; }
+    });
 
-        // Product breakdown
-        const maxVal = Math.max(...Object.values(breakdown), 1);
-        const sortedProds = Object.keys(breakdown).sort((a,b) => breakdown[b]-breakdown[a]);
-        document.getElementById('prod-breakdown').innerHTML = sortedProds.length
-            ? sortedProds.map(p => `
-                <div class="prod-bar-row">
-                    <span class="prod-name">${p}</span>
-                    <div class="prod-bar-wrap"><div class="prod-bar-fill" style="width:${(breakdown[p]/maxVal*100).toFixed(1)}%"></div></div>
-                    <span class="prod-bar-val">${fmt(breakdown[p])}</span>
-                </div>
-            `).join('')
-            : '<p style="text-align:center;color:var(--muted);padding:1rem;">Aucune donnée.</p>';
+    document.getElementById('kpi-ca').textContent = fmt(ht);
+    document.getElementById('kpi-ca-sub').textContent = ALL.length+' commandes';
+    document.getElementById('kpi-tva').textContent = fmt(ht*TVA_RATE);
+    document.getElementById('kpi-paid').textContent = fmt(paid);
+    document.getElementById('kpi-paid-sub').textContent = nPaid+' commandes payées';
+    document.getElementById('kpi-unpaid').textContent = fmt(unpaid);
+    document.getElementById('kpi-unpaid-sub').textContent = nUnpaid+' à encaisser';
 
-        // Payment stats
-        const payTotal = Object.values(payStats).reduce((s,v) => s+v, 0) || 1;
-        document.getElementById('payment-stats').innerHTML = `
-            <div class="pay-stat-row">
-                <span class="pay-label"><span style="color:var(--green);">●</span> Payé</span>
-                <span class="pay-amount kpi-green">${fmt(payStats['Payé'] || 0)}</span>
+    // Prod bars
+    const maxP = Math.max(...Object.values(byProd),1);
+    document.getElementById('prod-breakdown').innerHTML = Object.keys(byProd).sort((a,b)=>byProd[b]-byProd[a])
+        .map(p=>`<div class="prod-bar-row">
+            <span class="prod-name" title="${p}">${p}</span>
+            <div class="prod-bar-wrap"><div class="prod-bar-fill" style="width:${(byProd[p]/maxP*100).toFixed(1)}%"></div></div>
+            <span class="prod-bar-val">${fmt(byProd[p])}</span>
+        </div>`).join('') || '<p style="color:var(--muted);text-align:center;padding:1rem;">—</p>';
+
+    // Pay stats
+    const total = Math.max(ht,1);
+    document.getElementById('payment-stats').innerHTML = `
+        <div class="pay-stat-row"><span>● Payé</span><span class="pay-amount c-green">${fmt(payS['Payé'])}</span></div>
+        <div class="pay-stat-row"><span>● Acompte versé</span><span class="pay-amount c-amber">${fmt(payS['Acompte'])}</span></div>
+        <div class="pay-stat-row"><span>● Non payé</span><span class="pay-amount c-red">${fmt(payS['Non payé'])}</span></div>
+        <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border);">
+            <div style="height:8px;background:rgba(255,255,255,0.05);border-radius:4px;overflow:hidden;display:flex;">
+                <div style="height:100%;width:${(payS['Payé']/total*100).toFixed(1)}%;background:var(--green);border-radius:4px 0 0 4px;"></div>
+                <div style="height:100%;width:${(payS['Acompte']/total*100).toFixed(1)}%;background:var(--amber);"></div>
             </div>
-            <div class="pay-stat-row">
-                <span class="pay-label"><span style="color:var(--amber);">●</span> Acompte versé</span>
-                <span class="pay-amount kpi-amber">${fmt(payStats['Acompte'] || 0)}</span>
+            <div style="font-size:0.78rem;color:var(--muted);margin-top:6px;">
+                Taux d'encaissement : <strong style="color:var(--green)">${(payS['Payé']/total*100).toFixed(1)}%</strong>
             </div>
-            <div class="pay-stat-row">
-                <span class="pay-label"><span style="color:var(--red);">●</span> Non payé</span>
-                <span class="pay-amount kpi-red">${fmt(payStats['Non payé'] || 0)}</span>
-            </div>
-            <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border);">
-                <div style="height:8px;background:rgba(255,255,255,0.05);border-radius:4px;overflow:hidden;">
-                    <div style="height:100%;width:${((payStats['Payé']||0)/payTotal*100).toFixed(1)}%;background:var(--green);border-radius:4px;"></div>
-                </div>
-                <div style="font-size:0.78rem;color:var(--muted);margin-top:6px;">
-                    Taux d'encaissement: <strong style="color:var(--green)">${((payStats['Payé']||0)/payTotal*100).toFixed(1)}%</strong>
-                </div>
-            </div>
-        `;
+        </div>`;
 
-        renderTable();
-    }
+    // Recent 5
+    const rec = ALL.slice(0,5);
+    document.getElementById('recent-tbody').innerHTML = rec.length
+        ? rec.map(o => buildRow(o, true)).join('')
+        : '<tr class="empty-msg"><td colspan="9">Aucune commande.</td></tr>';
+}
 
-    function renderTable() {
-        const tbody = document.getElementById('orders-tbody');
-        const filtered = currentFilter === 'all' ? allOrders : allOrders.filter(o => o.statusCompta === currentFilter);
-
-        if (!filtered.length) {
-            tbody.innerHTML = '<tr class="empty-row"><td colspan="9">Aucune commande.</td></tr>';
-            return;
-        }
-
-        tbody.innerHTML = filtered.map(o => {
-            const ht = parseFloat(o.price || 0);
-            const tva = o.tva ? parseFloat(o.tva) : ht * TVA;
-            const ttc = o.priceTTC ? parseFloat(o.priceTTC) : ht + tva;
-            const sc = o.statusCompta || 'Non payé';
-            const scClass = sc === 'Payé' ? 'status-paid' : sc === 'Acompte' ? 'status-partial' : 'status-unpaid';
-
-            return `<tr>
-                <td style="color:var(--muted);font-size:0.8rem;">${o.date}</td>
-                <td><span class="mono" style="font-size:0.8rem;">${o.ref}</span></td>
-                <td><strong>${o.client}</strong></td>
-                <td><span class="prod-tag">${o.prod}</span></td>
-                <td class="mono">${o.qty}</td>
-                <td class="mono" style="color:var(--green);">${ht.toFixed(2)} DT</td>
-                <td class="mono" style="color:var(--muted);">${tva.toFixed(2)} DT</td>
-                <td class="mono" style="font-weight:600;">${ttc.toFixed(2)} DT</td>
-                <td>
-                    <select class="status-badge ${scClass}" onchange="changePayStatus('${o.ref}', this.value, this)" style="background:transparent;border:none;cursor:pointer;font-family:inherit;font-size:0.75rem;font-weight:600;padding:3px 8px;border-radius:10px;">
-                        <option value="Non payé" ${sc === 'Non payé' ? 'selected' : ''}>❌ Non payé</option>
-                        <option value="Acompte" ${sc === 'Acompte' ? 'selected' : ''}>🔶 Acompte</option>
-                        <option value="Payé" ${sc === 'Payé' ? 'selected' : ''}>✅ Payé</option>
-                    </select>
-                </td>
-            </tr>`;
+/* ── TABLE ────────────────────────────────────────────── */
+function buildMonthFilter() {
+    const sel = document.getElementById('s-month');
+    const cur = sel.value;
+    const months = new Set();
+    ALL.forEach(o => {
+        if (!o.date) return;
+        const p = o.date.split(' ')[0].split('/');
+        if (p.length >= 3) months.add(p[1].padStart(2,'0')+'/'+p[2]);
+    });
+    const sorted = [...months].sort((a,b)=>{
+        const [ma,ya]=a.split('/'), [mb,yb]=b.split('/');
+        return (yb-ya)||(mb-ma);
+    });
+    sel.innerHTML = '<option value="">Toutes les dates</option>' +
+        sorted.map(m => {
+            const [mo,yr] = m.split('/');
+            const lbl = new Date(yr,mo-1,1).toLocaleDateString('fr-FR',{month:'long',year:'numeric'});
+            return `<option value="${m}" ${cur===m?'selected':''}>${lbl}</option>`;
         }).join('');
-    }
+}
 
-    function changePayStatus(ref, newStatus, selectEl) {
-        updateOrderStatus(ref, newStatus, 'compta');
-        const scClass = newStatus === 'Payé' ? 'status-paid' : newStatus === 'Acompte' ? 'status-partial' : 'status-unpaid';
-        selectEl.className = `status-badge ${scClass}`;
-        loadStats();
-    }
+function setFilter(f, btn) {
+    curFilter = f;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderTable();
+}
 
-    function filterTable(filter, btn) {
-        currentFilter = filter;
-        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        renderTable();
+function renderTable() {
+    const search = (document.getElementById('s-search')?.value||'').toLowerCase();
+    const monthF = document.getElementById('s-month')?.value||'';
+    let rows = curFilter==='all' ? ALL : ALL.filter(o=>(o.statusCompta||'Non payé')===curFilter);
+    if (search) rows = rows.filter(o=>
+        (o.client||'').toLowerCase().includes(search)||
+        (o.ref||'').toLowerCase().includes(search)||
+        (o.prod||'').toLowerCase().includes(search));
+    if (monthF) rows = rows.filter(o=>{
+        if (!o.date) return false;
+        const p = o.date.split(' ')[0].split('/');
+        return p.length>=3 && (p[1].padStart(2,'0')+'/'+p[2])===monthF;
+    });
+    SHOWN = rows;
+    const tbody = document.getElementById('orders-tbody');
+    if (!rows.length) {
+        tbody.innerHTML = '<tr class="empty-msg"><td colspan="10">Aucune commande trouvée.</td></tr>';
+        document.getElementById('table-foot').innerHTML = '';
+        return;
     }
+    tbody.innerHTML = rows.map(o=>buildRow(o,false)).join('');
+    const totHT  = rows.reduce((s,o)=>s+(+o.price||0),0);
+    const totTTC = rows.reduce((s,o)=>s+(+o.priceTTC||(+o.price||0)*1.19),0);
+    document.getElementById('table-foot').innerHTML =
+        `<span>${rows.length} commande(s)</span>
+         <span>HT : <strong class="c-green">${fmt(totHT)}</strong> &nbsp;|&nbsp; TTC : <strong>${fmt(totTTC)}</strong></span>`;
+}
 
-    loadStats();
-    setInterval(loadStats, 8000);
+function buildRow(o, slim) {
+    const ht  = +o.price||0;
+    const tva = o.tva ? +o.tva : ht*TVA_RATE;
+    const ttc = o.priceTTC ? +o.priceTTC : ht+tva;
+    const sc  = o.statusCompta||'Non payé';
+    if (slim) return `<tr class="row-link" onclick="openModal('${o.ref}')">
+        <td style="color:var(--muted);font-size:0.78rem;">${o.date||'—'}</td>
+        <td><span class="ref-mono">${o.ref}</span></td>
+        <td><strong>${o.client}</strong></td>
+        <td><span class="prod-tag">${o.prod}</span></td>
+        <td class="mono">${o.qty}</td>
+        <td class="mono c-green">${ht.toFixed(2)} DT</td>
+        <td class="mono" style="font-weight:600">${ttc.toFixed(2)} DT</td>
+        <td>${spBadge(o.statusProd)}</td>
+        <td>${scBadge(sc)}</td>
+    </tr>`;
+    return `<tr class="row-link" onclick="openModal('${o.ref}')">
+        <td style="color:var(--muted);font-size:0.78rem;">${o.date||'—'}</td>
+        <td><span class="ref-mono">${o.ref}</span></td>
+        <td><strong>${o.client}</strong></td>
+        <td><span class="prod-tag">${o.prod}</span></td>
+        <td class="mono">${o.qty}</td>
+        <td class="mono c-green">${ht.toFixed(2)} DT</td>
+        <td class="mono" style="color:var(--muted)">${tva.toFixed(2)} DT</td>
+        <td class="mono" style="font-weight:600">${ttc.toFixed(2)} DT</td>
+        <td>${spBadge(o.statusProd)}</td>
+        <td onclick="event.stopPropagation()">${scBadge(sc)}</td>
+    </tr>`;
+}
+
+/* ── MODAL ────────────────────────────────────────────── */
+function openModal(ref) {
+    const o = ALL.find(x=>x.ref===ref);
+    if (!o) return;
+    curModalRef = ref;
+    const ht  = +o.price||0;
+    const tva = o.tva ? +o.tva : ht*TVA_RATE;
+    const ttc = o.priceTTC ? +o.priceTTC : ht+tva;
+    const sc  = o.statusCompta||'Non payé';
+    document.getElementById('m-ref').textContent   = o.ref;
+    document.getElementById('m-name').textContent  = o.client;
+    document.getElementById('m-date').textContent  = '📅 '+(o.date||'—')+(o.user?' · 👤 '+o.user:'');
+    document.getElementById('m-prod').textContent  = o.prod||'—';
+    document.getElementById('m-qty').textContent   = (o.qty||'—')+' ex.';
+    document.getElementById('m-delai').textContent = delaiLabel(o.delai);
+    document.getElementById('m-user').textContent  = o.user||'—';
+    document.getElementById('m-sprod').innerHTML   = spBadge(o.statusProd);
+    document.getElementById('m-source').textContent= o.source==='portail-client'?'🌐 Portail client':'🖥️ Interface interne';
+    document.getElementById('m-ht').textContent    = ht.toFixed(2)+' DT';
+    document.getElementById('m-tva-val').textContent = '+ '+tva.toFixed(2)+' DT';
+    document.getElementById('m-ttc').textContent   = ttc.toFixed(2)+' DT';
+    if (o.desc && o.desc.trim()) {
+        document.getElementById('m-desc').textContent = o.desc;
+        document.getElementById('m-desc-wrap').style.display = 'block';
+    } else {
+        document.getElementById('m-desc-wrap').style.display = 'none';
+    }
+    document.getElementById('m-pay-sel').value = sc;
+    document.getElementById('overlay').classList.add('open');
+}
+function closeModal() { document.getElementById('overlay').classList.remove('open'); curModalRef=null; }
+function savePayModal() {
+    if (!curModalRef) return;
+    const v = document.getElementById('m-pay-sel').value;
+    updateOrderStatus(curModalRef, v, 'compta');
+    closeModal();
+    loadAll();
+    if (document.getElementById('tab-commandes').classList.contains('active')) renderTable();
+    showToast('✅ Paiement mis à jour : '+v);
+}
+
+/* ── REPORTING ────────────────────────────────────────── */
+function setPeriod(n, btn) {
+    curPeriod = n;
+    document.querySelectorAll('.period-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    renderReporting();
+}
+function getMonthList(n) {
+    const now = new Date(), arr = [];
+    for (let i=n-1;i>=0;i--) {
+        const d = new Date(now.getFullYear(), now.getMonth()-i, 1);
+        arr.push({ y:d.getFullYear(), m:d.getMonth()+1,
+            key: d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'),
+            short: d.toLocaleDateString('fr-FR',{month:'short'}),
+            long: d.toLocaleDateString('fr-FR',{month:'long',year:'numeric'}) });
+    }
+    return arr;
+}
+function ordersInPeriod(n) {
+    const now = new Date();
+    const cut = new Date(now.getFullYear(), now.getMonth()-n+1, 1);
+    return ALL.filter(o => {
+        if (!o.date) return false;
+        const p = o.date.split(' ')[0].split('/');
+        if (p.length < 3) return false;
+        return new Date(p[2], p[1]-1, p[0]) >= cut;
+    });
+}
+
+function renderReporting() {
+    const orders = ordersInPeriod(curPeriod);
+    let ht=0, paid=0, unpaid=0;
+    orders.forEach(o=>{ const v=+o.price||0; ht+=v;
+        (o.statusCompta||'Non payé')==='Payé' ? paid+=v : unpaid+=v; });
+    const avg = orders.length ? ht/orders.length : 0;
+    const rate = ht>0 ? (paid/ht*100).toFixed(1) : '0.0';
+
+    document.getElementById('rk-ca').textContent   = fmt(ht);
+    document.getElementById('rk-ca-s').textContent = orders.length+' commandes';
+    document.getElementById('rk-tva').textContent  = fmt(ht*TVA_RATE);
+    document.getElementById('rk-enc').textContent  = fmt(paid);
+    document.getElementById('rk-enc-s').innerHTML  = `<span class="${+rate>=50?'c-green':'c-red'}">${rate}% du CA</span>`;
+    document.getElementById('rk-rest').textContent = fmt(unpaid);
+    document.getElementById('rk-rest-s').textContent = unpaid>0 ? 'à encaisser' : '✓ Tout encaissé';
+    document.getElementById('rk-avg').textContent  = fmt(avg);
+
+    renderBarChart(orders);
+    renderTopClients(orders);
+    renderDelayStats(orders);
+    renderProdStats(orders);
+    renderMonthlyTable(orders);
+}
+
+function renderBarChart(orders) {
+    const months = getMonthList(curPeriod);
+    const byM = {};
+    months.forEach(m=>byM[m.key]=0);
+    orders.forEach(o => {
+        if (!o.date) return;
+        const p = o.date.split(' ')[0].split('/');
+        if (p.length<3) return;
+        const k = p[2]+'-'+String(+p[1]).padStart(2,'0');
+        if (byM[k]!==undefined) byM[k] += +o.price||0;
+    });
+    const maxV = Math.max(...Object.values(byM),1);
+    const STEPS = 4;
+    document.getElementById('y-axis').innerHTML = Array.from({length:STEPS+1},(_,i)=>`
+        <span class="y-label">${fmtK((maxV/STEPS)*(STEPS-i))}</span>`).join('');
+    const chart = document.getElementById('bar-chart');
+    chart.querySelectorAll('.bar-col').forEach(e=>e.remove());
+    months.forEach(m=>{
+        const v = byM[m.key]||0;
+        const pct = (v/maxV*100).toFixed(1);
+        const col = document.createElement('div');
+        col.className = 'bar-col';
+        col.innerHTML = `<div class="bar-fill ${v>0?'has':'empty'}" style="height:${pct}%" data-tip="${m.short} ${m.y}: ${fmt(v)}"></div>`;
+        chart.appendChild(col);
+    });
+    document.getElementById('chart-labels').innerHTML = months.map(m=>`<span class="bar-label">${m.short}</span>`).join('');
+}
+
+function renderTopClients(orders) {
+    const byC={};
+    orders.forEach(o=>{ if(!byC[o.client])byC[o.client]={ht:0,n:0};
+        byC[o.client].ht+=+o.price||0; byC[o.client].n++; });
+    const sorted = Object.entries(byC).sort((a,b)=>b[1].ht-a[1].ht).slice(0,7);
+    const maxV = sorted[0]?.[1].ht||1;
+    document.getElementById('top-clients').innerHTML = sorted.length
+        ? sorted.map(([name,d],i)=>`<div class="tc-row">
+            <span class="tc-rank">${i+1}</span>
+            <span class="tc-name" title="${name}">${name}</span>
+            <div class="tc-bar"><div class="tc-bar-fill" style="width:${(d.ht/maxV*100).toFixed(0)}%"></div></div>
+            <span class="tc-amt">${fmt(d.ht)}</span>
+            <span class="tc-cnt">${d.n} cmd</span>
+        </div>`).join('')
+        : '<p style="color:var(--muted);text-align:center;padding:1rem;">—</p>';
+}
+
+function renderDelayStats(orders) {
+    const counts={Standard:0,Express:0,Urgence:0};
+    orders.forEach(o=>{ const d=o.delai||'Standard'; counts[d]=(counts[d]||0)+1; });
+    const total=Math.max(orders.length,1);
+    const colors={Standard:'var(--green)',Express:'var(--amber)',Urgence:'var(--red)'};
+    document.getElementById('delay-stats').innerHTML = Object.entries(counts).filter(([,v])=>v>0).map(([n,v])=>`
+        <div class="dl-row">
+            <div class="dl-dot" style="background:${colors[n]||'var(--muted)'}"></div>
+            <span class="dl-name">${n}</span>
+            <div class="dl-bar"><div class="dl-bar-fill" style="width:${(v/total*100).toFixed(0)}%;background:${colors[n]||'var(--muted)'}"></div></div>
+            <span class="dl-val">${v} (${(v/total*100).toFixed(0)}%)</span>
+        </div>`).join('') || '<p style="color:var(--muted);text-align:center;">—</p>';
+}
+
+function renderProdStats(orders) {
+    const byP={};
+    orders.forEach(o=>byP[o.prod]=(byP[o.prod]||0)+1);
+    const total=Math.max(orders.length,1);
+    const cols=['var(--blue)','var(--purple)','var(--amber)','var(--green)','var(--red)'];
+    const sorted=Object.entries(byP).sort((a,b)=>b[1]-a[1]);
+    document.getElementById('prod-stats').innerHTML = sorted.map(([n,v],i)=>`
+        <div class="dl-row">
+            <div class="dl-dot" style="background:${cols[i%cols.length]}"></div>
+            <span class="dl-name" title="${n}" style="font-size:0.8rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${n}</span>
+            <div class="dl-bar"><div class="dl-bar-fill" style="width:${(v/total*100).toFixed(0)}%;background:${cols[i%cols.length]}"></div></div>
+            <span class="dl-val">${v} (${(v/total*100).toFixed(0)}%)</span>
+        </div>`).join('') || '<p style="color:var(--muted);text-align:center;">—</p>';
+}
+
+function renderMonthlyTable(orders) {
+    const months = getMonthList(curPeriod);
+    const byM={};
+    months.forEach(m=>byM[m.key]={count:0,ht:0,paid:0,long:m.long});
+    orders.forEach(o=>{
+        if(!o.date) return;
+        const p=o.date.split(' ')[0].split('/');
+        if(p.length<3) return;
+        const k=p[2]+'-'+String(+p[1]).padStart(2,'0');
+        if(!byM[k]) return;
+        const v=+o.price||0;
+        byM[k].count++;byM[k].ht+=v;
+        if((o.statusCompta||'')==='Payé') byM[k].paid+=v;
+    });
+    document.getElementById('monthly-tbody').innerHTML = months.reverse().map(m=>{
+        const d=byM[m.key];
+        const tva=d.ht*TVA_RATE, ttc=d.ht*1.19;
+        const rate=d.ht>0?(d.paid/d.ht*100).toFixed(0)+'%':'—';
+        const rateCol=d.ht>0&&d.paid/d.ht>=0.5?'c-green':'c-red';
+        return `<tr>
+            <td><strong>${d.long}</strong></td>
+            <td class="mono">${d.count||'—'}</td>
+            <td class="mono c-green">${d.ht>0?fmt(d.ht):'—'}</td>
+            <td class="mono" style="color:var(--muted)">${d.ht>0?fmt(tva):'—'}</td>
+            <td class="mono">${d.ht>0?fmt(ttc):'—'}</td>
+            <td class="mono" style="color:var(--green)">${d.paid>0?fmt(d.paid):'—'}</td>
+            <td><strong class="${rateCol}">${rate}</strong></td>
+        </tr>`;
+    }).join('');
+}
+
+/* ── EXPORTS ──────────────────────────────────────────── */
+function exportCSV() {
+    const rows = SHOWN.length ? SHOWN : ALL;
+    const head = ['Date','Ref','Client','Produit','Qte','HT','TVA','TTC','Statut Prod','Paiement','Delai','Commercial'];
+    const body = rows.map(o=>{
+        const ht=+o.price||0, tva=o.tva?+o.tva:ht*TVA_RATE, ttc=o.priceTTC?+o.priceTTC:ht+tva;
+        return [o.date||'',o.ref,o.client,o.prod,o.qty,ht.toFixed(2),tva.toFixed(2),ttc.toFixed(2),
+            o.statusProd||'',o.statusCompta||'Non payé',o.delai||'Standard',o.user||'']
+            .map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',');
+    });
+    download([head.join(','),...body].join('\n'), 'SIMPACT_Commandes_'+today()+'.csv');
+    showToast('✅ Export CSV téléchargé');
+}
+function exportReport() {
+    const months = getMonthList(curPeriod);
+    const orders = ordersInPeriod(curPeriod);
+    const byM={};
+    months.forEach(m=>byM[m.key]={count:0,ht:0,paid:0,long:m.long});
+    orders.forEach(o=>{
+        if(!o.date) return;
+        const p=o.date.split(' ')[0].split('/');
+        if(p.length<3) return;
+        const k=p[2]+'-'+String(+p[1]).padStart(2,'0');
+        if(!byM[k]) return;
+        const v=+o.price||0; byM[k].count++;byM[k].ht+=v;
+        if((o.statusCompta||'')==='Payé') byM[k].paid+=v;
+    });
+    const head=['Mois','Commandes','CA HT','TVA','CA TTC','Encaisse','Taux'];
+    const body=months.map(m=>{
+        const d=byM[m.key], tva=d.ht*TVA_RATE, ttc=d.ht*1.19;
+        const rate=d.ht>0?(d.paid/d.ht*100).toFixed(1)+'%':'—';
+        return [d.long,d.count,d.ht.toFixed(2),tva.toFixed(2),ttc.toFixed(2),d.paid.toFixed(2),rate]
+            .map(v=>'"'+v+'"').join(',');
+    });
+    download([head.join(','),...body].join('\n'), 'SIMPACT_Rapport_'+curPeriod+'mois_'+today()+'.csv');
+    showToast('✅ Rapport CSV téléchargé');
+}
+function download(csv, name) {
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'}));
+    a.download=name; a.click();
+}
+function today() { return new Date().toLocaleDateString('fr-FR').replace(/\//g,'-'); }
+
+/* ── INIT ─────────────────────────────────────────────── */
+loadAll();
+setInterval(() => {
+    loadAll();
+    if (document.getElementById('tab-commandes').classList.contains('active')) renderTable();
+    if (document.getElementById('tab-reporting').classList.contains('active')) renderReporting();
+}, 12000);
 </script>
 </body>
 </html>
