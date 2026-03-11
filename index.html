@@ -9,14 +9,14 @@
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         :root {
-            --bg: #080c16;
-            --card: #0d1421;h
-            --border: rgba(255,255,255,0.07);
+            --bg: #f0f8ff;
+            --card: #ffffff;
+            --border: #c8dff0;
             --gold: #C9A84C;
             --gold-light: #e8c97a;
-            --blue: #3B6FFF;
-            --text: #f0ede8;
-            --muted: #6b7a8d;
+            --blue: #1a4fff;
+            --text: #0a0a0f;
+            --muted: #6b7280;
         }
 
         body {
@@ -30,14 +30,14 @@
         /* ── BACKGROUND ANIMATION ── */
         .bg-canvas {
             position: fixed; inset: 0; z-index: 0;
-            background: radial-gradient(ellipse 80% 60% at 20% 40%, rgba(59,111,255,0.08) 0%, transparent 60%),
+            background: radial-gradient(ellipse 80% 60% at 20% 40%, rgba(100,180,255,0.12) 0%, transparent 60%),
                         radial-gradient(ellipse 60% 80% at 80% 60%, rgba(201,168,76,0.06) 0%, transparent 60%),
                         var(--bg);
         }
         .bg-grid {
             position: fixed; inset: 0; z-index: 0;
-            background-image: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
-                              linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-image: linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
             background-size: 60px 60px;
         }
 
@@ -89,7 +89,7 @@
 
         .feature-icon {
             width: 40px; height: 40px; border-radius: 10px;
-            background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.2);
+            background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.25);
             display: flex; align-items: center; justify-content: center;
             font-size: 1.1rem; flex-shrink: 0;
         }
@@ -105,7 +105,7 @@
         /* ── RIGHT PANEL ── */
         .panel-right {
             width: 460px; flex-shrink: 0;
-            background: rgba(255,255,255,0.02);
+            background: rgba(255,255,255,0.7);
             border-left: 1px solid var(--border);
             display: flex; align-items: center; justify-content: center;
             padding: 3rem;
@@ -136,7 +136,7 @@
         }
         .form-input {
             width: 100%; padding: 0.9rem 1.1rem;
-            background: rgba(255,255,255,0.04);
+            background: #f5fbff;
             border: 1.5px solid var(--border);
             border-radius: 10px;
             font-family: 'Outfit', sans-serif;
@@ -153,7 +153,7 @@
         .btn-login {
             width: 100%; padding: 1rem;
             background: linear-gradient(135deg, var(--gold), #a8843a);
-            color: #080c16; border: none; border-radius: 10px;
+            color: #ffffff; border: none; border-radius: 10px;
             font-family: 'Outfit', sans-serif;
             font-size: 1rem; font-weight: 700;
             cursor: pointer; transition: all 0.2s;
@@ -171,8 +171,8 @@
         .btn-login:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
         .error-msg {
-            background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3);
-            color: #f87171; border-radius: 8px; padding: 0.75rem 1rem;
+            background: rgba(220,38,38,0.08); border: 1px solid rgba(220,38,38,0.25);
+            color: #dc2626; border-radius: 8px; padding: 0.75rem 1rem;
             font-size: 0.85rem; margin-top: 1rem; display: none;
         }
 
@@ -187,12 +187,12 @@
         .quick-logins { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
         .quick-btn {
             padding: 0.6rem 0.75rem;
-            background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+            background: #f5fbff; border: 1px solid var(--border);
             border-radius: 8px; cursor: pointer; font-size: 0.78rem;
             color: var(--muted); font-family: 'Outfit', sans-serif;
             transition: all 0.15s; text-align: left; display: flex; align-items: center; gap: 6px;
         }
-        .quick-btn:hover { border-color: rgba(255,255,255,0.15); color: var(--text); background: rgba(255,255,255,0.06); }
+        .quick-btn:hover { border-color: var(--gold); color: var(--text); background: rgba(201,168,76,0.05); }
         .quick-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
         .dot-gold { background: var(--gold); }
         .dot-blue { background: var(--blue); }
@@ -204,15 +204,14 @@
             font-size: 0.72rem; color: rgba(107,122,141,0.6);
         }
 
-        /* ── FLOATING ORBS ── */
         .orb {
             position: fixed; border-radius: 50%;
             filter: blur(80px); pointer-events: none; z-index: 0;
             animation: float 8s ease-in-out infinite;
         }
-        .orb-1 { width: 300px; height: 300px; background: rgba(59,111,255,0.06); top: 10%; left: 5%; animation-delay: 0s; }
-        .orb-2 { width: 250px; height: 250px; background: rgba(201,168,76,0.06); bottom: 15%; right: 25%; animation-delay: 3s; }
-        .orb-3 { width: 200px; height: 200px; background: rgba(16,185,129,0.04); top: 50%; left: 40%; animation-delay: 5s; }
+        .orb-1 { width: 300px; height: 300px; background: rgba(100,180,255,0.15); top: 10%; left: 5%; animation-delay: 0s; }
+        .orb-2 { width: 250px; height: 250px; background: rgba(201,168,76,0.1); bottom: 15%; right: 25%; animation-delay: 3s; }
+        .orb-3 { width: 200px; height: 200px; background: rgba(100,200,255,0.1); top: 50%; left: 40%; animation-delay: 5s; }
 
         @keyframes float {
             0%, 100% { transform: translate(0, 0); }
@@ -332,9 +331,7 @@
             btn.disabled = true;
             btn.textContent = 'Connexion...';
 
-            // 🌐 Synchroniser les utilisateurs cloud avant de vérifier le mot de passe
-            (async () => {
-                await cloudSyncUsers();
+            setTimeout(() => {
                 const found = login(userId, pass);
                 if (found) {
                     btn.textContent = '✓ Accès autorisé';
@@ -346,9 +343,7 @@
                     document.getElementById('inp-pass').value = '';
                     document.getElementById('inp-pass').focus();
                 }
-            })();
-            return; // empêche le setTimeout vide
-            if(false) setTimeout(() => {}, 500);
+            }, 500);
         }
 
         function quickLogin(id, pass) {
