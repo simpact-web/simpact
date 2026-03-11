@@ -7,22 +7,22 @@
     <script src="users.js?v=3"></script>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #0f172a; --card-bg: #1e293b; --text: #f1f5f9; --accent: #f59e0b; --success: #10b981; --danger: #ef4444; --input-bg: #334155; }
+        :root { --bg: #f5f3ee; --card-bg: #ffffff; --text: #0a0a0f; --accent: #C9A84C; --success: #059669; --danger: #dc2626; --input-bg: #f8f7f4; --border: #e2ddd5; --muted: #6b7280; }
         body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); padding: 2rem; margin: 0; }
         .container { max-width: 1400px; margin: 0 auto; }
         
         /* HEADER */
-        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 1px solid #334155; padding-bottom: 1rem; }
-        .btn-group { display: flex; gap: 10px; }
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 1px solid var(--border); padding-bottom: 1rem; }
+        .btn-group { display: flex; gap: 10px; flex-wrap: wrap; }
         .btn { padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-family: inherit; transition: 0.2s; color: white; }
         .btn:hover { transform: translateY(-2px); opacity: 0.9; }
         .btn-save { background: var(--success); }
         .btn-reset { background: var(--danger); }
-        .btn-logout { background: #334155; }
+        .btn-logout { background: var(--muted); }
 
         /* TABS */
         .tabs { display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px; }
-        .tab-btn { background: var(--card-bg); color: #94a3b8; padding: 10px 20px; border: 1px solid #334155; border-radius: 8px; cursor: pointer; white-space: nowrap; transition: 0.3s; }
+        .tab-btn { background: var(--card-bg); color: var(--muted); padding: 10px 20px; border: 1px solid var(--border); border-radius: 8px; cursor: pointer; white-space: nowrap; transition: 0.3s; }
         .tab-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
         
         .tab-content { display: none; animation: fadeIn 0.3s ease; }
@@ -30,51 +30,51 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
         /* CARDS & TABLES */
-        .card { background: var(--card-bg); border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; border: 1px solid #334155; }
+        .card { background: var(--card-bg); border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; border: 1px solid var(--border); box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
         h2 { margin-top: 0; color: var(--accent); font-size: 1.2rem; margin-bottom: 1rem; }
         
         table { width: 100%; border-collapse: collapse; }
-        th { text-align: left; color: #94a3b8; padding: 10px; border-bottom: 1px solid #334155; font-size: 0.9rem; }
-        td { padding: 10px; border-bottom: 1px solid #334155; }
+        th { text-align: left; color: var(--muted); padding: 10px; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+        td { padding: 10px; border-bottom: 1px solid var(--border); }
         
-        input { background: var(--input-bg); border: 1px solid #475569; color: white; padding: 8px; border-radius: 4px; width: 100%; box-sizing: border-box; font-family: monospace; }
+        input { background: var(--input-bg); border: 1px solid var(--border); color: var(--text); padding: 8px; border-radius: 4px; width: 100%; box-sizing: border-box; font-family: monospace; }
         input:focus { outline: none; border-color: var(--accent); }
         
-        .delete-btn { background: rgba(239, 68, 68, 0.2); color: var(--danger); border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
+        .delete-btn { background: rgba(220,38,38,0.08); color: var(--danger); border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
         .delete-btn:hover { background: var(--danger); color: white; }
         
-        .add-row-btn { background: #334155; color: white; width: 100%; padding: 10px; margin-top: 10px; border: 1px dashed #475569; border-radius: 6px; cursor: pointer; }
-        .add-row-btn:hover { background: #475569; }
+        .add-row-btn { background: var(--input-bg); color: var(--text); width: 100%; padding: 10px; margin-top: 10px; border: 1px dashed var(--border); border-radius: 6px; cursor: pointer; }
+        .add-row-btn:hover { background: var(--border); }
 
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        label { display: block; margin-bottom: 5px; font-size: 0.9rem; color: #94a3b8; }
+        label { display: block; margin-bottom: 5px; font-size: 0.9rem; color: var(--muted); }
         
         /* MODAL GESTION UTILISATEURS */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center; padding: 20px; }
-        .modal-content { background: var(--card-bg); padding: 2rem; border-radius: 16px; max-width: 900px; width: 100%; max-height: 90vh; overflow-y: auto; border: 2px solid #475569; }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 2px solid #475569; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; justify-content: center; align-items: center; padding: 20px; }
+        .modal-content { background: var(--card-bg); padding: 2rem; border-radius: 16px; max-width: 900px; width: 100%; max-height: 90vh; overflow-y: auto; border: 1px solid var(--border); box-shadow: 0 16px 48px rgba(0,0,0,0.15); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 2px solid var(--border); }
         .modal-title { font-size: 1.5rem; color: var(--accent); margin: 0; }
-        .close-btn { background: none; border: none; color: #94a3b8; font-size: 2rem; cursor: pointer; line-height: 1; }
-        .close-btn:hover { color: white; }
+        .close-btn { background: none; border: none; color: var(--muted); font-size: 2rem; cursor: pointer; line-height: 1; }
+        .close-btn:hover { color: var(--text); }
         .users-table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
-        .users-table th { background: #0f172a; padding: 12px; text-align: left; color: #94a3b8; border-bottom: 2px solid #475569; }
-        .users-table td { padding: 12px; border-bottom: 1px solid #475569; }
+        .users-table th { background: var(--bg); padding: 12px; text-align: left; color: var(--muted); border-bottom: 2px solid var(--border); }
+        .users-table td { padding: 12px; border-bottom: 1px solid var(--border); }
         .role-badge { padding: 4px 10px; border-radius: 12px; font-size: 0.8rem; font-weight: 600; }
-        .role-superadmin { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
-        .role-admin { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
-        .role-production { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
-        .role-commercial { background: rgba(139, 92, 246, 0.2); color: #8b5cf6; }
-        .role-compta { background: rgba(16, 185, 129, 0.2); color: #10b981; }
-        .role-client { background: rgba(148, 163, 184, 0.2); color: #94a3b8; }
+        .role-superadmin { background: rgba(220,38,38,0.1); color: #dc2626; }
+        .role-admin { background: rgba(201,168,76,0.15); color: #8a6e1f; }
+        .role-production { background: rgba(26,79,255,0.08); color: #1a4fff; }
+        .role-commercial { background: rgba(109,40,217,0.08); color: #6d28d9; }
+        .role-compta { background: rgba(5,150,105,0.1); color: #059669; }
+        .role-client { background: rgba(107,114,128,0.1); color: #6b7280; }
         .action-btns { display: flex; gap: 5px; }
-        .btn-edit-user { background: #3b82f6; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; }
-        .btn-delete-user { background: rgba(239, 68, 68, 0.2); color: #ef4444; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; }
-        .btn-delete-user:hover { background: #ef4444; color: white; }
-        .user-form { background: #0f172a; padding: 1.5rem; border-radius: 8px; margin-top: 1rem; }
+        .btn-edit-user { background: #1a4fff; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; }
+        .btn-delete-user { background: rgba(220,38,38,0.1); color: #dc2626; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; }
+        .btn-delete-user:hover { background: #dc2626; color: white; }
+        .user-form { background: var(--bg); padding: 1.5rem; border-radius: 8px; margin-top: 1rem; border: 1px solid var(--border); }
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
         .form-group-full { grid-column: 1/-1; }
-        .form-group label { color: #cbd5e1; font-weight: 600; }
-        .form-group input, .form-group select { width: 100%; padding: 10px; background: var(--input-bg); border: 1px solid #475569; color: white; border-radius: 6px; }
+        .form-group label { color: var(--text); font-weight: 600; }
+        .form-group input, .form-group select { width: 100%; padding: 10px; background: var(--input-bg); border: 1px solid var(--border); color: var(--text); border-radius: 6px; }
         .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--accent); }
     </style>
 </head>
@@ -85,11 +85,11 @@
         <header>
             <h1>🎛️ Admin Prix</h1>
             <div class="btn-group">
-                <button class="btn" onclick="window.location.href='stock.html'" style="background: #8b5cf6;">📦 Gestion Stock</button>
-                <button class="btn" onclick="openUsersModal()" style="background: #3b82f6;">👥 Gestion Utilisateurs</button>
+                <button class="btn" onclick="window.location.href='stock.html'" style="background: #6d28d9;">📦 Gestion Stock</button>
+                <button class="btn" onclick="openUsersModal()" style="background: #1a4fff;">👥 Gestion Utilisateurs</button>
                 <button class="btn btn-reset" onclick="resetOrders()">🗑️ Vider Commandes</button>
                 <button class="btn btn-save" onclick="saveAllPrices()">💾 SAUVEGARDER CONFIG</button>
-                <button class="btn" onclick="window.location.href='hub.html'" style="background:#475569;">← Retour Hub</button>
+                <button class="btn" onclick="window.location.href='hub.html'" style="background: var(--muted);">← Retour Hub</button>
                 <button class="btn btn-logout" onclick="logout()">Quitter</button>
             </div>
         </header>
@@ -169,9 +169,7 @@
     <div id="modal-users" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 class="modal-title">👥 Gestion des Utilisateurs 
-                    <span id="cloud-sync-badge" style="display:none;align-items:center;gap:5px;font-size:0.72rem;font-weight:600;color:#10b981;background:rgba(16,185,129,0.12);padding:3px 10px;border-radius:20px;border:1px solid rgba(16,185,129,0.3);margin-left:8px;">✅ Synchronisé</span>
-                </h2>
+                <h2 class="modal-title">👥 Gestion des Utilisateurs</h2>
                 <button class="close-btn" onclick="closeUsersModal()">&times;</button>
             </div>
             
@@ -411,13 +409,7 @@
             resetUserForm();
         }
 
-        async function loadUsersTable() {
-            // 🌐 Synchroniser depuis le cloud avant d'afficher
-            const synced = await cloudSyncUsers();
-            if (synced) {
-                const badge = document.getElementById('cloud-sync-badge');
-                if (badge) { badge.style.display = 'inline-flex'; setTimeout(() => badge.style.display = 'none', 3000); }
-            }
+        function loadUsersTable() {
             const users = getUsers();
             const tbody = document.getElementById('users-table-body');
             tbody.innerHTML = '';

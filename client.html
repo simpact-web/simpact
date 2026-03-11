@@ -9,25 +9,24 @@
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         :root {
-            --bg: #f4f2ee;
+            --bg: #f5f3ee;
             --surface: #ffffff;
-            --surface2: #f9f7f4;
-            --surface3: #eeece8;
-            --border: rgba(0,0,0,0.09);
-            --border2: rgba(0,0,0,0.16);
-            --gold: #b07d28;
-            --gold-dark: #8b6015;
-            --gold-dim: rgba(176,125,40,0.1);
-            --gold-glow: rgba(176,125,40,0.2);
-            --blue: #2d5cff;
-            --blue-dim: rgba(45,92,255,0.09);
+            --surface2: #f8f7f4;
+            --surface3: #f0ede8;
+            --border: #e2ddd5;
+            --border2: #d5cec4;
+            --gold: #C9A84C;
+            --gold-dim: rgba(201,168,76,0.12);
+            --gold-glow: rgba(201,168,76,0.25);
+            --blue: #1a4fff;
+            --blue-dim: rgba(26,79,255,0.08);
             --green: #059669;
             --green-dim: rgba(5,150,105,0.1);
             --red: #dc2626;
-            --orange: #d97706;
-            --text: #1c1a17;
-            --text2: #6b6458;
-            --text3: #a89f94;
+            --orange: #ea580c;
+            --text: #0a0a0f;
+            --text2: #6b7280;
+            --text3: #9ca3af;
             --radius: 14px;
             --sidebar: 240px;
         }
@@ -72,9 +71,9 @@
         }
         .user-avatar {
             width: 36px; height: 36px; border-radius: 50%;
-            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            background: linear-gradient(135deg, var(--gold), #8b6520);
             display: flex; align-items: center; justify-content: center;
-            font-weight: 800; font-size: 0.8rem; color: #fff;
+            font-weight: 800; font-size: 0.8rem; color: #080c16;
             margin-bottom: 8px; flex-shrink: 0;
         }
         .user-name { font-size: 0.82rem; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -129,7 +128,7 @@
         /* ── TOP BAR ── */
         .topbar {
             position: sticky; top: 0; z-index: 50;
-            background: rgba(244,242,238,0.92); backdrop-filter: blur(20px);
+            background: rgba(245,243,238,0.92); backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--border);
             padding: 0 2rem; height: 60px;
             display: flex; align-items: center; justify-content: space-between;
@@ -149,7 +148,7 @@
         .notif-dot {
             position: absolute; top: 6px; right: 6px;
             width: 8px; height: 8px; border-radius: 50%;
-            background: var(--red); border: 2px solid var(--surface);
+            background: var(--red); border: 1.5px solid var(--bg);
             display: none;
         }
         .notif-dot.show { display: block; }
@@ -163,7 +162,7 @@
         .msg-dot {
             position: absolute; top: 6px; right: 6px;
             width: 8px; height: 8px; border-radius: 50%;
-            background: var(--blue); border: 2px solid var(--surface);
+            background: var(--blue); border: 1.5px solid var(--bg);
             display: none;
         }
         .msg-dot.show { display: block; }
@@ -181,6 +180,7 @@
             border: 1px solid var(--border);
             border-radius: var(--radius);
             padding: 1.5rem;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
         }
         .card-sm { padding: 1.25rem; }
         .card-title {
@@ -199,8 +199,8 @@
             cursor: pointer; border: none; transition: all 0.2s;
         }
         .btn-primary {
-            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-            color: #fff;
+            background: linear-gradient(135deg, var(--gold), #a87e32);
+            color: #080c16;
         }
         .btn-primary:hover { box-shadow: 0 4px 20px var(--gold-glow); transform: translateY(-1px); }
         .btn-secondary {
@@ -216,7 +216,7 @@
         .btn-blue {
             background: var(--blue); color: white;
         }
-        .btn-blue:hover { box-shadow: 0 4px 20px rgba(59,111,255,0.4); transform: translateY(-1px); }
+        .btn-blue:hover { box-shadow: 0 4px 14px rgba(26,79,255,0.25); transform: translateY(-1px); }
         .btn-full { width: 100%; justify-content: center; }
         .btn-sm { padding: 0.45rem 0.9rem; font-size: 0.8rem; }
         .btn-lg { padding: 0.85rem 1.75rem; font-size: 1rem; }
@@ -246,7 +246,7 @@
             outline: none; transition: all 0.2s;
         }
         .input-field::placeholder { color: var(--text3); }
-        .input-field:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(176,125,40,0.1); }
+        .input-field:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201,168,76,0.08); }
         .input-label {
             display: block; font-size: 0.75rem; font-weight: 600;
             color: var(--text2); margin-bottom: 0.4rem;
@@ -299,7 +299,7 @@
             font-size: 0.85rem; vertical-align: middle;
         }
         .orders-table tr:last-child td { border-bottom: none; }
-        .orders-table tr:hover td { background: rgba(0,0,0,0.02); }
+        .orders-table tr:hover td { background: rgba(255,255,255,0.02); }
         .order-ref { font-family: 'DM Mono', monospace; font-size: 0.78rem; color: var(--text2); }
         .order-prod { font-weight: 600; color: var(--text); }
         .order-price { font-family: 'DM Mono', monospace; color: var(--gold); }
@@ -336,7 +336,7 @@
             position: fixed; top: 65px; right: 1rem; width: 340px;
             background: var(--surface); border: 1px solid var(--border);
             border-radius: var(--radius); z-index: 200;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
             display: none; max-height: 500px; overflow-y: auto;
         }
         .notif-panel.show { display: block; }
@@ -353,21 +353,65 @@
         /* ════════════════════════════════
            PAGE: DEVIS (CONFIGURATOR)
         ════════════════════════════════ */
-        .config-layout { display: grid; grid-template-columns: 1fr 300px; gap: 1.5rem; align-items: start; }
+        .config-layout { display: grid; grid-template-columns: 1fr 340px; gap: 1.5rem; }
 
-        .config-step { display: none; }
-        .config-step.active { display: block; }
-        .product-grid { display: none; }
-        .product-card { display: none; }
-
-        /* delay buttons */
-        .delay-btn {
-            border: 2px solid var(--border); border-radius: 12px;
-            padding: 1rem 0.75rem; cursor: pointer; transition: all 0.2s;
-            text-align: center; background: var(--surface2);
+        /* ── CONFIGURATEUR MONO-PAGE ── */
+        .conf-section { margin-bottom: 1.4rem; }
+        .conf-label {
+            display: block; font-size: 0.72rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.8px;
+            color: var(--text2); margin-bottom: 0.55rem;
         }
-        .delay-btn:hover { border-color: rgba(176,125,40,0.4); background: var(--gold-dim); }
-        .delay-btn.selected { border-color: var(--gold); background: var(--gold-dim); }
+        .conf-select {
+            width: 100%; padding: 0.8rem 1rem;
+            background: var(--surface2); border: 1.5px solid var(--border);
+            border-radius: 10px; color: var(--text);
+            font-family: 'Outfit', sans-serif; font-size: 0.92rem;
+            outline: none; cursor: pointer; transition: border-color 0.2s;
+            appearance: auto;
+        }
+        .conf-select:focus { border-color: var(--gold); }
+        .conf-input {
+            width: 100%; padding: 0.8rem 1rem;
+            background: var(--surface2); border: 1.5px solid var(--border);
+            border-radius: 10px; color: var(--text);
+            font-family: 'Outfit', sans-serif; font-size: 0.92rem;
+            outline: none; transition: border-color 0.2s;
+        }
+        .conf-input:focus { border-color: var(--gold); }
+        .conf-input::placeholder { color: var(--text3); }
+        .conf-textarea {
+            width: 100%; padding: 0.8rem 1rem;
+            background: var(--surface2); border: 1.5px solid var(--border);
+            border-radius: 10px; color: var(--text);
+            font-family: 'Outfit', sans-serif; font-size: 0.88rem;
+            outline: none; resize: vertical; transition: border-color 0.2s;
+            min-height: 80px;
+        }
+        .conf-textarea:focus { border-color: var(--gold); }
+        .conf-textarea::placeholder { color: var(--text3); }
+
+        /* option groups */
+        .opt-group { display: none; background: #fdfaf4; border: 1px solid rgba(201,168,76,0.25); border-radius: 12px; padding: 1.25rem; margin-bottom: 1.25rem; animation: fadeIn 0.2s ease; }
+        .opt-group.active { display: block; }
+        .opt-group-title { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #8a6e1f; margin-bottom: 1rem; display: flex; align-items: center; gap: 6px; }
+
+        /* radio chips in light */
+        .radio-row-dark { display: flex; gap: 8px; flex-wrap: wrap; }
+        .radio-opt-dark { flex: 1; min-width: 80px; }
+        .radio-opt-dark input { display: none; }
+        .radio-opt-dark label {
+            display: flex; align-items: center; justify-content: center;
+            padding: 0.6rem 0.9rem; border: 1.5px solid var(--border);
+            border-radius: 8px; cursor: pointer; font-size: 0.84rem;
+            font-weight: 500; background: var(--surface2);
+            color: var(--text2); transition: all 0.15s; text-align: center;
+        }
+        .radio-opt-dark label:hover { border-color: var(--gold); color: var(--text); background: white; }
+        .radio-opt-dark input:checked + label { background: var(--gold-dim); color: #8a6e1f; border-color: var(--gold); font-weight: 700; }
+
+        /* section divider */
+        .conf-divider { height: 1px; background: var(--border); margin: 1.4rem 0; }
 
         .option-chips { display: flex; flex-wrap: wrap; gap: 8px; }
         .chip {
@@ -378,7 +422,7 @@
             cursor: pointer; transition: all 0.15s;
         }
         .chip:hover { border-color: rgba(201,168,76,0.4); color: var(--text); }
-        .chip.selected { border-color: var(--gold); background: var(--gold-dim); color: var(--gold-dark, var(--gold)); font-weight: 600; }
+        .chip.selected { border-color: var(--gold); background: var(--gold-dim); color: var(--gold); font-weight: 600; }
 
         .qty-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
         .qty-chip {
@@ -389,7 +433,7 @@
             cursor: pointer; text-align: center; transition: all 0.15s;
         }
         .qty-chip:hover { border-color: rgba(201,168,76,0.4); }
-        .qty-chip.selected { border-color: var(--gold); background: var(--gold-dim); color: var(--gold-dark, var(--gold)); font-weight: 600; }
+        .qty-chip.selected { border-color: var(--gold); background: var(--gold-dim); color: var(--gold); font-weight: 600; }
 
         .delay-card {
             border: 2px solid var(--border); border-radius: 12px;
@@ -407,15 +451,6 @@
         .price-sticky {
             position: sticky; top: 80px;
         }
-
-        /* DELAY BUTTONS */
-        .delay-btn {
-            border: 2px solid var(--border); border-radius: 12px;
-            padding: 1rem 0.75rem; cursor: pointer; transition: all 0.2s;
-            text-align: center; background: var(--surface2);
-        }
-        .delay-btn:hover { border-color: rgba(176,125,40,0.4); background: var(--gold-dim); }
-        .delay-btn.selected { border-color: var(--gold); background: var(--gold-dim); }
         .price-hero {
             text-align: center; padding: 1.5rem 1rem;
             border-bottom: 1px solid var(--border); margin-bottom: 1rem;
@@ -551,8 +586,8 @@
             max-width: 70%; padding: 0.85rem 1.1rem; border-radius: 12px;
             font-size: 0.85rem; line-height: 1.5;
         }
-        .msg-incoming { background: var(--surface3); border: 1px solid var(--border); align-self: flex-start; border-radius: 4px 12px 12px 12px; }
-        .msg-outgoing { background: var(--blue-dim); border: 1px solid rgba(59,111,255,0.2); align-self: flex-end; color: #bfdbfe; border-radius: 12px 4px 12px 12px; }
+        .msg-incoming { background: var(--surface2); border: 1px solid var(--border); align-self: flex-start; border-radius: 4px 12px 12px 12px; }
+        .msg-outgoing { background: var(--blue-dim); border: 1px solid rgba(26,79,255,0.2); align-self: flex-end; color: #1e40af; border-radius: 12px 4px 12px 12px; }
         .msg-time { font-size: 0.65rem; color: var(--text3); margin-top: 4px; }
         .chat-input-row {
             padding: 1rem 1.5rem; border-top: 1px solid var(--border);
@@ -579,7 +614,7 @@
         }
         .profile-avatar-lg {
             width: 72px; height: 72px; border-radius: 50%;
-            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            background: linear-gradient(135deg, var(--gold), #8b6520);
             display: flex; align-items: center; justify-content: center;
             font-weight: 900; font-size: 1.6rem; color: #080c16;
             flex-shrink: 0;
@@ -591,7 +626,7 @@
            MODAL
         ════════════════════════════════ */
         .modal-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+            position: fixed; inset: 0; background: rgba(0,0,0,0.45);
             backdrop-filter: blur(8px); z-index: 500;
             display: none; align-items: center; justify-content: center;
             padding: 2rem;
@@ -616,7 +651,7 @@
             background: var(--surface); border: 1px solid var(--border);
             border-radius: 12px; padding: 1rem 1.25rem;
             font-size: 0.85rem; color: var(--text);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
             display: flex; align-items: center; gap: 10px;
             animation: toastIn 0.3s ease;
             min-width: 280px; max-width: 380px;
@@ -629,8 +664,8 @@
         /* SCROLLBAR */
         ::-webkit-scrollbar { width: 5px; height: 5px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+        ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.25); }
 
         /* EMPTY STATE */
         .empty-state { text-align: center; padding: 4rem 2rem; color: var(--text3); }
@@ -779,99 +814,304 @@
 
         <!-- ────── NOUVEAU DEVIS ────── -->
         <div class="page" id="page-devis">
-            <div style="margin-bottom:1.75rem;">
+            <div style="margin-bottom:1.5rem;">
                 <h1 style="font-size:1.5rem;font-weight:800;">Configurer un devis</h1>
-                <p style="color:var(--text2);font-size:0.85rem;margin-top:3px;">Prix calculé en temps réel selon votre sélection</p>
+                <p style="color:var(--text2);font-size:0.85rem;margin-top:3px;">Prix mis à jour en temps réel · Toutes les options sur une seule page</p>
             </div>
 
             <div class="config-layout">
-                <!-- ── COLONNE GAUCHE : FORMULAIRE ── -->
-                <div>
+                <!-- ── FORMULAIRE ── -->
+                <div class="card">
 
                     <!-- PRODUIT -->
-                    <div class="card" style="margin-bottom:1rem;">
-                        <div class="card-title">Produit</div>
-                        <div class="form-group" style="margin-bottom:0;">
-                            <select class="input-field" id="product-select" onchange="onProductChange(this.value)" style="font-size:0.95rem;cursor:pointer;">
-                                <option value="">— Sélectionnez un produit —</option>
-                                <option value="flyer">Flyer A5</option>
-                                <option value="carte">Carte de visite</option>
-                                <option value="depliant">Dépliant</option>
-                                <option value="entete">Papier en-tête</option>
-                                <option value="affiche">Affiche</option>
-                                <option value="brochure">Brochure couleur</option>
-                                <option value="livre">Livre / Édition N&amp;B</option>
-                                <option value="enveloppe">Enveloppe</option>
-                                <option value="autre">Autre produit (sur devis)</option>
+                    <div class="conf-section">
+                        <label class="conf-label">🛒 Produit</label>
+                        <select class="conf-select" id="cfg-product" onchange="onProductChange(this.value)">
+                            <option value="">— Sélectionnez un produit —</option>
+                            <option value="flyer">📄 Flyer A5</option>
+                            <option value="carte">🪪 Cartes de visite</option>
+                            <option value="depliant">📰 Dépliant (3 volets)</option>
+                            <option value="entete">📝 Papier à en-tête</option>
+                            <option value="affiche">🖼️ Affiche grand format</option>
+                            <option value="brochure">📚 Brochure couleur</option>
+                            <option value="livre">📖 Livre édition (N&amp;B)</option>
+                            <option value="enveloppe">✉️ Enveloppe</option>
+                            <option value="autre">⚡ Autre / Sur devis</option>
+                        </select>
+                    </div>
+
+                    <!-- ══ OPTIONS FLYER ══ -->
+                    <div class="opt-group" id="og-flyer">
+                        <div class="opt-group-title">⚙️ Options Flyer A5</div>
+                        <div class="conf-section">
+                            <label class="conf-label">Impression</label>
+                            <div class="radio-row-dark">
+                                <div class="radio-opt-dark"><input type="radio" name="flyer-imp" id="fi-r" value="Recto" checked onchange="setCfgOpt('impression',this.value)"><label for="fi-r">Recto</label></div>
+                                <div class="radio-opt-dark"><input type="radio" name="flyer-imp" id="fi-rv" value="Recto-Verso" onchange="setCfgOpt('impression',this.value)"><label for="fi-rv">Recto-Verso</label></div>
+                            </div>
+                        </div>
+                        <div class="conf-section">
+                            <label class="conf-label">Grammage papier</label>
+                            <div class="radio-row-dark">
+                                <div class="radio-opt-dark"><input type="radio" name="flyer-pap" id="fp-90" value="90g" onchange="setCfgOpt('papier',this.value)"><label for="fp-90">90g</label></div>
+                                <div class="radio-opt-dark"><input type="radio" name="flyer-pap" id="fp-115" value="115g" onchange="setCfgOpt('papier',this.value)"><label for="fp-115">115g</label></div>
+                                <div class="radio-opt-dark"><input type="radio" name="flyer-pap" id="fp-135" value="135g" checked onchange="setCfgOpt('papier',this.value)"><label for="fp-135">135g</label></div>
+                                <div class="radio-opt-dark"><input type="radio" name="flyer-pap" id="fp-170" value="170g" onchange="setCfgOpt('papier',this.value)"><label for="fp-170">170g</label></div>
+                                <div class="radio-opt-dark"><input type="radio" name="flyer-pap" id="fp-200" value="200g" onchange="setCfgOpt('papier',this.value)"><label for="fp-200">200g</label></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ══ OPTIONS CARTE ══ -->
+                    <div class="opt-group" id="og-carte">
+                        <div class="opt-group-title">⚙️ Options Cartes de visite</div>
+                        <div class="conf-section">
+                            <label class="conf-label">Papier</label>
+                            <div class="radio-row-dark">
+                                <div class="radio-opt-dark"><input type="radio" name="carte-pap" id="cp-300m" value="300g mat" checked onchange="setCfgOpt('papier',this.value)"><label for="cp-300m">300g Mat</label></div>
+                                <div class="radio-opt-dark"><input type="radio" name="carte-pap" id="cp-300b" value="300g brillant" onchange="setCfgOpt('papier',this.value)"><label for="cp-300b">300g Brillant</label></div>
+                                <div class="radio-opt-dark"><input type="radio" name="carte-pap" id="cp-350m" value="350g mat" onchange="setCfgOpt('papier',this.value)"><label for="cp-350m">350g Mat</label></div>
+                                <div class="radio-opt-dark"><input type="radio" name="carte-pap" id="cp-350b" value="350g brillant" onchange="setCfgOpt('papier',this.value)"><label for="cp-350b">350g Brillant</label></div>
+                            </div>
+                        </div>
+                        <div class="conf-section">
+                            <label class="conf-label">Pelliculage</label>
+                            <div class="radio-row-dark">
+                                <div class="radio-opt-dark"><input type="radio" name="carte-fin" id="cf-non" value="Sans pellicule" checked onchange="setCfgOpt('finition',this.value)"><label for="cf-non">Sans</label></div>
+                                <div class="radio-opt-dark"><input type="radio" name="carte-fin" id="cf-bril" value="Pelliculage brillant" onchange="setCfgOpt('finition',this.value)"><label for="cf-bril">Brillant</label></div>
+                                <div class="radio-opt-dark"><input type="radio" name="carte-fin" id="cf-mat" value="Pelliculage mat" onchange="setCfgOpt('finition',this.value)"><label for="cf-mat">Mat</label></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ══ OPTIONS DÉPLIANT ══ -->
+                    <div class="opt-group" id="og-depliant">
+                        <div class="opt-group-title">⚙️ Options Dépliant</div>
+                        <div class="conf-section">
+                            <label class="conf-label">Grammage papier</label>
+                            <div class="radio-row-dark">
+                                <div class="radio-opt-dark"><input type="radio" name="dep-pap" id="dp-90" value="90g" onchange="setCfgOpt('papier',this.value)"><label for="dp-90">90g</label></div>
+                                <div class="radio-opt-dark"><input type="radio" name="dep-pap" id="dp-115" value="115g" checked onchange="setCfgOpt('papier',this.value)"><label for="dp-115">115g</label></div>
+                                <div class="radio-opt-dark"><input type="radio" name="dep-pap" id="dp-135" value="135g" onchange="setCfgOpt('papier',this.value)"><label for="dp-135">135g</label></div>
+                                <div class="radio-opt-dark"><input type="radio" name="dep-pap" id="dp-170" value="170g" onchange="setCfgOpt('papier',this.value)"><label for="dp-170">170g</label></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ══ OPTIONS EN-TÊTE ══ -->
+                    <div class="opt-group" id="og-entete">
+                        <div class="opt-group-title">⚙️ Options Papier à en-tête</div>
+                        <div class="conf-section">
+                            <label class="conf-label">Type de papier</label>
+                            <div class="radio-row-dark">
+                                <div class="radio-opt-dark"><input type="radio" name="ent-pap" id="ep-80" value="Standard 80g" checked onchange="setCfgOpt('papier',this.value)"><label for="ep-80">Standard 80g</label></div>
+                                <div class="radio-opt-dark"><input type="radio" name="ent-pap" id="ep-90" value="Premium 90g" onchange="setCfgOpt('papier',this.value)"><label for="ep-90">Premium 90g</label></div>
+                                <div class="radio-opt-dark"><input type="radio" name="ent-pap" id="ep-100" value="Premium 100g" onchange="setCfgOpt('papier',this.value)"><label for="ep-100">Premium 100g</label></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ══ OPTIONS AFFICHE ══ -->
+                    <div class="opt-group" id="og-affiche">
+                        <div class="opt-group-title">⚙️ Options Affiche</div>
+                        <div class="conf-section">
+                            <label class="conf-label">Format</label>
+                            <div class="radio-row-dark">
+                                <div class="radio-opt-dark"><input type="radio" name="aff-fmt" id="af-a3" value="29×42cm" checked onchange="setCfgOpt('format',this.value)"><label for="af-a3">A3 — 29×42cm</label></div>
+                                <div class="radio-opt-dark"><input type="radio" name="aff-fmt" id="af-a3p" value="32×48cm" onchange="setCfgOpt('format',this.value)"><label for="af-a3p">A3+ — 32×48cm</label></div>
+                            </div>
+                        </div>
+                        <div class="conf-section">
+                            <label class="conf-label">Papier</label>
+                            <div class="radio-row-dark">
+                                <div class="radio-opt-dark"><input type="radio" name="aff-pap" id="ap-135" value="Couché 135g brillant" checked onchange="setCfgOpt('papier',this.value)"><label for="ap-135">Couché 135g brillant</label></div>
+                                <div class="radio-opt-dark"><input type="radio" name="aff-pap" id="ap-170" value="Couché 170g brillant" onchange="setCfgOpt('papier',this.value)"><label for="ap-170">Couché 170g brillant</label></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ══ OPTIONS BROCHURE ══ -->
+                    <div class="opt-group" id="og-brochure">
+                        <div class="opt-group-title">⚙️ Options Brochure couleur</div>
+                        <div class="conf-section">
+                            <label class="conf-label">Format</label>
+                            <div class="radio-row-dark">
+                                <div class="radio-opt-dark"><input type="radio" name="br-fmt" id="brf-a5" value="A5 (14.8×21cm)" checked onchange="setCfgOpt('format',this.value)"><label for="brf-a5">A5 (14.8×21)</label></div>
+                                <div class="radio-opt-dark"><input type="radio" name="br-fmt" id="brf-a4" value="A4 (21×29.7cm)" onchange="setCfgOpt('format',this.value)"><label for="brf-a4">A4 (21×29.7)</label></div>
+                                <div class="radio-opt-dark"><input type="radio" name="br-fmt" id="brf-135" value="13.5×21cm" onchange="setCfgOpt('format',this.value)"><label for="brf-135">13.5×21cm</label></div>
+                            </div>
+                        </div>
+                        <div class="conf-section">
+                            <label class="conf-label">Reliure</label>
+                            <div class="radio-row-dark">
+                                <div class="radio-opt-dark"><input type="radio" name="br-rel" id="brr-agr" value="Agrafé" checked onchange="setCfgOpt('reliure',this.value)"><label for="brr-agr">Agrafé</label></div>
+                                <div class="radio-opt-dark"><input type="radio" name="br-rel" id="brr-dcc" value="Collée (dos carré-collé)" onchange="setCfgOpt('reliure',this.value)"><label for="brr-dcc">Dos carré-collé</label></div>
+                                <div class="radio-opt-dark"><input type="radio" name="br-rel" id="brr-spi" value="Spirale" onchange="setCfgOpt('reliure',this.value)"><label for="brr-spi">Spirale</label></div>
+                            </div>
+                        </div>
+                        <div class="conf-section">
+                            <label class="conf-label">Nombre de pages intérieures <span style="font-size:0.7rem;color:var(--text3);">(multiple de 4)</span></label>
+                            <input type="number" class="conf-input" id="br-pages" placeholder="Ex: 8, 12, 16, 24…" min="4" step="4" oninput="setCfgOpt('pages',this.value);updateLivePrice()">
+                            <div style="font-size:0.72rem;color:var(--text3);margin-top:5px;">Saisissez le nombre de pages intérieures (multiple de 4 recommandé)</div>
+                        </div>
+                        <div class="conf-section">
+                            <label class="conf-label">Papier intérieur</label>
+                            <select class="conf-select" id="br-int" onchange="setCfgOpt('papier_interieur',this.value)">
+                                <option value="offset-80">Offset 80g</option>
+                                <option value="offset-100">Offset 100g</option>
+                                <option value="couche-90-mat">Couché 90g Mat</option>
+                                <option value="couche-90-brillant">Couché 90g Brillant</option>
+                                <option value="couche-115-mat">Couché 115g Mat</option>
+                                <option value="couche-115-brillant">Couché 115g Brillant</option>
+                                <option value="couche-135-mat">Couché 135g Mat</option>
+                                <option value="couche-135-brillant">Couché 135g Brillant</option>
+                                <option value="couche-170-mat">Couché 170g Mat</option>
+                                <option value="couche-170-brillant">Couché 170g Brillant</option>
                             </select>
                         </div>
+                        <div class="conf-section">
+                            <label class="conf-label">Papier couverture</label>
+                            <select class="conf-select" id="br-cov" onchange="setCfgOpt('couverture',this.value)">
+                                <option value="couche-250-mat">Couché 250g Mat</option>
+                                <option value="couche-250-brillant">Couché 250g Brillant</option>
+                                <option value="couche-300-mat">Couché 300g Mat</option>
+                                <option value="couche-300-brillant">Couché 300g Brillant</option>
+                                <option value="couche-350-mat">Couché 350g Mat</option>
+                                <option value="couche-350-brillant">Couché 350g Brillant</option>
+                            </select>
+                        </div>
+                        <div class="conf-section">
+                            <label class="conf-label">Impression couverture</label>
+                            <div class="radio-row-dark">
+                                <div class="radio-opt-dark"><input type="radio" name="br-cov-imp" id="bci-r" value="Recto" checked onchange="setCfgOpt('couverture_impression',this.value)"><label for="bci-r">Recto</label></div>
+                                <div class="radio-opt-dark"><input type="radio" name="br-cov-imp" id="bci-rv" value="Recto-Verso" onchange="setCfgOpt('couverture_impression',this.value)"><label for="bci-rv">Recto-Verso</label></div>
+                            </div>
+                        </div>
+                        <div class="conf-section">
+                            <label class="conf-label">Pelliculage couverture</label>
+                            <div class="radio-row-dark">
+                                <div class="radio-opt-dark"><input type="radio" name="br-pell" id="bp-non" value="Sans pelliculage" checked onchange="setCfgOpt('pelliculage',this.value)"><label for="bp-non">Sans pelliculage</label></div>
+                                <div class="radio-opt-dark"><input type="radio" name="br-pell" id="bp-mat" value="Pelliculage mat" onchange="setCfgOpt('pelliculage',this.value)"><label for="bp-mat">Mat</label></div>
+                                <div class="radio-opt-dark"><input type="radio" name="br-pell" id="bp-bril" value="Pelliculage brillant" onchange="setCfgOpt('pelliculage',this.value)"><label for="bp-bril">Brillant</label></div>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- OPTIONS DYNAMIQUES -->
-                    <div class="card" id="options-card" style="margin-bottom:1rem;display:none;">
-                        <div class="card-title">Options d'impression</div>
-                        <div id="options-content"></div>
+                    <!-- ══ OPTIONS LIVRE ══ -->
+                    <div class="opt-group" id="og-livre">
+                        <div class="opt-group-title">⚙️ Options Livre édition (N&amp;B)</div>
+                        <div class="conf-section">
+                            <label class="conf-label">Format</label>
+                            <div class="radio-row-dark">
+                                <div class="radio-opt-dark"><input type="radio" name="lv-fmt" id="lvf-a5" value="A5 (14.8×21cm)" checked onchange="setCfgOpt('format',this.value)"><label for="lvf-a5">A5 (14.8×21)</label></div>
+                                <div class="radio-opt-dark"><input type="radio" name="lv-fmt" id="lvf-a4" value="A4 (21×29.7cm)" onchange="setCfgOpt('format',this.value)"><label for="lvf-a4">A4 (21×29.7)</label></div>
+                            </div>
+                        </div>
+                        <div class="conf-section">
+                            <label class="conf-label">Nombre de pages intérieures</label>
+                            <input type="number" class="conf-input" id="lv-pages" placeholder="Ex: 120, 200, 350…" min="1" oninput="setCfgOpt('pages',this.value);updateLivePrice()">
+                        </div>
+                        <div class="conf-section">
+                            <label class="conf-label">Papier intérieur (N&amp;B)</label>
+                            <div class="radio-row-dark">
+                                <div class="radio-opt-dark"><input type="radio" name="lv-int" id="li-80" value="offset-80" checked onchange="setCfgOpt('papier_interieur',this.value)"><label for="li-80">Offset 80g</label></div>
+                                <div class="radio-opt-dark"><input type="radio" name="lv-int" id="li-100" value="offset-100" onchange="setCfgOpt('papier_interieur',this.value)"><label for="li-100">Offset 100g</label></div>
+                            </div>
+                        </div>
+                        <div class="conf-section">
+                            <label class="conf-label">Papier couverture couleur</label>
+                            <select class="conf-select" id="lv-cov" onchange="setCfgOpt('couverture',this.value)">
+                                <option value="couche-250-mat">Couché 250g Mat</option>
+                                <option value="couche-250-brillant">Couché 250g Brillant</option>
+                                <option value="couche-300-mat">Couché 300g Mat</option>
+                                <option value="couche-300-brillant">Couché 300g Brillant</option>
+                                <option value="couche-350-mat">Couché 350g Mat</option>
+                                <option value="couche-350-brillant">Couché 350g Brillant</option>
+                            </select>
+                        </div>
+                        <div class="conf-section">
+                            <label class="conf-label">Impression couverture</label>
+                            <div class="radio-row-dark">
+                                <div class="radio-opt-dark"><input type="radio" name="lv-cov-imp" id="lci-r" value="Recto" checked onchange="setCfgOpt('couverture_impression',this.value)"><label for="lci-r">Recto</label></div>
+                                <div class="radio-opt-dark"><input type="radio" name="lv-cov-imp" id="lci-rv" value="Recto-Verso" onchange="setCfgOpt('couverture_impression',this.value)"><label for="lci-rv">Recto-Verso</label></div>
+                            </div>
+                        </div>
+                        <div class="conf-section">
+                            <label class="conf-label">Pelliculage couverture</label>
+                            <div class="radio-row-dark">
+                                <div class="radio-opt-dark"><input type="radio" name="lv-pell" id="lp-non" value="Sans pelliculage" checked onchange="setCfgOpt('pelliculage',this.value)"><label for="lp-non">Sans</label></div>
+                                <div class="radio-opt-dark"><input type="radio" name="lv-pell" id="lp-mat" value="Pelliculage mat" onchange="setCfgOpt('pelliculage',this.value)"><label for="lp-mat">Mat</label></div>
+                                <div class="radio-opt-dark"><input type="radio" name="lv-pell" id="lp-bril" value="Pelliculage brillant" onchange="setCfgOpt('pelliculage',this.value)"><label for="lp-bril">Brillant</label></div>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- QUANTITÉ -->
-                    <div class="card" id="qty-card" style="margin-bottom:1rem;display:none;">
-                        <div class="card-title">Quantité</div>
+                    <!-- ══ OPTIONS ENVELOPPE ══ -->
+                    <div class="opt-group" id="og-enveloppe">
+                        <div class="opt-group-title">⚙️ Options Enveloppe</div>
+                        <div class="conf-section">
+                            <label class="conf-label">Format</label>
+                            <div class="radio-row-dark">
+                                <div class="radio-opt-dark"><input type="radio" name="env-fmt" id="ef-dl" value="DL (11×22cm)" checked onchange="setCfgOpt('format',this.value)"><label for="ef-dl">DL (11×22)</label></div>
+                                <div class="radio-opt-dark"><input type="radio" name="env-fmt" id="ef-c5" value="C5 (16×22cm)" onchange="setCfgOpt('format',this.value)"><label for="ef-c5">C5 (16×22)</label></div>
+                                <div class="radio-opt-dark"><input type="radio" name="env-fmt" id="ef-c4" value="C4 (22×31cm)" onchange="setCfgOpt('format',this.value)"><label for="ef-c4">C4 (22×31)</label></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ══ QUANTITÉ ══ -->
+                    <div class="conf-divider"></div>
+                    <div class="conf-section">
+                        <label class="conf-label">📦 Quantité</label>
                         <div class="qty-grid" id="qty-grid" style="margin-bottom:0.75rem;"></div>
-                        <div class="form-group" style="margin-bottom:0;">
-                            <label class="input-label">Quantité personnalisée</label>
-                            <input type="number" class="input-field" id="qty-custom" placeholder="Ex: 750" min="1" oninput="onCustomQty()">
+                        <input type="number" class="conf-input" id="qty-custom" placeholder="Ou saisissez une quantité personnalisée…" min="1" oninput="onCustomQty()">
+                    </div>
+
+                    <!-- ══ DÉLAI ══ -->
+                    <div class="conf-divider"></div>
+                    <div class="conf-section">
+                        <label class="conf-label">⏱ Délai souhaité</label>
+                        <div class="delay-card selected" onclick="selectDelay(this,'Standard',0)">
+                            <span style="font-size:1.4rem;">📅</span>
+                            <div>
+                                <div class="delay-name">Standard</div>
+                                <div class="delay-desc">Délai normal de production (3–5 jours ouvrés)</div>
+                                <div class="delay-price" style="color:var(--green);">Inclus dans le prix</div>
+                            </div>
+                        </div>
+                        <div class="delay-card" onclick="selectDelay(this,'Express',20)">
+                            <span style="font-size:1.4rem;">⚡</span>
+                            <div>
+                                <div class="delay-name">Express</div>
+                                <div class="delay-desc">Livraison sous 24–48h</div>
+                                <div class="delay-price" style="color:var(--orange);">+ 20% sur le prix HT</div>
+                            </div>
+                        </div>
+                        <div class="delay-card" onclick="selectDelay(this,'Urgence',40)">
+                            <span style="font-size:1.4rem;">🚨</span>
+                            <div>
+                                <div class="delay-name" style="color:var(--red);">Urgence</div>
+                                <div class="delay-desc">Même jour — priorité absolue en atelier</div>
+                                <div class="delay-price" style="color:var(--red);">+ 40% sur le prix HT</div>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- DÉLAI -->
-                    <div class="card" id="delay-card" style="margin-bottom:1rem;display:none;">
-                        <div class="card-title">Délai souhaité</div>
-                        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
-                            <div class="delay-btn selected" onclick="selectDelay(this,'Standard',0)">
-                                <div style="font-size:1.3rem;margin-bottom:4px;">📅</div>
-                                <div style="font-weight:700;font-size:0.85rem;">Standard</div>
-                                <div style="font-size:0.72rem;color:var(--text2);margin-top:2px;">3–5 jours</div>
-                                <div style="font-size:0.72rem;color:var(--green);margin-top:3px;font-weight:600;">Inclus</div>
-                            </div>
-                            <div class="delay-btn" onclick="selectDelay(this,'Express',20)">
-                                <div style="font-size:1.3rem;margin-bottom:4px;">⚡</div>
-                                <div style="font-weight:700;font-size:0.85rem;">Express</div>
-                                <div style="font-size:0.72rem;color:var(--text2);margin-top:2px;">24–48h</div>
-                                <div style="font-size:0.72rem;color:var(--orange);margin-top:3px;font-weight:600;">+20%</div>
-                            </div>
-                            <div class="delay-btn" onclick="selectDelay(this,'Urgence',40)">
-                                <div style="font-size:1.3rem;margin-bottom:4px;">🚨</div>
-                                <div style="font-weight:700;font-size:0.85rem;color:var(--red);">Urgence</div>
-                                <div style="font-size:0.72rem;color:var(--text2);margin-top:2px;">Même jour</div>
-                                <div style="font-size:0.72rem;color:var(--red);margin-top:3px;font-weight:600;">+40%</div>
-                            </div>
-                        </div>
+                    <!-- ══ INSTRUCTIONS ══ -->
+                    <div class="conf-divider"></div>
+                    <div class="conf-section">
+                        <label class="conf-label">📝 Instructions / Options spéciales</label>
+                        <textarea class="conf-textarea" id="desc-field" placeholder="Ex: Fichier AI à envoyer par email. Couleurs : bleu marine + or. Verso avec plan d'accès."></textarea>
                     </div>
 
-                    <!-- REMARQUES -->
-                    <div class="card" id="remarks-card" style="display:none;">
-                        <div class="card-title">Instructions / Remarques</div>
-                        <textarea class="input-field" id="desc-field" rows="3" placeholder="Couleurs Pantone, découpe spéciale, fichier joint..."></textarea>
+                    <!-- ══ BOUTONS ══ -->
+                    <div style="display:flex;gap:10px;margin-top:0.5rem;flex-wrap:wrap;">
+                        <button class="btn btn-secondary" onclick="submitDevis('quote')" style="flex:1;min-width:140px;">💾 Enregistrer comme devis</button>
+                        <button class="btn btn-primary" onclick="submitDevis('order')" style="flex:1;min-width:140px;">🚀 Lancer la commande</button>
                     </div>
-
-                    <!-- HIDDEN for compat -->
-                    <div style="display:none">
-                        <div id="product-grid"></div>
-                        <div class="config-step active" id="cstep-1"></div>
-                        <div class="config-step" id="cstep-2"></div>
-                        <div class="config-step" id="cstep-3"></div>
-                        <div class="config-step" id="cstep-4"></div>
-                        <div class="config-step" id="cstep-5"></div>
-                        <div id="step-indicator"></div>
-                        <div id="final-summary"></div>
-                        <input type="number" id="qty-custom-hidden" style="display:none">
-                    </div>
-
                 </div>
 
-                <!-- ── COLONNE DROITE : PRIX STICKY ── -->
-
-                <!-- ── PRIX STICKY ── -->
+                <!-- PRICE PANEL -->
                 <div class="price-sticky">
                     <div class="card">
                         <div class="price-hero">
@@ -882,15 +1122,10 @@
                         <div class="config-summary" id="live-summary">
                             <div style="color:var(--text3);font-size:0.8rem;text-align:center;padding:0.5rem;">Configurez votre commande pour voir le prix</div>
                         </div>
-                        <div style="display:flex;flex-direction:column;gap:8px;margin-top:0.5rem;" id="submit-btns" style="display:none;">
-                            <button class="btn btn-primary btn-full btn-lg" onclick="submitDevis('quote')">💾 Enregistrer comme devis</button>
-                            <button class="btn btn-blue btn-full" onclick="submitDevis('order')">🚀 Commander maintenant</button>
-                        </div>
                     </div>
                 </div>
-
-            </div><!-- /.config-layout -->
-        </div><!-- /#page-devis -->
+            </div>
+        </div>
 
         <!-- ────── COMMANDES ────── -->
         <div class="page" id="page-commandes">
@@ -1043,105 +1278,8 @@ async function loadPrix() {
 
 // ─── CONFIGURATEUR STATE ───────────────────────────
 let cfg = { product: null, options: {}, qty: null, delay: 'Standard', delayPct: 0 };
-let currentStep = 1;
 
-const PRODUCTS = [
-    { id: 'flyer', icon: '📄', name: 'Flyer A5', desc: 'Recto ou recto-verso' },
-    { id: 'carte', icon: '🪪', name: 'Carte de visite', desc: 'Standard 8.5×5.5cm' },
-    { id: 'depliant', icon: '📰', name: 'Dépliant', desc: 'A5, A4, A3 plié' },
-    { id: 'entete', icon: '📝', name: 'Papier entête', desc: 'A4 personnalisé' },
-    { id: 'affiche', icon: '🖼️', name: 'Affiche', desc: '29×42cm ou 32×48cm' },
-    { id: 'brochure', icon: '📚', name: 'Brochure', desc: 'Multi-pages reliés' },
-    { id: 'livre', icon: '📖', name: 'Livres édition', desc: 'Impression dos carré-collé' },
-    { id: 'enveloppe', icon: '✉️', name: 'Enveloppe', desc: 'C5, C4, DL personnalisé' },
-    { id: 'autre', icon: '⚡', name: 'Autre produit', desc: 'Sur devis personnalisé' }
-];
-
-const OPTIONS_MAP = {
-    flyer: [
-        { id: 'impression', label: 'Impression', type: 'chips', values: ['Recto','Recto-Verso'], default: 'Recto', required: true },
-        { id: 'papier', label: 'Grammage', type: 'chips', values: ['90g','115g','135g','170g','200g'], default: '135g' },
-        { id: 'finition', label: 'Finition', type: 'chips', values: ['Sans finition','Pelliculage brillant','Pelliculage mat'], default: 'Sans finition' }
-    ],
-    carte: [
-        { id: 'papier', label: 'Papier', type: 'chips', values: ['300g mat','300g brillant','350g mat','350g brillant'], default: '300g mat', required: true },
-        { id: 'finition', label: 'Finition pelliculage', type: 'chips', values: ['Sans pellicule','Pelliculage brillant','Pelliculage mat'], default: 'Sans pellicule' },
-        { id: 'coins', label: 'Coins', type: 'chips', values: ['Droits','Arrondis'], default: 'Droits' }
-    ],
-    depliant: [
-        { id: 'plis', label: 'Type de pli', type: 'chips', values: ['2 volets','3 volets (accordéon)','3 volets (roulé)','4 volets'], default: '3 volets (accordéon)' },
-        { id: 'papier', label: 'Grammage', type: 'chips', values: ['90g','115g','135g','170g'], default: '115g' },
-        { id: 'finition', label: 'Finition', type: 'chips', values: ['Sans finition','Pelliculage brillant','Pelliculage mat'], default: 'Sans finition' }
-    ],
-    entete: [
-        { id: 'papier', label: 'Type de papier', type: 'chips', values: ['Standard 80g','Premium 90g','Premium 100g'], default: 'Standard 80g' }
-    ],
-    affiche: [
-        { id: 'format', label: 'Format', type: 'chips', values: ['29×42cm','32×48cm'], default: '29×42cm' },
-        { id: 'papier', label: 'Support', type: 'chips', values: ['Couché 135g brillant','Couché 170g brillant'], default: 'Couché 135g brillant' }
-    ],
-    brochure: [
-        { id: 'format', label: 'Format', type: 'chips', values: ['A5 (14.8×21cm)','A4 (21×29.7cm)','13.5×21cm'], default: 'A5 (14.8×21cm)' },
-        { id: 'reliure', label: 'Reliure', type: 'chips', values: ['Agrafé','Collée (dos carré-collé)','Spirale'], default: 'Agrafé', required: true },
-        { id: 'pages', label: 'Nombre de pages intérieures', type: 'pages_brochure',
-          chips_values: ['8p','12p','16p','20p','24p','28p','32p','36p','40p','44p','48p'], default_chips: '16p',
-          note_number: 'Saisissez le nombre de pages intérieures (multiple de 4)' },
-        { id: 'papier_interieur', label: 'Papier intérieur', type: 'select',
-          values: [
-            { label: 'Offset 80g',           code: 'offset-80' },
-            { label: 'Offset 100g',          code: 'offset-100' },
-            { label: 'Couché 90g Mat',        code: 'couche-90-mat' },
-            { label: 'Couché 90g Brillant',   code: 'couche-90-brillant' },
-            { label: 'Couché 115g Mat',       code: 'couche-115-mat' },
-            { label: 'Couché 115g Brillant',  code: 'couche-115-brillant' },
-            { label: 'Couché 135g Mat',       code: 'couche-135-mat' },
-            { label: 'Couché 135g Brillant',  code: 'couche-135-brillant' },
-            { label: 'Couché 170g Mat',       code: 'couche-170-mat' },
-            { label: 'Couché 170g Brillant',  code: 'couche-170-brillant' }
-          ], default: 'offset-80' },
-        { id: 'couverture', label: 'Papier couverture', type: 'select',
-          values: [
-            { label: 'Couché 250g Mat',       code: 'couche-250-mat' },
-            { label: 'Couché 250g Brillant',  code: 'couche-250-brillant' },
-            { label: 'Couché 300g Mat',       code: 'couche-300-mat' },
-            { label: 'Couché 300g Brillant',  code: 'couche-300-brillant' },
-            { label: 'Couché 350g Mat',       code: 'couche-350-mat' },
-            { label: 'Couché 350g Brillant',  code: 'couche-350-brillant' }
-          ], default: 'couche-250-mat' },
-        { id: 'couverture_impression', label: 'Impression couverture', type: 'chips',
-          values: ['Recto','Recto-Verso'], default: 'Recto' },
-        { id: 'pelliculage', label: 'Pelliculage couverture', type: 'chips',
-          values: ['Sans pelliculage','Pelliculage mat','Pelliculage brillant'], default: 'Sans pelliculage' }
-    ],
-    livre: [
-        { id: 'format', label: 'Format', type: 'chips', values: ['A5 (14.8×21cm)','A4 (21×29.7cm)','13.5×21cm'], default: 'A5 (14.8×21cm)' },
-        { id: 'pages', label: 'Nombre de pages intérieures', type: 'number', placeholder: 'Ex : 120', min: 1, note: 'Reliure : dos carré-collé' },
-        { id: 'papier_interieur', label: 'Papier intérieur (N&B)', type: 'select',
-          values: [
-            { label: 'Offset 80g',  code: 'offset-80' },
-            { label: 'Offset 100g', code: 'offset-100' }
-          ], default: 'offset-80' },
-        { id: 'couverture', label: 'Papier couverture couleur', type: 'select',
-          values: [
-            { label: 'Couché 250g Mat',      code: 'couche-250-mat' },
-            { label: 'Couché 250g Brillant', code: 'couche-250-brillant' },
-            { label: 'Couché 300g Mat',      code: 'couche-300-mat' },
-            { label: 'Couché 300g Brillant', code: 'couche-300-brillant' },
-            { label: 'Couché 350g Mat',      code: 'couche-350-mat' },
-            { label: 'Couché 350g Brillant', code: 'couche-350-brillant' }
-          ], default: 'couche-250-mat' },
-        { id: 'couverture_impression', label: 'Impression couverture', type: 'chips',
-          values: ['Recto','Recto-Verso'], default: 'Recto' },
-        { id: 'pelliculage', label: 'Pelliculage couverture', type: 'chips',
-          values: ['Sans pelliculage','Pelliculage mat','Pelliculage brillant'], default: 'Sans pelliculage' }
-    ],
-    enveloppe: [
-        { id: 'format', label: 'Format', type: 'chips', values: ['DL (11×22cm)','C5 (16×22cm)','C4 (22×31cm)'], default: 'DL (11×22cm)' },
-        { id: 'impression', label: 'Impression', type: 'chips', values: ['1 couleur','4 couleurs CMJN'], default: '4 couleurs CMJN' }
-    ],
-    autre: []
-};
-
+// Quantités disponibles par produit
 const QTY_PRESETS = {
     flyer:     [50,100,200,500,1000,2000,3000,5000],
     carte:     [100,200,500,1000,2000,5000,10000],
@@ -1154,7 +1292,133 @@ const QTY_PRESETS = {
     autre:     [1,5,10,25,50,100]
 };
 
-// ─── NAVIGATION ────────────────────────────────────
+// Nom d'affichage des produits
+const PRODUCT_NAMES = {
+    flyer:'Flyer A5', carte:'Cartes de visite', depliant:'Dépliant 3 volets',
+    entete:'Papier à en-tête', affiche:'Affiche', brochure:'Brochure couleur',
+    livre:'Livre édition (N&B)', enveloppe:'Enveloppe', autre:'Autre / Sur devis'
+};
+
+// ─── PRODUCT CHANGE ─────────────────────────────────
+function onProductChange(id) {
+    cfg.product = id || null;
+    cfg.options = {};
+    cfg.qty = null;
+
+    // Masquer tous les groupes d'options
+    document.querySelectorAll('.opt-group').forEach(g => g.classList.remove('active'));
+
+    // Afficher le bon groupe
+    if (id && id !== 'autre' && id !== 'enveloppe') {
+        const el = document.getElementById('og-' + id);
+        if (el) el.classList.add('active');
+    }
+    if (id === 'enveloppe') {
+        document.getElementById('og-enveloppe').classList.add('active');
+    }
+
+    // Définir les options par défaut selon le produit
+    const defaults = {
+        flyer:     { impression: 'Recto', papier: '135g' },
+        carte:     { papier: '300g mat', finition: 'Sans pellicule' },
+        depliant:  { papier: '115g' },
+        entete:    { papier: 'Standard 80g' },
+        affiche:   { format: '29×42cm', papier: 'Couché 135g brillant' },
+        brochure:  { format: 'A5 (14.8×21cm)', reliure: 'Agrafé', pages: '', papier_interieur: 'offset-80', couverture: 'couche-250-mat', couverture_impression: 'Recto', pelliculage: 'Sans pelliculage' },
+        livre:     { format: 'A5 (14.8×21cm)', pages: '', papier_interieur: 'offset-80', couverture: 'couche-250-mat', couverture_impression: 'Recto', pelliculage: 'Sans pelliculage' },
+        enveloppe: { format: 'DL (11×22cm)', impression: '4 couleurs CMJN' }
+    };
+    cfg.options = Object.assign({}, defaults[id] || {});
+
+    // Reset champs texte
+    const brp = document.getElementById('br-pages'); if (brp) brp.value = '';
+    const lvp = document.getElementById('lv-pages'); if (lvp) lvp.value = '';
+
+    // Rebuild qty presets
+    buildQtyPresets(id);
+
+    updateLivePrice();
+}
+
+function buildQtyPresets(id) {
+    const presets = QTY_PRESETS[id] || [50,100,250,500,1000];
+    const grid = document.getElementById('qty-grid');
+    grid.innerHTML = presets.map(q =>
+        `<div class="qty-chip" onclick="selectQty(${q},this)">${q.toLocaleString()}</div>`
+    ).join('');
+    document.getElementById('qty-custom').value = '';
+}
+
+function setCfgOpt(key, val) {
+    cfg.options[key] = val;
+    updateLivePrice();
+}
+
+function selectQty(q, el) {
+    cfg.qty = q;
+    document.querySelectorAll('.qty-chip').forEach(c => c.classList.remove('selected'));
+    if (el) el.classList.add('selected');
+    document.getElementById('qty-custom').value = '';
+    updateLivePrice();
+}
+
+function onCustomQty() {
+    const v = parseInt(document.getElementById('qty-custom').value);
+    if (v > 0) {
+        cfg.qty = v;
+        document.querySelectorAll('.qty-chip').forEach(c => c.classList.remove('selected'));
+        updateLivePrice();
+    }
+}
+
+function selectDelay(el, delay, pct) {
+    cfg.delay = delay; cfg.delayPct = pct;
+    document.querySelectorAll('.delay-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    updateLivePrice();
+}
+
+function resetConfigurator() {
+    cfg = { product: null, options: {}, qty: null, delay: 'Standard', delayPct: 0 };
+
+    // Reset select
+    const sel = document.getElementById('cfg-product');
+    if (sel) sel.value = '';
+
+    // Hide all option groups
+    document.querySelectorAll('.opt-group').forEach(g => g.classList.remove('active'));
+
+    // Reset qty grid
+    const grid = document.getElementById('qty-grid');
+    if (grid) grid.innerHTML = '';
+    const qc = document.getElementById('qty-custom');
+    if (qc) qc.value = '';
+
+    // Reset delay cards
+    document.querySelectorAll('.delay-card').forEach((c,i) => {
+        c.classList.remove('selected');
+        if (i === 0) c.classList.add('selected');
+    });
+
+    // Reset textarea
+    const desc = document.getElementById('desc-field');
+    if (desc) desc.value = '';
+
+    // Reset all radio buttons to first checked
+    const radios = ['fi-r','fp-135','cf-non','dp-115','ep-80','af-a3','ap-135',
+                    'brf-a5','brr-agr','bci-r','bp-non','lvf-a5','li-80','lci-r','lp-non','ef-dl'];
+    radios.forEach(id => { const el=document.getElementById(id); if(el) el.checked=true; });
+
+    // Reset selects
+    const sels = ['br-int','br-cov','lv-cov'];
+    sels.forEach(id => { const el=document.getElementById(id); if(el) el.selectedIndex=0; });
+
+    // Reset pages inputs
+    const brp = document.getElementById('br-pages'); if (brp) brp.value='';
+    const lvp = document.getElementById('lv-pages'); if (lvp) lvp.value='';
+
+    updateLivePrice();
+}
 const pageTitles = {
     dashboard: 'Tableau de bord', devis: 'Nouveau devis',
     commandes: 'Mes commandes', 'devis-list': 'Mes devis',
@@ -1192,6 +1456,8 @@ async function init() {
     buildSidebar();
     renderDashboard();
     updateBadges();
+
+    // Refresh every 30 seconds
     setInterval(updateBadges, 30000);
 }
 
@@ -1282,205 +1548,7 @@ function renderDashboard() {
 }
 
 // ─── CONFIGURATEUR ─────────────────────────────────
-function buildProductGrid() {
-    document.getElementById('product-grid').innerHTML = PRODUCTS.map(p => `
-        <div class="product-card ${cfg.product === p.id ? 'selected' : ''}" onclick="selectProduct('${p.id}')">
-            <div class="prod-icon">${p.icon}</div>
-            <div class="prod-name">${p.name}</div>
-            <div class="prod-desc">${p.desc}</div>
-        </div>
-    `).join('');
-}
-
-function selectProduct(id) {
-    cfg.product = id; cfg.options = {}; cfg.qty = null;
-    updateLivePrice();
-}
-
-function nextStep(from) {
-    if (from === 1) {
-        if (!cfg.product) { document.getElementById('step1-error').style.display='block'; return; }
-        document.getElementById('step1-error').style.display='none';
-        buildOptionsStep();
-    }
-    if (from === 2) buildQtyStep();
-    if (from === 3) { if (!cfg.qty) { showToast('⚠️ Sélectionnez une quantité', 'error'); return; } }
-    if (from === 4) buildFinalSummary();
-    goStep(from + 1);
-}
-
-function prevStep(from) { goStep(from - 1); }
-
-function goStep(n) {
-    currentStep = n;
-    document.querySelectorAll('.config-step').forEach(s => s.classList.remove('active'));
-    document.getElementById('cstep-' + n).classList.add('active');
-    for (let i = 1; i <= 5; i++) {
-        const el = document.getElementById('step-' + i);
-        el.classList.remove('active', 'done');
-        if (i < n) el.classList.add('done');
-        else if (i === n) el.classList.add('active');
-    }
-}
-
-function buildOptionsStep() {
-    const opts = OPTIONS_MAP[cfg.product] || [];
-    if (!opts.length) {
-        document.getElementById('options-content').innerHTML = '';
-        return;
-    }
-
-    // Set defaults first
-    opts.forEach(opt => {
-        if (!cfg.options[opt.id]) {
-            if (opt.type === 'chips') cfg.options[opt.id] = opt.default;
-            else if (opt.type === 'pages_brochure') cfg.options[opt.id] = opt.default_chips;
-            else if (opt.type === 'select') cfg.options[opt.id] = opt.default;
-            else if (opt.type === 'number') cfg.options[opt.id] = '';
-        }
-    });
-
-    document.getElementById('options-content').innerHTML = opts.map(opt => {
-        if (opt.type === 'chips') {
-            return `
-            <div class="form-group" id="opt-group-${opt.id}">
-                <label class="input-label">${opt.label}</label>
-                <div class="option-chips">
-                    ${opt.values.map(v => `
-                        <span class="chip ${(cfg.options[opt.id] || opt.default) === v ? 'selected' : ''}"
-                              onclick="selectOption('${opt.id}','${v}',this)">${v}</span>
-                    `).join('')}
-                </div>
-            </div>`;
-        }
-        if (opt.type === 'pages_brochure') {
-            const isAgrafé = (cfg.options['reliure'] || 'Agrafé') === 'Agrafé';
-            return `
-            <div class="form-group" id="opt-group-${opt.id}">
-                <label class="input-label">${opt.label}</label>
-                <div id="pages-chips-wrap" style="display:${isAgrafé ? 'flex' : 'none'};flex-wrap:wrap;gap:8px;">
-                    ${opt.chips_values.map(v => `
-                        <span class="chip ${(cfg.options[opt.id] || opt.default_chips) === v ? 'selected' : ''}"
-                              onclick="selectOption('pages','${v}',this)">${v}</span>
-                    `).join('')}
-                </div>
-                <div id="pages-number-wrap" style="display:${isAgrafé ? 'none' : 'block'};">
-                    <input type="number" class="input-field" id="pages-number-input"
-                           placeholder="${opt.note_number}" min="4" step="4"
-                           value="${isAgrafé ? '' : (cfg.options[opt.id] && !cfg.options[opt.id].endsWith('p') ? cfg.options[opt.id] : '')}"
-                           oninput="cfg.options.pages=this.value;updateLivePrice();">
-                    <div style="font-size:0.72rem;color:var(--text3);margin-top:4px;">Nombre de pages intérieures (multiple de 4 recommandé)</div>
-                </div>
-            </div>`;
-        }
-        if (opt.type === 'number') {
-            return `
-            <div class="form-group" id="opt-group-${opt.id}">
-                <label class="input-label">${opt.label}${opt.note ? ' <span style="color:var(--text3);font-weight:400;text-transform:none;letter-spacing:0;">— '+opt.note+'</span>' : ''}</label>
-                <input type="number" class="input-field" id="opt-number-${opt.id}"
-                       placeholder="${opt.placeholder || ''}" min="${opt.min || 1}"
-                       value="${cfg.options[opt.id] || ''}"
-                       oninput="cfg.options['${opt.id}']=this.value;updateLivePrice();">
-            </div>`;
-        }
-        if (opt.type === 'select') {
-            const selVal = cfg.options[opt.id] || opt.default;
-            return `
-            <div class="form-group" id="opt-group-${opt.id}">
-                <label class="input-label">${opt.label}</label>
-                <select style="width:100%;padding:0.65rem 1rem;border-radius:8px;border:1px solid #3a3f4e;background:#1e2235;color:#e2e8f0;font-size:0.95rem;cursor:pointer;outline:none;appearance:auto;"
-                        onchange="cfg.options['${opt.id}']=this.value;updateLivePrice();">
-                    ${opt.values.map(v => `<option value="${v.code}" ${selVal === v.code ? 'selected' : ''} style="background:#f9f7f4;color:#1c1a17;">${v.label}</option>`).join('')}
-                </select>
-            </div>`;
-        }
-        return '';
-    }).join('');
-
-    updateLivePrice();
-}
-
-function selectOption(key, val, el) {
-    cfg.options[key] = val;
-    el.closest('.option-chips, div').querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
-    el.classList.add('selected');
-    // Si on change la reliure sur une brochure, basculer pages chips ↔ number
-    if (key === 'reliure' && cfg.product === 'brochure') {
-        const isAgrafé = val === 'Agrafé';
-        const chipsWrap = document.getElementById('pages-chips-wrap');
-        const numberWrap = document.getElementById('pages-number-wrap');
-        if (chipsWrap && numberWrap) {
-            chipsWrap.style.display = isAgrafé ? 'flex' : 'none';
-            numberWrap.style.display = isAgrafé ? 'none' : 'block';
-            // Reset pages value
-            cfg.options.pages = isAgrafé ? '16p' : '';
-            if (isAgrafé) {
-                chipsWrap.querySelectorAll('.chip').forEach(c => {
-                    c.classList.toggle('selected', c.textContent === '16p');
-                });
-            } else {
-                const inp = document.getElementById('pages-number-input');
-                if (inp) inp.value = '';
-            }
-        }
-    }
-    updateLivePrice();
-}
-
-function buildQtyStep() {
-    const presets = QTY_PRESETS[cfg.product] || [50,100,250,500,1000];
-    document.getElementById('qty-grid').innerHTML = presets.map(q => `
-        <div class="qty-chip ${cfg.qty === q ? 'selected' : ''}" onclick="selectQty(${q},this)">${q.toLocaleString()}</div>
-    `).join('');
-}
-
-function selectQty(q, el) {
-    cfg.qty = q;
-    document.querySelectorAll('.qty-chip').forEach(c => c.classList.remove('selected'));
-    if (el) el.classList.add('selected');
-    document.getElementById('qty-custom').value = '';
-    updateLivePrice();
-}
-
-function onCustomQty() {
-    const v = parseInt(document.getElementById('qty-custom').value);
-    if (v > 0) {
-        cfg.qty = v;
-        document.querySelectorAll('.qty-chip').forEach(c => c.classList.remove('selected'));
-        updateLivePrice();
-    }
-}
-
-function selectDelay(el, delay, pct) {
-    cfg.delay = delay; cfg.delayPct = pct;
-    document.querySelectorAll('.delay-card').forEach(c => c.classList.remove('selected'));
-    el.classList.add('selected');
-    updateLivePrice();
-}
-
-function buildFinalSummary() {
-    const p = calcPrice();
-    const prod = PRODUCTS.find(x => x.id === cfg.product);
-    const optsStr = Object.entries(cfg.options).map(([k,v]) => v).join(', ');
-    document.getElementById('final-summary').innerHTML = `
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;font-size:0.85rem;">
-            <div><span style="color:var(--text2);">Produit</span><br><strong>${prod ? prod.name : cfg.product}</strong></div>
-            <div><span style="color:var(--text2);">Quantité</span><br><strong>${cfg.qty?.toLocaleString() || '—'}</strong></div>
-            <div><span style="color:var(--text2);">Options</span><br><strong>${optsStr || '—'}</strong></div>
-            <div><span style="color:var(--text2);">Délai</span><br><strong>${cfg.delay}</strong></div>
-        </div>
-        <div style="display:flex;justify-content:space-between;margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border);">
-            <span style="color:var(--text2);">Total HT</span>
-            <strong style="color:var(--gold);font-family:'DM Mono',monospace;font-size:1.2rem;">${p ? p.ht.toFixed(2) + ' DT' : '— DT'}</strong>
-        </div>
-        <div style="display:flex;justify-content:space-between;font-size:0.82rem;color:var(--text2);">
-            <span>TVA 19%</span><span>${p ? p.tva.toFixed(2) + ' DT' : '—'}</span>
-        </div>
-        <div style="display:flex;justify-content:space-between;font-weight:700;">
-            <span>Total TTC</span><span>${p ? p.ttc.toFixed(2) + ' DT' : '—'}</span>
-        </div>
-    `;
-}
+// (fonctions mono-page dans le bloc cfg ci-dessus)
 
 function calcPrice() {
     if (!prixConfig || !cfg.product || !cfg.qty) return null;
@@ -1669,8 +1737,6 @@ function updateLivePrice() {
         lpEl.innerHTML = '— <span class="unit">DT</span>';
         pbEl.innerHTML = '';
         lsEl.innerHTML = '<div style="color:var(--text3);font-size:0.8rem;text-align:center;padding:0.5rem;">Configurez votre commande pour voir le prix</div>';
-        const sbEl = document.getElementById('submit-btns');
-        if (sbEl) sbEl.style.display = 'none';
         return;
     }
 
@@ -1681,88 +1747,34 @@ function updateLivePrice() {
         <div class="price-unit-cost">Coût unitaire : ${p.unitCost.toFixed(4)} DT/ex.</div>
     `;
 
-    const prod = PRODUCTS.find(x => x.id === cfg.product);
+    const prodName = PRODUCT_NAMES[cfg.product] || cfg.product || '—';
     const opts = Object.entries(cfg.options).filter(([k,v]) => v).map(([k,v]) => v).join(' · ');
     lsEl.innerHTML = `
-        <div class="summary-row"><span class="summary-key">Produit</span><span class="summary-val">${prod ? prod.name : cfg.product || '—'}</span></div>
+        <div class="summary-row"><span class="summary-key">Produit</span><span class="summary-val">${prodName}</span></div>
         <div class="summary-row"><span class="summary-key">Options</span><span class="summary-val">${opts || '—'}</span></div>
         <div class="summary-row"><span class="summary-key">Quantité</span><span class="summary-val">${cfg.qty ? cfg.qty.toLocaleString() + ' ex.' : '—'}</span></div>
         <div class="summary-row"><span class="summary-key">Délai</span><span class="summary-val">${cfg.delay}</span></div>
     `;
-    // Show/hide submit buttons
-    const sbEl = document.getElementById('submit-btns');
-    if (sbEl) sbEl.style.display = (cfg.product && cfg.qty) ? 'flex' : 'none';
 }
 
-function resetConfigurator() {
-    cfg = { product: null, options: {}, qty: null, delay: 'Standard', delayPct: 0 };
-    currentStep = 1;
-    // Reset UI — single page mode
-    const sel = document.getElementById('product-select');
-    if (sel) sel.value = '';
-    const df = document.getElementById('desc-field');
-    if (df) df.value = '';
-    ['options-card','qty-card','delay-card','remarks-card'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.style.display = 'none';
-    });
-    // Reset delay buttons
-    document.querySelectorAll('.delay-btn').forEach((b,i) => {
-        b.classList.toggle('selected', i === 0);
-    });
-    updateLivePrice();
-}
-
-function onProductChange(productId) {
-    cfg.product = productId;
-    cfg.options = {};
-    cfg.qty = null;
-
-    if (!productId) {
-        ['options-card','qty-card','delay-card','remarks-card'].forEach(id => {
-            const el = document.getElementById(id);
-            if (el) el.style.display = 'none';
-        });
-        updateLivePrice();
-        return;
-    }
-
-    // Build options
-    buildOptionsStep();
-    const opts = OPTIONS_MAP[productId] || [];
-    document.getElementById('options-card').style.display = opts.length ? 'block' : 'none';
-
-    // Build qty
-    buildQtyContent();
-    document.getElementById('qty-card').style.display = 'block';
-    document.getElementById('delay-card').style.display = 'block';
-    document.getElementById('remarks-card').style.display = 'block';
-    updateLivePrice();
-}
-
-function buildQtyContent() {
-    const presets = QTY_PRESETS[cfg.product] || [50,100,250,500,1000];
-    document.getElementById('qty-grid').innerHTML = presets.map(q => `
-        <div class="qty-chip ${cfg.qty === q ? 'selected' : ''}" onclick="selectQty(${q},this)">${q.toLocaleString()}</div>
-    `).join('');
-    const customField = document.getElementById('qty-custom');
-    if (customField) customField.value = '';
-}
+// placeholder removed
 
 async function submitDevis(type) {
-    if (!cfg.product || !cfg.qty) { showToast('⚠️ Configuration incomplète', 'error'); return; }
+    if (!cfg.product) { showToast('⚠️ Sélectionnez un produit', 'error'); return; }
+    if (!cfg.qty) { showToast('⚠️ Sélectionnez une quantité', 'error'); return; }
     const p = calcPrice();
-    const prod = PRODUCTS.find(x => x.id === cfg.product);
+    if (!p && !['enveloppe','autre'].includes(cfg.product)) { showToast('⚠️ Vérifiez la configuration (pages manquantes ?)', 'error'); return; }
+    const prodName = PRODUCT_NAMES[cfg.product] || cfg.product;
     const now = new Date();
     const dateStr = now.toLocaleDateString('fr-FR') + ' ' + now.toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'});
     const opts = Object.entries(cfg.options).filter(([k,v]) => v).map(([k,v]) => k + ': ' + v).join(', ');
-    const desc = document.getElementById('desc-field').value + (opts ? '\n\nOptions : ' + opts : '');
+    const desc = (document.getElementById('desc-field').value || '') + (opts ? '\n\nOptions : ' + opts : '');
 
     const ref = type === 'quote' ? 'DEV-' + Date.now().toString(36).toUpperCase() : 'CMD-' + Date.now().toString(36).toUpperCase();
 
     const data = {
         ref, date: dateStr, client: clientName, clientId,
-        prod: prod ? prod.name : cfg.product,
+        prod: prodName,
         qty: cfg.qty, price: p ? p.ht.toFixed(2) : '0',
         tva: p ? p.tva.toFixed(2) : '0',
         priceTTC: p ? p.ttc.toFixed(2) : '0',
@@ -1857,7 +1869,7 @@ function openOrderDetail(ref) {
             </div>
         </div>
 
-        ${o.desc ? `<div style="margin-bottom:1.5rem;"><div style="font-size:0.75rem;color:var(--text2);margin-bottom:0.5rem;text-transform:uppercase;letter-spacing:0.5px;">Instructions</div><div style="background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:1rem;font-size:0.83rem;color:var(--text2);white-space:pre-line;">${o.desc}</div></div>` : ''}
+        ${o.desc ? `<div style="margin-bottom:1.5rem;"><div style="font-size:0.75rem;color:var(--text2);margin-bottom:0.5rem;text-transform:uppercase;letter-spacing:0.5px;">Instructions</div><div style="background:var(--surface3);border:1px solid var(--border);border-radius:9px;padding:1rem;font-size:0.83rem;color:var(--text2);white-space:pre-line;">${o.desc}</div></div>` : ''}
 
         <div style="display:flex;gap:8px;">
             <button class="btn btn-secondary" onclick="reorder('${o.ref}')">🔄 Commander à nouveau</button>
@@ -1871,15 +1883,8 @@ function reorder(ref) {
     const o = getClientHistory(clientId).find(x => x.ref === ref);
     if (!o) return;
     closeModal('modal-order');
-    const prod = PRODUCTS.find(p => p.name === o.prod || p.id === o.prod);
+    cfg.qty = parseInt(o.qty) || null;
     goTo('devis');
-    if (prod) {
-        const sel = document.getElementById('product-select');
-        if (sel) { sel.value = prod.id; onProductChange(prod.id); }
-        cfg.qty = parseInt(o.qty);
-        buildQtyContent();
-        updateLivePrice();
-    }
     showToast('📋 Produit pré-rempli depuis votre historique', 'info');
 }
 
@@ -1908,15 +1913,8 @@ function renderQuotes() {
 function duplicateQuote(ref) {
     const q = getQuotes().find(x => x.ref === ref);
     if (!q) return;
-    const prod = PRODUCTS.find(p => p.name === q.prod || p.id === q.prod);
+    cfg.qty = parseInt(q.qty) || null;
     goTo('devis');
-    if (prod) {
-        const sel = document.getElementById('product-select');
-        if (sel) { sel.value = prod.id; onProductChange(prod.id); }
-        cfg.qty = parseInt(q.qty);
-        buildQtyContent();
-        updateLivePrice();
-    }
     showToast('📋 Devis dupliqué — ajustez vos options', 'info');
 }
 
